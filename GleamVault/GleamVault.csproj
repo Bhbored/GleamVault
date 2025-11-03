@@ -65,12 +65,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MVVM\Views\" />
 	  <Folder Include="MVVM\ViewModels\" />
 	  <Folder Include="Controls\" />
 	  <Folder Include="Converters\" />
 	  <Folder Include="Services\" />
 	  <Folder Include="Utility\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="MVVM\Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\CustomeStyles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>
