@@ -12,9 +12,8 @@ namespace Shared.Models
         public Guid Id { get; set; }
         public TransactionType Type { get; set; }
         public decimal TotalAmount { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
-        public string? PaymentMethod { get; set; }
         public ICollection<TransactionItem> Items { get; set; } = new List<TransactionItem>();
     }
 }
