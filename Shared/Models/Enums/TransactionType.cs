@@ -9,6 +9,8 @@ namespace Shared.Models.Enums
     public enum TransactionType
     {
         Sell,
+        CustomeOrder,
+        Repairement,
         Buy
     }
 }
