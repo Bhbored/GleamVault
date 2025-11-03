@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+
+namespace Shared.Models
+{
+    public class TransactionItem
+    {
+        public Guid Id { get; set; }
+        public Guid TransactionId { get; set; }
+        public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
+        public decimal UnitPriceAtSale { get; set; }
+        public decimal UnitCostAtSale { get; set; }
+
+    }
+}
