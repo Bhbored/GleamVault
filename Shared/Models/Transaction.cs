@@ -14,6 +14,8 @@ namespace Shared.Models
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
+        public Guid? CustomerId { get; set; } 
+        public Customer? Customer { get; set; }
         public ICollection<TransactionItem>? Items { get; set; } = new List<TransactionItem>();
     }
 }

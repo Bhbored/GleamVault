@@ -1,0 +1,42 @@
+﻿using GleamVault.MVVM.ViewModels;
+using GleamVault.MVVM.Views;
+
+
+namespace GleamVault.Services
+{
+    public static class DIContainer
+    {
+
+        public static IServiceCollection RegisterAuthServices(this IServiceCollection services)
+        {
+
+            return services;
+        }
+
+        public static IServiceCollection RegisterViewModels(this IServiceCollection services)
+        {
+            services.AddTransient<HomeVM>();
+            services.AddTransient<TransactionVM>();
+            return services;
+        }
+
+        public static IServiceCollection RegisterViews(this IServiceCollection services)
+        {
+            services.AddTransient<HomePage>();
+            services.AddTransient<TransactionPage>();
+            services.AddTransient<ProductPage>();
+            services.AddTransient<DiscountPage>();
+            services.AddTransient<CustomerPage>();
+            services.AddTransient<InventoryPage>();
+            services.AddTransient<ReportPage>();
+            return services;
+        }
+
+        public static IServiceCollection RegisterDependencies(this IServiceCollection services)
+        {
+            return services
+                    .RegisterViews()
+                    .RegisterViewModels();
+        }
+    }
+}

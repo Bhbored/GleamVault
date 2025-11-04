@@ -16,6 +16,7 @@ namespace Shared.Models
         public Guid CategoryId { get; set; }//one to many
         public Category Category { get; set; } = null!;
         public decimal UnitCost { get; set; }
+        public string ImageUrl { get; set; } = "default_product.gif";
         public HallmarkType? Hallmark { get; set; } = HallmarkType.LuxuryBrands; //no3 el product
         public WeightUnit? WeightUnit { get; set; }//grams, carats, ounces, pennyweight, kilograms
         public decimal? Weight { get; set; }// eza kanet sa3at kermal haik nullable
