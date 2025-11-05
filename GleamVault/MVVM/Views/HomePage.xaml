@@ -293,7 +293,7 @@
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0">
 
-            <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="15">
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15">
 
                 <!--  Cart Title  -->
                 <Label
@@ -304,9 +304,41 @@
                 <!--  Cart Items List with CollectionView  -->
                 <CollectionView
                     Grid.Row="1"
-                    EmptyView="No items in cart"
                     ItemsSource="{Binding CartItems}"
                     VerticalOptions="FillAndExpand">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="20"
+                            VerticalOptions="Center">
+
+                            <!--  Animation Placeholder  -->
+                            <Border
+                                Background="{StaticResource Secondary}"
+                                HeightRequest="120"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="0"
+                                WidthRequest="120">
+                                <Label
+                                    FontSize="48"
+                                    HorizontalOptions="Center"
+                                    Text="🎁"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <Label
+                                HorizontalOptions="Center"
+                                StyleClass="h4"
+                                Text="Cart is Empty" />
+
+                            <Label
+                                HorizontalOptions="Center"
+                                StyleClass="caption"
+                                Text="Add products to start a sale" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -317,7 +349,7 @@
                                 StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0">
 
-                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="10">
 
                                     <!--  Product Image  -->
                                     <Border
@@ -400,12 +432,14 @@
                 <!--  Cart Summary  -->
                 <Grid
                     Grid.Row="2"
-                    Padding="0,10,0,0"
-                    RowDefinitions="Auto,Auto,Auto,Auto"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                     RowSpacing="8">
 
                     <!--  Subtotal  -->
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid
+                        Grid.Row="0"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
                         <Label
                             Grid.Column="0"
                             StyleClass="body"
@@ -418,8 +452,31 @@
                             VerticalOptions="Center" />
                     </Grid>
 
+                    <!--  Discount  -->
+                    <Grid
+                        Grid.Row="1"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                        <Label
+                            Grid.Column="0"
+                            StyleClass="body"
+                            Text="Discount"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            BackgroundColor="{StaticResource Secondary}"
+                            HeightRequest="35"
+                            HorizontalTextAlignment="Center"
+                            Placeholder="0"
+                            Text="{Binding DiscountPercentage}"
+                            WidthRequest="80" />
+                    </Grid>
+
                     <!--  Tax  -->
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid
+                        Grid.Row="2"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
                         <Label
                             Grid.Column="0"
                             StyleClass="caption"
@@ -432,39 +489,18 @@
                             VerticalOptions="Center" />
                     </Grid>
 
-                    <!--  Discount  -->
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <Label
-                            Grid.Column="0"
-                            StyleClass="caption"
-                            Text="Discount"
-                            VerticalOptions="Center" />
-                        <Entry
-                            Grid.Column="1"
-                            BackgroundColor="{StaticResource Secondary}"
-                            HorizontalTextAlignment="Center"
-                            Placeholder="0"
-                            Text="{Binding DiscountPercentage}"
-                            WidthRequest="80" />
-                    </Grid>
-
                     <!--  Divider  -->
                     <BoxView
                         Grid.Row="3"
-                        Margin="0,8,0,0"
+                        Margin="0,8"
                         BackgroundColor="{StaticResource Border}"
                         HeightRequest="1" />
-                </Grid>
-
-                <!--  Total & Complete Sale  -->
-                <Grid
-                    Grid.Row="3"
-                    Padding="0,10,0,0"
-                    RowDefinitions="Auto,Auto"
-                    RowSpacing="15">
 
                     <!--  Total  -->
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid
+                        Grid.Row="4"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
                         <Label
                             Grid.Column="0"
                             StyleClass="h3"
@@ -479,7 +515,8 @@
 
                     <!--  Complete Sale Button  -->
                     <Button
-                        Grid.Row="1"
+                        Grid.Row="5"
+                        Margin="0,15,0,0"
                         Padding="0,16"
                         Background="{StaticResource Brush.ButtonGradient}"
                         Command="{Binding CompleteSaleCommand}"
