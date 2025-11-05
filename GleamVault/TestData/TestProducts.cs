@@ -32,15 +32,14 @@ namespace GleamVault.TestData
             Name = "Classic Gold Wedding Band",
             Description = "Elegant 18K gold wedding band with polished finish",
             CategoryId = categories[0].Id,
-            Category = categories[0], // Add this line
-            UnitCost = 450.00m,
-            UnitPrice = 899.00m,
+            Category = categories[0],
+            UnitCost = 450f,
+            UnitPrice = 899f,
             CurrentStock = 15,
             Hallmark = HallmarkType.Gold18K,
             WeightUnit = WeightUnit.Grams,
-            Weight = 4.2m,
+            Weight = 4.2f
         },
-
         new Product
         {
             Id = Guid.NewGuid(),
@@ -48,16 +47,14 @@ namespace GleamVault.TestData
             Name = "Diamond Engagement Ring",
             Description = "Stunning 1-carat solitaire diamond ring in platinum setting",
             CategoryId = categories[0].Id,
-            Category = categories[0], // Add this line
-            UnitCost = 1200.00m,
-            UnitPrice = 2500.00m,
+            Category = categories[0],
+            UnitCost = 1200f,
+            UnitPrice = 2500f,
             CurrentStock = 8,
             Hallmark = HallmarkType.Sterling925,
             WeightUnit = WeightUnit.Carats,
-            Weight = 1.0m,
+            Weight = 1.0f
         },
-
-        // Necklaces
         new Product
         {
             Id = Guid.NewGuid(),
@@ -65,15 +62,14 @@ namespace GleamVault.TestData
             Name = "Pearl Strand Necklace",
             Description = "Luxurious 18-inch cultured pearl necklace",
             CategoryId = categories[1].Id,
-            Category = categories[1], // Add this line
-            UnitCost = 300.00m,
-            UnitPrice = 650.00m,
+            Category = categories[1],
+            UnitCost = 300f,
+            UnitPrice = 650f,
             CurrentStock = 12,
             Hallmark = HallmarkType.LuxuryBrands,
             WeightUnit = WeightUnit.Grams,
-            Weight = 22.5m,
+            Weight = 22.5f
         },
-
         new Product
         {
             Id = Guid.NewGuid(),
@@ -81,16 +77,14 @@ namespace GleamVault.TestData
             Name = "Gold Chain with Pendant",
             Description = "14K gold chain with diamond-cut cross pendant",
             CategoryId = categories[1].Id,
-            Category = categories[1], // Add this line
-            UnitCost = 280.00m,
-            UnitPrice = 550.00m,
+            Category = categories[1],
+            UnitCost = 280f,
+            UnitPrice = 550f,
             CurrentStock = 10,
             Hallmark = HallmarkType.Gold14K,
             WeightUnit = WeightUnit.Grams,
-            Weight = 8.7m,
+            Weight = 8.7f
         },
-
-        // Earrings
         new Product
         {
             Id = Guid.NewGuid(),
@@ -98,15 +92,14 @@ namespace GleamVault.TestData
             Name = "Diamond Stud Earrings",
             Description = "Brilliant 0.5-carat diamond stud earrings in white gold",
             CategoryId = categories[2].Id,
-            Category = categories[2], // Add this line
-            UnitCost = 600.00m,
-            UnitPrice = 1200.00m,
+            Category = categories[2],
+            UnitCost = 600f,
+            UnitPrice = 1200f,
             CurrentStock = 6,
             Hallmark = HallmarkType.Sterling925,
             WeightUnit = WeightUnit.Carats,
-            Weight = 1.0m,
+            Weight = 1.0f
         },
-
         new Product
         {
             Id = Guid.NewGuid(),
@@ -114,16 +107,14 @@ namespace GleamVault.TestData
             Name = "Gold Hoop Earrings",
             Description = "Classic 10K gold hoop earrings, 20mm diameter",
             CategoryId = categories[2].Id,
-            Category = categories[2], // Add this line
-            UnitCost = 150.00m,
-            UnitPrice = 299.00m,
+            Category = categories[2],
+            UnitCost = 150f,
+            UnitPrice = 299f,
             CurrentStock = 20,
             Hallmark = HallmarkType.Gold10K,
             WeightUnit = WeightUnit.Grams,
-            Weight = 3.8m,
+            Weight = 3.8f
         },
-
-        // Bracelets
         new Product
         {
             Id = Guid.NewGuid(),
@@ -131,15 +122,14 @@ namespace GleamVault.TestData
             Name = "Tennis Bracelet",
             Description = "Elegant diamond tennis bracelet with 2 carats total weight",
             CategoryId = categories[3].Id,
-            Category = categories[3], // Add this line
-            UnitCost = 800.00m,
-            UnitPrice = 1600.00m,
+            Category = categories[3],
+            UnitCost = 800f,
+            UnitPrice = 1600f,
             CurrentStock = 5,
             Hallmark = HallmarkType.Sterling925,
             WeightUnit = WeightUnit.Carats,
-            Weight = 2.0m,
+            Weight = 2.0f
         },
-
         new Product
         {
             Id = Guid.NewGuid(),
@@ -147,16 +137,14 @@ namespace GleamVault.TestData
             Name = "Gold Bangle Set",
             Description = "Set of three 21K gold bangles in different widths",
             CategoryId = categories[3].Id,
-            Category = categories[3], // Add this line
-            UnitCost = 420.00m,
-            UnitPrice = 850.00m,
+            Category = categories[3],
+            UnitCost = 420f,
+            UnitPrice = 850f,
             CurrentStock = 8,
             Hallmark = HallmarkType.Gold21K,
             WeightUnit = WeightUnit.Grams,
-            Weight = 15.3m,
+            Weight = 15.3f
         },
-
-        // Watches
         new Product
         {
             Id = Guid.NewGuid(),
@@ -164,16 +152,15 @@ namespace GleamVault.TestData
             Name = "Luxury Swiss Watch",
             Description = "Automatic mechanical watch with leather strap",
             CategoryId = categories[4].Id,
-            Category = categories[4], // Add this line
-            UnitCost = 1500.00m,
-            UnitPrice = 3200.00m,
+            Category = categories[4],
+            UnitCost = 1500f,
+            UnitPrice = 3200f,
             CurrentStock = 3,
             Hallmark = HallmarkType.LuxuryBrands,
             WeightUnit = WeightUnit.Grams,
-            Weight = 85.0m,
+            Weight = 85.0f,
             IsUniquePiece = true
         },
-
         new Product
         {
             Id = Guid.NewGuid(),
@@ -181,13 +168,13 @@ namespace GleamVault.TestData
             Name = "Gold Dress Watch",
             Description = "Elegant 18K gold dress watch with mother-of-pearl dial",
             CategoryId = categories[4].Id,
-            Category = categories[4], // Add this line
-            UnitCost = 900.00m,
-            UnitPrice = 1800.00m,
+            Category = categories[4],
+            UnitCost = 900f,
+            UnitPrice = 1800f,
             CurrentStock = 4,
             Hallmark = HallmarkType.Gold18K,
             WeightUnit = WeightUnit.Grams,
-            Weight = 62.5m,
+            Weight = 62.5f
         }
     };
 

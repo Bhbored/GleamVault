@@ -8,7 +8,7 @@ namespace GleamVault.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is decimal price)
+            if (value is float price)
             {
                 return $"$ {price:F2}";
             }
@@ -23,18 +23,7 @@ namespace GleamVault.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string str)
-            {
-                str = str.Replace("$", "")
-                        .Replace(" ", "")
-                        .Trim();
-
-                if (decimal.TryParse(str, NumberStyles.Any, culture ?? CultureInfo.InvariantCulture, out decimal result))
-                {
-                    return result;
-                }
-            }
-            return 0m;
+           throw new NotImplementedException();
         }
     }
 }

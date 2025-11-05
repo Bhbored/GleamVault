@@ -3,6 +3,7 @@
     x:Class="GleamVault.MVVM.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
     xmlns:conv="clr-namespace:GleamVault.Converters"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
@@ -271,7 +272,11 @@
                                             IsEnabled="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
                                             IsVisible="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
                                             Source="add.png"
-                                            WidthRequest="35" />
+                                            WidthRequest="35">
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.AddToCartCommand}" CommandParameter="{Binding .}" />
+                                            </Image.GestureRecognizers>
+                                        </Image>
                                     </Grid>
                                 </Grid>
                             </Border>
@@ -281,6 +286,7 @@
             </Border>
 
         </Grid>
+        <!--  Cart Section - Full Height  -->
         <!--  Cart Section - Full Height  -->
         <Border
             Grid.Row="0"
@@ -295,134 +301,188 @@
 
             <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15">
 
-                <!--  Cart Title  -->
-                <Label
+                <!--  Cart Title with Reset Button  -->
+                <Grid
                     Grid.Row="0"
-                    StyleClass="h2"
-                    Text="Current Sale" />
+                    ColumnDefinitions="*,Auto"
+                    ColumnSpacing="10">
+                    <Label
+                        Grid.Column="0"
+                        StyleClass="h2"
+                        Text="Current Sale"
+                        VerticalOptions="Center" />
+
+                    <!--  Reset Cart Button  -->
+                    <ImageButton
+                        Grid.Column="1"
+                        BackgroundColor="Transparent"
+                        Command="{Binding ClearCartCommand}"
+                        HeightRequest="30"
+                        IsVisible="{Binding HasItemsInCart}"
+                        Source="reset.png"
+                        WidthRequest="30" />
+                </Grid>
 
                 <!--  Cart Items List with CollectionView  -->
                 <CollectionView
                     Grid.Row="1"
                     ItemsSource="{Binding CartItems}"
-                    VerticalOptions="FillAndExpand">
+                    VerticalOptions="Fill">
 
                     <CollectionView.EmptyView>
                         <VerticalStackLayout
                             HorizontalOptions="Center"
                             Spacing="20"
                             VerticalOptions="Center">
-
-                            <!--  Animation Placeholder  -->
-                            <Border
-                                Background="{StaticResource Secondary}"
-                                HeightRequest="120"
+                            <Image
+                                Aspect="AspectFit"
                                 HorizontalOptions="Center"
-                                StrokeShape="RoundRectangle 20"
-                                StrokeThickness="0"
-                                WidthRequest="120">
-                                <Label
-                                    FontSize="48"
-                                    HorizontalOptions="Center"
-                                    Text="🎁"
-                                    VerticalOptions="Center" />
-                            </Border>
-
+                                IsAnimationPlaying="True"
+                                Source="cart.gif"
+                                VerticalOptions="Center" />
                             <Label
                                 HorizontalOptions="Center"
                                 StyleClass="h4"
                                 Text="Cart is Empty" />
-
-                            <Label
-                                HorizontalOptions="Center"
-                                StyleClass="caption"
-                                Text="Add products to start a sale" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
-
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
+                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:Product">
                             <Border
-                                Margin="0,0,0,8"
-                                Padding="12"
-                                Background="{StaticResource Secondary}"
-                                StrokeShape="RoundRectangle 12"
+                                Margin="0,0,0,10"
+                                Padding="14"
+                                Background="{StaticResource Brush.CardBgGradient}"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 14"
                                 StrokeThickness="0">
 
-                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="10">
+                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
 
-                                    <!--  Product Image  -->
-                                    <Border
-                                        Grid.Column="0"
-                                        HeightRequest="50"
-                                        StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="0"
-                                        WidthRequest="50">
-                                        <Image Aspect="AspectFill" Source="{Binding Product.ImageUrl}" />
-                                    </Border>
-
-                                    <!--  Product Details  -->
-                                    <VerticalStackLayout
-                                        Grid.Column="1"
-                                        Spacing="2"
-                                        VerticalOptions="Center">
-                                        <Label
-                                            LineBreakMode="TailTruncation"
-                                            MaxLines="1"
-                                            StyleClass="h4"
-                                            Text="{Binding Product.Name}" />
-                                        <Label StyleClass="caption" Text="{Binding Product.Weight, StringFormat='{0} '}" />
-                                        <Label StyleClass="caption" Text="{Binding Product.WeightUnit, Converter={StaticResource WeightUnitConverter}}" />
-                                    </VerticalStackLayout>
-
-                                    <!--  Quantity Controls  -->
+                                    <!--  Top Row: Image & Details with Delete Button  -->
                                     <Grid
-                                        Grid.Column="2"
-                                        ColumnDefinitions="Auto,Auto,Auto"
-                                        ColumnSpacing="4"
-                                        VerticalOptions="Center">
+                                        Grid.Row="0"
+                                        ColumnDefinitions="Auto,*,Auto"
+                                        ColumnSpacing="12">
 
-                                        <Button
+                                        <!--  Product Image  -->
+                                        <Border
                                             Grid.Column="0"
-                                            Command="{Binding DecreaseQuantityCommand}"
-                                            StyleClass="qty-btn"
-                                            Text="-" />
+                                            Background="{StaticResource Secondary}"
+                                            HeightRequest="70"
+                                            StrokeShape="RoundRectangle 10"
+                                            StrokeThickness="0"
+                                            WidthRequest="70">
+                                            <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                        </Border>
 
-                                        <Label
+                                        <!--  Product Details  -->
+                                        <VerticalStackLayout
                                             Grid.Column="1"
-                                            HorizontalTextAlignment="Center"
-                                            StyleClass="body"
-                                            Text="{Binding Quantity}"
-                                            VerticalOptions="Center"
-                                            WidthRequest="30" />
+                                            Spacing="6"
+                                            VerticalOptions="Center">
+                                            <Label
+                                                FontFamily="NexaHeavy"
+                                                FontSize="15"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="2"
+                                                Text="{Binding Name}"
+                                                TextColor="{StaticResource TextDark}" />
 
-                                        <Button
+                                            <HorizontalStackLayout Spacing="6">
+                                                <Label
+                                                    FontSize="13"
+                                                    Text="{Binding Weight, StringFormat='{0}'}"
+                                                    TextColor="{StaticResource TextLight}" />
+                                                <Label
+                                                    FontSize="13"
+                                                    Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}"
+                                                    TextColor="{StaticResource TextLight}" />
+                                            </HorizontalStackLayout>
+
+                                            <Label
+                                                FontFamily="NexaHeavy"
+                                                FontSize="15"
+                                                Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                TextColor="{StaticResource Primary}" />
+                                        </VerticalStackLayout>
+
+                                        <!--  Delete Button - Top Right  -->
+                                        <Border
                                             Grid.Column="2"
-                                            Command="{Binding IncreaseQuantityCommand}"
-                                            StyleClass="qty-btn"
-                                            Text="+" />
+                                            Padding="10"
+                                            Background="{StaticResource Secondary}"
+                                            HeightRequest="36"
+                                            StrokeShape="RoundRectangle 10"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Start"
+                                            WidthRequest="36">
+                                            <Label
+                                                FontSize="16"
+                                                HorizontalOptions="Center"
+                                                Text="❌"
+                                                VerticalOptions="Center">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.RemoveFromCartCommand}" CommandParameter="{Binding .}" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </Border>
                                     </Grid>
 
-                                    <!--  Item Price  -->
-                                    <Label
-                                        Grid.Column="3"
-                                        HorizontalOptions="End"
-                                        StyleClass="body"
-                                        Text="{Binding TotalPrice, Converter={StaticResource PriceConverter}}"
-                                        VerticalOptions="Center" />
+                                    <!--  Divider  -->
+                                    <BoxView
+                                        Grid.Row="1"
+                                        BackgroundColor="{StaticResource Border}"
+                                        HeightRequest="1"
+                                        Opacity="0.5" />
 
-                                    <!--  Remove Button  -->
-                                    <Border
-                                        Grid.Column="4"
-                                        Padding="8"
-                                        Background="Transparent"
-                                        StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="0">
+                                    <!--  Bottom Row: Quantity Controls  -->
+                                    <Grid
+                                        Grid.Row="2"
+                                        ColumnDefinitions="Auto,*"
+                                        ColumnSpacing="10">
+
                                         <Label
-                                            FontSize="16"
-                                            Text="🗑️"
+                                            Grid.Column="0"
+                                            FontSize="14"
+                                            Text="Quantity:"
+                                            TextColor="{StaticResource TextLight}"
                                             VerticalOptions="Center" />
-                                    </Border>
+
+                                        <Grid
+                                            Grid.Column="1"
+                                            ColumnDefinitions="Auto,Auto,Auto"
+                                            ColumnSpacing="8"
+                                            HorizontalOptions="Start">
+
+                                            <Button
+                                                Grid.Column="0"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.DecreaseQuantityCommand}"
+                                                CommandParameter="{Binding .}"
+                                                StyleClass="qty-btn"
+                                                Text="-" />
+
+                                            <Label
+                                                x:Name="QuantityLabel"
+                                                Grid.Column="1"
+                                                FontFamily="NexaHeavy"
+                                                FontSize="15"
+                                                HorizontalTextAlignment="Center"
+                                                Text="1"
+                                                TextColor="{StaticResource TextDark}"
+                                                VerticalOptions="Center"
+                                                WidthRequest="40" />
+
+                                            <Button
+                                                Grid.Column="2"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.IncreaseQuantityCommand}"
+                                                CommandParameter="{Binding .}"
+                                                StyleClass="qty-btn"
+                                                Text="+" />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -433,7 +493,7 @@
                 <Grid
                     Grid.Row="2"
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    RowSpacing="8">
+                    RowSpacing="10">
 
                     <!--  Subtotal  -->
                     <Grid
@@ -452,7 +512,7 @@
                             VerticalOptions="Center" />
                     </Grid>
 
-                    <!--  Discount  -->
+                    <!--  Discount - Fixed Amount  -->
                     <Grid
                         Grid.Row="1"
                         ColumnDefinitions="*,Auto"
@@ -462,43 +522,28 @@
                             StyleClass="body"
                             Text="Discount"
                             VerticalOptions="Center" />
+
                         <Entry
                             Grid.Column="1"
                             BackgroundColor="{StaticResource Secondary}"
                             HeightRequest="35"
                             HorizontalTextAlignment="Center"
-                            Placeholder="0"
-                            Text="{Binding DiscountPercentage}"
-                            WidthRequest="80" />
-                    </Grid>
-
-                    <!--  Tax  -->
-                    <Grid
-                        Grid.Row="2"
-                        ColumnDefinitions="*,Auto"
-                        ColumnSpacing="10">
-                        <Label
-                            Grid.Column="0"
-                            StyleClass="caption"
-                            Text="Tax (10%)"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="1"
-                            StyleClass="caption"
-                            Text="{Binding CartTax, Converter={StaticResource PriceConverter}}"
-                            VerticalOptions="Center" />
+                            Keyboard="Numeric"
+                            Placeholder="0.00"
+                            Text="{Binding DiscountAmount}"
+                            WidthRequest="100" />
                     </Grid>
 
                     <!--  Divider  -->
                     <BoxView
-                        Grid.Row="3"
-                        Margin="0,8"
+                        Grid.Row="2"
+                        Margin="0,5"
                         BackgroundColor="{StaticResource Border}"
                         HeightRequest="1" />
 
                     <!--  Total  -->
                     <Grid
-                        Grid.Row="4"
+                        Grid.Row="3"
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="10">
                         <Label
@@ -515,12 +560,12 @@
 
                     <!--  Complete Sale Button  -->
                     <Button
-                        Grid.Row="5"
-                        Margin="0,15,0,0"
+                        Grid.Row="4"
+                        Margin="0,10,0,0"
                         Padding="0,16"
                         Background="{StaticResource Brush.ButtonGradient}"
                         Command="{Binding CompleteSaleCommand}"
-                        CornerRadius="22"
+                        CornerRadius="10"
                         FontFamily="NexaHeavy"
                         FontSize="16"
                         IsEnabled="{Binding HasItemsInCart}"
