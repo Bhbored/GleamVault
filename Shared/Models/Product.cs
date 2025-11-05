@@ -19,8 +19,8 @@ namespace Shared.Models
         public string ImageUrl { get; set; } = "default_product.gif";
         public HallmarkType? Hallmark { get; set; } = HallmarkType.LuxuryBrands; //no3 el product
         public WeightUnit? WeightUnit { get; set; }//grams, carats, ounces, pennyweight, kilograms
-        public decimal? Weight { get; set; }// eza kanet sa3at kermal haik nullable
-        public decimal UnitPrice { get; set; }
+        public float? Weight { get; set; }// eza kanet sa3at kermal haik nullable
+        public float UnitPrice { get; set; }
         public int CurrentStock { get; set; } = 0;
         public bool IsUniquePiece { get; set; } = false;
 

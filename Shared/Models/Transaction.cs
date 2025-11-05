@@ -11,7 +11,7 @@ namespace Shared.Models
     {
         public Guid Id { get; set; }
         public TransactionType Type { get; set; }
-        public decimal TotalAmount { get; set; }
+        public float TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
         public Guid? CustomerId { get; set; } 
