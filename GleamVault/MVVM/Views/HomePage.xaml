@@ -3,16 +3,31 @@
     x:Class="GleamVault.MVVM.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
     x:DataType="vm:HomeVM"
     Background="{StaticResource Brush.BackgroundGradient}">
 
+    <ContentPage.Resources>
+        <conv:PriceConverter x:Key="PriceConverter" />
+        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter" />
+        <conv:WeightUnitConverter x:Key="WeightUnitConverter" />
+        <conv:CategoryColorConverter x:Key="CategoryColorConverter" />
+        <conv:StockToColorConverter x:Key="StockToColorConverter" />
+        <conv:StockStatusColorConverter x:Key="StockStatusColorConverter" />
+        <conv:StockStatusTextConverter x:Key="StockStatusTextConverter" />
+        <conv:StockToBoolConverter x:Key="StockToBoolConverter" />
+    </ContentPage.Resources>
 
+    <Grid ColumnDefinitions="75*,25*" RowDefinitions="Auto,*">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto">
-        <!--  Background Wave  -->
-        <Grid Grid.Row="0" HeightRequest="240">
+        <!--  Header with Wave Background  -->
+        <Grid
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            HeightRequest="200">
             <!--  Wave 1  -->
             <shapes:Path
                 Aspect="Fill"
@@ -33,6 +48,491 @@
                 Opacity="0.12"
                 VerticalOptions="Fill" />
         </Grid>
+        <!--  Header Content  -->
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Padding="20,20,20,0"
+            RowDefinitions="Auto,Auto,Auto"
+            RowSpacing="15"
+            VerticalOptions="Start">
+
+            <!--  Title Section  -->
+            <VerticalStackLayout Grid.Row="0" Spacing="5">
+                <HorizontalStackLayout Spacing="8">
+                    <Label
+                        StyleClass="h2"
+                        Text="💎"
+                        VerticalOptions="Center" />
+                    <Label StyleClass="h2" Text="Gleam &amp; Co." />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!--  Search and Action Buttons  -->
+            <Grid Grid.Row="1">
+                <SearchBar
+                    Grid.Column="0"
+                    Placeholder="Search by SKU, Name, or Category"
+                    StyleClass="search" />
+            </Grid>
+
+            <!--  Filter Section  -->
+            <Grid
+                Grid.Row="2"
+                ColumnDefinitions="Auto,*,Auto"
+                ColumnSpacing="15">
+
+                <!--  Category Filters  -->
+                <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                    <Label
+                        StyleClass="body"
+                        Text="Category"
+                        VerticalOptions="Center" />
+                    <Button
+                        Padding="16,8"
+                        StyleClass="chip"
+                        Text="Gold 18K" />
+                    <Button
+                        Padding="16,8"
+                        StyleClass="chip"
+                        Text="Necklaces" />
+                </HorizontalStackLayout>
+
+                <!--  Additional Filters  -->
+                <HorizontalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Start"
+                    Spacing="10">
+                    <Label
+                        StyleClass="body"
+                        Text="Hallmark"
+                        VerticalOptions="Center" />
+                    <Button
+                        Padding="16,8"
+                        StyleClass="chip"
+                        Text="Sterlng 925" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+        <!--  Product Grid CollectionView  -->
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Border
+                Margin="10"
+                Background="{StaticResource Brush.BackgroundGradient}"
+                Shadow="{StaticResource Sh.CyanLg}"
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0">
+                <CollectionView
+                    Grid.Column="0"
+                    Margin="10,10,10,0"
+                    ItemsSource="{Binding AllProducts}"
+                    SelectionMode="None"
+                    VerticalScrollBarVisibility="Never">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            Orientation="Vertical"
+                            Span="3"
+                            VerticalItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Product">
+                            <Border
+                                Padding="0"
+                                Background="{StaticResource Brush.CardBgGradient}"
+                                Shadow="{StaticResource Sh.CyanLg}"
+                                Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="1"
+                                WidthRequest="320">
+
+                                <Grid
+                                    Padding="12"
+                                    RowDefinitions="240,Auto,Auto,Auto"
+                                    RowSpacing="4">
+
+                                    <!--  Product Image with Badges  -->
+                                    <Grid Grid.Row="0">
+                                        <Border HeightRequest="240" StyleClass="image-holder">
+                                            <Image Aspect="AspectFit" Source="{Binding ImageUrl}" />
+                                        </Border>
+
+                                        <!--  Top Badges  -->
+                                        <Grid Margin="8">
+                                            <!--  Left Side - Unique Badge  -->
+                                            <Border
+                                                Padding="6,3"
+                                                Background="{StaticResource Warn}"
+                                                HorizontalOptions="Start"
+                                                IsVisible="{Binding IsUniquePiece}"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Start">
+                                                <Label
+                                                    StyleClass="caption"
+                                                    Text="UNIQUE"
+                                                    TextColor="White" />
+                                            </Border>
+
+                                            <!--  Right Side - Hallmark Badge  -->
+                                            <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start">
+                                                <Border
+                                                    Padding="5"
+                                                    Background="{StaticResource Primary}"
+                                                    StrokeShape="RoundRectangle 5"
+                                                    StrokeThickness="0">
+                                                    <Grid>
+                                                        <Label
+                                                            FontFamily="NexaHeavy"
+                                                            FontSize="12"
+                                                            HorizontalOptions="Center"
+                                                            Text="{Binding Hallmark, Converter={StaticResource HallmarkTypeConverter}}"
+                                                            TextColor="White"
+                                                            VerticalOptions="Center" />
+                                                    </Grid>
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                            <!--  Category Badge - Bottom Left Corner  -->
+                                            <Border
+                                                Padding="5"
+                                                Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                                HorizontalOptions="Start"
+                                                StrokeShape="RoundRectangle 5"
+                                                StrokeThickness="0"
+                                                VerticalOptions="End">
+                                                <Label
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="12"
+                                                    HorizontalOptions="Center"
+                                                    Text="{Binding Category.Name}"
+                                                    TextColor="White"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+                                        </Grid>
+                                    </Grid>
+
+                                    <!--  Product Name  -->
+                                    <Label
+                                        Grid.Row="1"
+                                        Margin="0,2,0,0"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="2"
+                                        StyleClass="h4"
+                                        Text="{Binding Name}" />
+
+                                    <!--  Weight & Stock on same row  -->
+                                    <Grid
+                                        Grid.Row="2"
+                                        Margin="0,1,0,0"
+                                        ColumnDefinitions="*,*"
+                                        ColumnSpacing="8">
+                                        <!--  Weight  -->
+                                        <Label
+                                            Grid.Column="0"
+                                            StyleClass="body"
+                                            TextColor="{StaticResource TextLight}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding Weight, StringFormat='{0}  '}" />
+                                                    <Span Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                        <!--  Stock - Modern inline display  -->
+                                        <Label
+                                            Grid.Column="1"
+                                            HorizontalOptions="End"
+                                            StyleClass="body"
+                                            TextColor="{Binding CurrentStock, Converter={StaticResource StockStatusColorConverter}}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="• " />
+                                                    <Span Text="{Binding CurrentStock, Converter={StaticResource StockStatusTextConverter}}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </Grid>
+
+                                    <!--  Price and Add to Cart  -->
+                                    <Grid
+                                        Grid.Row="3"
+                                        Margin="0,2,0,0"
+                                        ColumnDefinitions="*,Auto"
+                                        ColumnSpacing="8">
+                                        <Label
+                                            Grid.Column="0"
+                                            StyleClass="h4"
+                                            Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                            VerticalOptions="Center" />
+                                        <Image
+                                            Grid.Column="1"
+                                            HeightRequest="35"
+                                            IsEnabled="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
+                                            IsVisible="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
+                                            Source="add.png"
+                                            WidthRequest="35" />
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Border>
+
+        </Grid>
+        <!--  Cart Section - Full Height  -->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,20,10,20"
+            Padding="20"
+            Background="White"
+            Shadow="{StaticResource Sh.CyanMd}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15">
+
+                <!--  Cart Title  -->
+                <Label
+                    Grid.Row="0"
+                    StyleClass="h2"
+                    Text="Current Sale" />
+
+                <!--  Cart Items List with CollectionView  -->
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding CartItems}"
+                    VerticalOptions="FillAndExpand">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="20"
+                            VerticalOptions="Center">
+
+                            <!--  Animation Placeholder  -->
+                            <Border
+                                Background="{StaticResource Secondary}"
+                                HeightRequest="120"
+                                HorizontalOptions="Center"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="0"
+                                WidthRequest="120">
+                                <Label
+                                    FontSize="48"
+                                    HorizontalOptions="Center"
+                                    Text="🎁"
+                                    VerticalOptions="Center" />
+                            </Border>
+
+                            <Label
+                                HorizontalOptions="Center"
+                                StyleClass="h4"
+                                Text="Cart is Empty" />
+
+                            <Label
+                                HorizontalOptions="Center"
+                                StyleClass="caption"
+                                Text="Add products to start a sale" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,8"
+                                Padding="12"
+                                Background="{StaticResource Secondary}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0">
+
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="10">
+
+                                    <!--  Product Image  -->
+                                    <Border
+                                        Grid.Column="0"
+                                        HeightRequest="50"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        WidthRequest="50">
+                                        <Image Aspect="AspectFill" Source="{Binding Product.ImageUrl}" />
+                                    </Border>
+
+                                    <!--  Product Details  -->
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="2"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="1"
+                                            StyleClass="h4"
+                                            Text="{Binding Product.Name}" />
+                                        <Label StyleClass="caption" Text="{Binding Product.Weight, StringFormat='{0} '}" />
+                                        <Label StyleClass="caption" Text="{Binding Product.WeightUnit, Converter={StaticResource WeightUnitConverter}}" />
+                                    </VerticalStackLayout>
+
+                                    <!--  Quantity Controls  -->
+                                    <Grid
+                                        Grid.Column="2"
+                                        ColumnDefinitions="Auto,Auto,Auto"
+                                        ColumnSpacing="4"
+                                        VerticalOptions="Center">
+
+                                        <Button
+                                            Grid.Column="0"
+                                            Command="{Binding DecreaseQuantityCommand}"
+                                            StyleClass="qty-btn"
+                                            Text="-" />
+
+                                        <Label
+                                            Grid.Column="1"
+                                            HorizontalTextAlignment="Center"
+                                            StyleClass="body"
+                                            Text="{Binding Quantity}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="30" />
+
+                                        <Button
+                                            Grid.Column="2"
+                                            Command="{Binding IncreaseQuantityCommand}"
+                                            StyleClass="qty-btn"
+                                            Text="+" />
+                                    </Grid>
+
+                                    <!--  Item Price  -->
+                                    <Label
+                                        Grid.Column="3"
+                                        HorizontalOptions="End"
+                                        StyleClass="body"
+                                        Text="{Binding TotalPrice, Converter={StaticResource PriceConverter}}"
+                                        VerticalOptions="Center" />
+
+                                    <!--  Remove Button  -->
+                                    <Border
+                                        Grid.Column="4"
+                                        Padding="8"
+                                        Background="Transparent"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0">
+                                        <Label
+                                            FontSize="16"
+                                            Text="🗑️"
+                                            VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!--  Cart Summary  -->
+                <Grid
+                    Grid.Row="2"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                    RowSpacing="8">
+
+                    <!--  Subtotal  -->
+                    <Grid
+                        Grid.Row="0"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                        <Label
+                            Grid.Column="0"
+                            StyleClass="body"
+                            Text="Subtotal"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            StyleClass="body"
+                            Text="{Binding CartSubtotal, Converter={StaticResource PriceConverter}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <!--  Discount  -->
+                    <Grid
+                        Grid.Row="1"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                        <Label
+                            Grid.Column="0"
+                            StyleClass="body"
+                            Text="Discount"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            BackgroundColor="{StaticResource Secondary}"
+                            HeightRequest="35"
+                            HorizontalTextAlignment="Center"
+                            Placeholder="0"
+                            Text="{Binding DiscountPercentage}"
+                            WidthRequest="80" />
+                    </Grid>
+
+                    <!--  Tax  -->
+                    <Grid
+                        Grid.Row="2"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                        <Label
+                            Grid.Column="0"
+                            StyleClass="caption"
+                            Text="Tax (10%)"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            StyleClass="caption"
+                            Text="{Binding CartTax, Converter={StaticResource PriceConverter}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <!--  Divider  -->
+                    <BoxView
+                        Grid.Row="3"
+                        Margin="0,8"
+                        BackgroundColor="{StaticResource Border}"
+                        HeightRequest="1" />
+
+                    <!--  Total  -->
+                    <Grid
+                        Grid.Row="4"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10">
+                        <Label
+                            Grid.Column="0"
+                            StyleClass="h3"
+                            Text="Total"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            StyleClass="h3"
+                            Text="{Binding CartTotal, Converter={StaticResource PriceConverter}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <!--  Complete Sale Button  -->
+                    <Button
+                        Grid.Row="5"
+                        Margin="0,15,0,0"
+                        Padding="0,16"
+                        Background="{StaticResource Brush.ButtonGradient}"
+                        Command="{Binding CompleteSaleCommand}"
+                        CornerRadius="22"
+                        FontFamily="NexaHeavy"
+                        FontSize="16"
+                        IsEnabled="{Binding HasItemsInCart}"
+                        Shadow="{StaticResource Sh.CyanMd}"
+                        Text="Complete Sale 💳"
+                        TextColor="White" />
+                </Grid>
+            </Grid>
+        </Border>
 
     </Grid>
 </ContentPage>
+
+
+

@@ -61,15 +61,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Bogus" Version="35.6.5" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.10" />
+		<PackageReference Include="Syncfusion.Maui.Core" Version="31.2.5" />
+		<PackageReference Include="Syncfusion.Maui.Toolkit" Version="1.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Controls\" />
-	  <Folder Include="Converters\" />
 	</ItemGroup>
 
 	<ItemGroup>
