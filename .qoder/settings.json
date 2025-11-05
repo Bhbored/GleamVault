@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(!C:\\Users\\Bhbored\\Documents\\C#\\Maui\\GleamVault/**)",
+      "Edit(!C:\\Users\\Bhbored\\Documents\\C#\\Maui\\GleamVault/**)"
+    ],
+    "allow": [
+      "Read(C:\\Users\\Bhbored\\Documents\\C#\\Maui\\GleamVault/**)",
+      "Edit(C:\\Users\\Bhbored\\Documents\\C#\\Maui\\GleamVault/**)"
+    ]
+  },
+  "memoryImport": {},
+  "monitoring": {}
+}

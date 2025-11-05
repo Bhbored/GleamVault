@@ -1,9 +1,19 @@
+using GleamVault.MVVM.ViewModels;
+
 namespace GleamVault.MVVM.Views;
 
 public partial class HomePage : ContentPage
 {
-	public HomePage()
-	{
-		InitializeComponent();
-	}
+
+    public HomePage(HomeVM vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
+    protected async override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is HomeVM vm)
+            await vm.LoadDataAsync();
+    }
 }

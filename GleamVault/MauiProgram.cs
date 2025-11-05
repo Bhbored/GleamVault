@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using GleamVault.Services;
+using Microsoft.Extensions.Logging;
 
 namespace GleamVault
 {
@@ -9,16 +11,17 @@ namespace GleamVault
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Nexa-ExtraLight.ttf", "NexaLight");
+                    fonts.AddFont("Nexa-Heavy.ttf", "NexaHeavy");
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
-
+            builder.Services.RegisterDependencies();
             return builder.Build();
         }
     }
