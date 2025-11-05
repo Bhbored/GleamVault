@@ -44,19 +44,19 @@
     <!--  ===== Shadows =====  -->
     <Shadow
         x:Key="Sh.CyanSm"
-        Brush="{StaticResource Brush.HeaderGradient}"
+        Brush="{StaticResource Brush.ButtonGradient}"
         Opacity="0.16"
         Radius="5"
         Offset="0,05" />
     <Shadow
         x:Key="Sh.CyanMd"
-        Brush="{StaticResource Brush.HeaderGradient}"
+        Brush="{StaticResource Brush.ButtonGradient}"
         Opacity="0.18"
         Radius="20"
         Offset="0,10" />
     <Shadow
         x:Key="Sh.CyanLg"
-        Brush="{StaticResource Brush.HeaderGradient}"
+        Brush="{StaticResource Brush.ButtonGradient}"
         Opacity="0.24"
         Radius="28"
         Offset="0,14" />
@@ -133,7 +133,81 @@
 
 
     <!--#region Home-->
+    <!--  Surfaces / cards  -->
+    <!--  Secondary / ghost button  -->
+    <Style Class="btn-ghost" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="10,8" />
+    </Style>
 
+
+    <!--  Filter chip  -->
+    <Style Class="chip" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Secondary}" />
+        <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+
+    <!--  Search field  -->
+    <Style Class="search" TargetType="SearchBar">
+        <Setter Property="BackgroundColor" Value="{StaticResource Secondary}" />
+        <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+        <Setter Property="CancelButtonColor" Value="{StaticResource TextLight}" />
+        <Setter Property="HeightRequest" Value="44" />
+    </Style>
+
+
+    <!--  Small icon bubble  -->
+    <Style Class="icon-circle" TargetType="Border">
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="9999" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource Secondary}" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="Shadow" Value="{StaticResource Sh.CyanSm}" />
+    </Style>
+
+
+    <!--  Quantity steppers  -->
+    <Style Class="qty-btn" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="WidthRequest" Value="34" />
+        <Setter Property="HeightRequest" Value="34" />
+    </Style>
+
+
+    <!--  Price label (uses your fonts; just sizing)  -->
+    <Style Class="price" TargetType="Label">
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+    </Style>
+
+
+    <!--  Image holder for product cards  -->
+    <Style Class="image-holder" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBg}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="StrokeShape">
+            <Setter.Value>
+                <RoundRectangle CornerRadius="14" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <!--#endregion-->

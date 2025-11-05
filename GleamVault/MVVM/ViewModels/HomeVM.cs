@@ -17,6 +17,15 @@ namespace GleamVault.MVVM.ViewModels
         #region properties
         [ObservableProperty]
         private ObservableCollection<Product> _allProducts = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Product> _filteredProducts = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Product> _cartItems = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Category> _allCategories = new();
         #endregion
 
         #region fields
@@ -32,8 +41,10 @@ namespace GleamVault.MVVM.ViewModels
         public async Task LoadDataAsync()
         {
             AllProducts.Clear();
-            await Task.Delay(500);
-            
+            AllCategories.Clear();
+            await Task.Delay(100);
+            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
 
         }
         #endregion
