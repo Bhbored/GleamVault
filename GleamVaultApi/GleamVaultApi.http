@@ -1,0 +1,6 @@
+@GleamVaultApi_HostAddress = http://localhost:5244
+
+GET {{GleamVaultApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
