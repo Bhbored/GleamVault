@@ -12,6 +12,8 @@ namespace Shared.Models
         public Guid TransactionId { get; set; }
         public Guid ProductId { get; set; }   
         public int Quantity { get; set; }
-        public decimal UnitPriceAtSale { get; set; }
+        public decimal UnitPrice { get; set; } = 0;
+        public decimal UnitCost { get; set; } = 0;
+
     }
 }
