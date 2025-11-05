@@ -1,6 +1,7 @@
 ﻿using GleamVaultApi.DAL.Contracts;
 using GleamVaultApi.DB;
 using Shared.Models;
+using Category = GleamVaultApi.DB.Category;
 
 namespace GleamVaultApi.DAL.Services
 {

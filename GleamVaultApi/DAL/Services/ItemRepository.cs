@@ -2,6 +2,7 @@
 using GleamVaultApi.DB;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
+using Product = GleamVaultApi.DB.Product;
 
 namespace GleamVaultApi.DAL.Services
 {

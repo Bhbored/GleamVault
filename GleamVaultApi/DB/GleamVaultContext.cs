@@ -136,6 +136,11 @@ namespace GleamVaultApi.DB
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100);
+                entity.Property(e => e.DiscountValue)
+                   .HasColumnType("real")
+                   .HasDefaultValue(0f) 
+                   .IsRequired(false);
+
 
                 entity.HasOne(d => d.CreatedByUser)
                     .WithMany(p => p.Transaction)

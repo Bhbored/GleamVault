@@ -18,6 +18,7 @@ namespace GleamVaultApi.DB
 
         [Required]
         public float TotalAmount { get; set; }
+        public float? DiscountValue { get; set; } = 0;
 
         
         public SaleChannel? Channel { get; set; }
