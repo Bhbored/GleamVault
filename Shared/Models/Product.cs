@@ -21,6 +21,7 @@ namespace Shared.Models
         public WeightUnit? WeightUnit { get; set; }//grams, carats, ounces, pennyweight, kilograms
         public float? Weight { get; set; }// eza kanet sa3at kermal haik nullable
         public float UnitPrice { get; set; }
+        public float OfferPrice { get; set; } = 0;
         public int CurrentStock { get; set; } = 0;
         public bool IsUniquePiece { get; set; } = false;
 
