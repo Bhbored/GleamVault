@@ -40,4 +40,12 @@ public partial class HomePage : ContentPage
         }
     }
 
+    private void CategoryCombo_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
+    {
+        if (BindingContext is HomeVM vm)
+        {
+            //vm.SelectedCategory = e.AddedItems?.FirstOrDefault() as Category;
+            vm.FilterProductsByCategory();
+        }
+    }
 }

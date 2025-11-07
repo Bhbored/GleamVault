@@ -73,7 +73,7 @@
             <Grid Grid.Row="1">
                 <Border
                     Padding="12,10"
-                    Background="White"
+                    Background="{StaticResource Brush.CardBgGradient}"
                     Shadow="{StaticResource Sh.CyanSm}"
                     StrokeShape="RoundRectangle 14"
                     StrokeThickness="0">
@@ -93,6 +93,7 @@
                             DropDownBackground="White"
                             DropDownItemHeight="72"
                             EnableAutoSize="True"
+                            HorizontalOptions="Fill"
                             ItemsSource="{Binding AllProducts}"
                             Placeholder="Search Product by Name..."
                             PlaceholderColor="Black"
@@ -101,7 +102,8 @@
                             SelectionMode="Multiple"
                             SelectionTextHighlightColor="LightGray"
                             Stroke="Transparent"
-                            TokensWrapMode="Wrap">
+                            TokensWrapMode="Wrap"
+                            VerticalOptions="Fill">
 
                             <editors:SfAutocomplete.ItemTemplate>
                                 <DataTemplate x:DataType="models:Product">
@@ -199,21 +201,83 @@
             <!--  Filters  -->
             <Grid
                 Grid.Row="2"
-                ColumnDefinitions="Auto,*,Auto"
+                ColumnDefinitions="Auto,*"
                 ColumnSpacing="15">
                 <HorizontalStackLayout Grid.Column="0" Spacing="10">
                     <Label
                         StyleClass="body"
                         Text="Category"
                         VerticalOptions="Center" />
-                    <Button
-                        Padding="16,8"
-                        StyleClass="chip"
-                        Text="Gold 18K" />
-                    <Button
-                        Padding="16,8"
-                        StyleClass="chip"
-                        Text="Necklaces" />
+                    <Border
+                        Padding="10,6"
+                        Background="{StaticResource Brush.CardBgGradient}"
+                        HorizontalOptions="Start"
+                        Shadow="{StaticResource Sh.CyanSm}"
+                        Stroke="{StaticResource Border}"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="1">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <!--  leading icon  -->
+                            <Image
+                                Grid.Column="0"
+                                HeightRequest="18"
+                                Source="filter.png"
+                                VerticalOptions="Center"
+                                WidthRequest="18" />
+
+                            <!--  modern dropdown  -->
+                            <editors:SfComboBox
+                                x:Name="CategoryCombo"
+                                Grid.Column="1"
+                                Background="Transparent"
+                                ClearButtonIconColor="Cyan"
+                                DisplayMemberPath="Name"
+                                DropDownBackground="White"
+                                DropDownIconColor="{StaticResource Primary}"
+                                EnableAutoSize="True"
+                                HorizontalOptions="Fill"
+                                IsEditable="False"
+                                ItemsSource="{Binding AllCategories}"
+                                MaxDropDownHeight="320"
+                                Placeholder="All categories"
+                                SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+                                SelectionChanged="CategoryCombo_SelectionChanged"
+                                SelectionMode="Single"
+                                Stroke="Transparent"
+                                TextColor="{StaticResource TextDark}"
+                                VerticalOptions="Fill"
+                                WidthRequest="180">
+
+                                <!--  dropdown rows  -->
+                                <editors:SfComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Category">
+                                        <Grid
+                                            Padding="8"
+                                            ColumnDefinitions="Auto,*"
+                                            ColumnSpacing="10">
+                                            <Border
+                                                Grid.Column="0"
+                                                Background="{Binding ., Converter={StaticResource CategoryColorConverter}}"
+                                                HeightRequest="12"
+                                                StrokeShape="RoundRectangle 999"
+                                                StrokeThickness="0"
+                                                WidthRequest="12" />
+                                            <Label
+                                                Grid.Column="1"
+                                                FontSize="14"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding Name}"
+                                                TextColor="{StaticResource TextDark}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </editors:SfComboBox.ItemTemplate>
+
+
+                            </editors:SfComboBox>
+                        </Grid>
+                    </Border>
+
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout
