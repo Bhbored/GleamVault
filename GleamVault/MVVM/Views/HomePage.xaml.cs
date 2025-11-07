@@ -32,4 +32,12 @@ public partial class HomePage : ContentPage
         if (ProductGridLayout.SpanCount != span)
             ProductGridLayout.SpanCount = span;
     }
+    private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
+    {
+        if (BindingContext is HomeVM vm)
+        {
+            vm.FilterProducts();
+        }
+    }
+
 }

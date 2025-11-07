@@ -27,13 +27,13 @@ namespace GleamVault.MVVM.ViewModels
         private float _cartTotal;
         private float _discountAmount;
         private bool _hasItemsInCart;
-
         private readonly Dictionary<Product, Product> _mapInventoryToCart = new();
         private readonly Dictionary<Product, Product> _mapCartToInventory = new();
         #endregion
 
 
         #region Properties
+        public IList<object> SelectedProducts { get; set; } = [];
         public ObservableCollection<Product> AllProducts
         {
             get => _allProducts;
@@ -45,7 +45,7 @@ namespace GleamVault.MVVM.ViewModels
             get => _filteredProducts;
             set { if (_filteredProducts == value) return; _filteredProducts = value; OnPropertyChanged(); }
         }
-
+      
         public ObservableCollection<Product> CartItems
         {
             get => _cartItems;
@@ -275,6 +275,32 @@ namespace GleamVault.MVVM.ViewModels
             }
             return clone;
         }
+        public void FilterProducts()
+        {
+            if (SelectedProducts.Count == 0)
+            {
+                FilteredProducts = new ObservableCollection<Product>(AllProducts);
+            }
+            else
+            {
+                var filteredList = new List<Product>();
+
+                foreach (var selectedItem in SelectedProducts)
+                {
+                    if (selectedItem is Product selectedProduct)
+                    {
+                        var matchingProduct = AllProducts.FirstOrDefault(p => p.Name == selectedProduct.Name);
+                        if (matchingProduct != null)
+                        {
+                            filteredList.Add(matchingProduct);
+                        }
+                    }
+                }
+
+                FilteredProducts = new ObservableCollection<Product>(filteredList);
+            }
+        }
+
         #endregion
 
 
@@ -282,6 +308,7 @@ namespace GleamVault.MVVM.ViewModels
         {
             AllProducts.Clear();
             AllCategories.Clear();
+            FilteredProducts.Clear();
             CartItems.Clear();
             _mapCartToInventory.Clear();
             _mapInventoryToCart.Clear();
@@ -290,6 +317,7 @@ namespace GleamVault.MVVM.ViewModels
             await Task.Delay(100);
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            FilteredProducts = new ObservableCollection<Product>(AllProducts);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
