@@ -1,25 +1,35 @@
 using GleamVault.MVVM.ViewModels;
-using Shared.Models;
 using Microsoft.Maui.Controls;
+using Shared.Models;
 
 namespace GleamVault.MVVM.Views;
 
 public partial class HomePage : ContentPage
 {
-
     public HomePage(HomeVM vm)
     {
         InitializeComponent();
         BindingContext = vm;
-       
     }
-    
+
     protected async override void OnAppearing()
     {
         base.OnAppearing();
         if (BindingContext is HomeVM vm)
             await vm.LoadDataAsync();
     }
-    
-    
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+        if (ProductGridLayout == null) return;
+        var span = width switch
+        {
+            < 900 => 2,
+            < 1300 => 3,
+            _ => 4
+        };
+        if (ProductGridLayout.SpanCount != span)
+            ProductGridLayout.SpanCount = span;
+    }
 }

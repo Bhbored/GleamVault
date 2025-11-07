@@ -7,6 +7,7 @@
     xmlns:conv="clr-namespace:GleamVault.Converters"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
     x:DataType="vm:HomeVM"
     Background="{StaticResource Brush.BackgroundGradient}">
@@ -29,7 +30,6 @@
             Grid.Row="0"
             Grid.ColumnSpan="2"
             HeightRequest="200">
-            <!--  Wave 1  -->
             <shapes:Path
                 Aspect="Fill"
                 Data="M0,0 L0,160 Q180,210 360,160 T720,160 L720,0 Z"
@@ -38,8 +38,6 @@
                 InputTransparent="True"
                 Opacity="1"
                 VerticalOptions="Fill" />
-
-            <!--  Subtle overlay wave for depth  -->
             <shapes:Path
                 Aspect="Fill"
                 Data="M0,0 L0,175 Q180,225 360,175 T720,175 L720,0 Z"
@@ -49,6 +47,7 @@
                 Opacity="0.12"
                 VerticalOptions="Fill" />
         </Grid>
+
         <!--  Header Content  -->
         <Grid
             Grid.Row="0"
@@ -58,7 +57,7 @@
             RowSpacing="15"
             VerticalOptions="Start">
 
-            <!--  Title Section  -->
+            <!--  Title  -->
             <VerticalStackLayout Grid.Row="0" Spacing="5">
                 <HorizontalStackLayout Spacing="8">
                     <Label
@@ -69,7 +68,7 @@
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
-            <!--  Search and Action Buttons  -->
+            <!--  Search  -->
             <Grid Grid.Row="1">
                 <SearchBar
                     Grid.Column="0"
@@ -77,13 +76,11 @@
                     StyleClass="search" />
             </Grid>
 
-            <!--  Filter Section  -->
+            <!--  Filters  -->
             <Grid
                 Grid.Row="2"
                 ColumnDefinitions="Auto,*,Auto"
                 ColumnSpacing="15">
-
-                <!--  Category Filters  -->
                 <HorizontalStackLayout Grid.Column="0" Spacing="10">
                     <Label
                         StyleClass="body"
@@ -99,7 +96,6 @@
                         Text="Necklaces" />
                 </HorizontalStackLayout>
 
-                <!--  Additional Filters  -->
                 <HorizontalStackLayout
                     Grid.Column="1"
                     HorizontalOptions="Start"
@@ -115,52 +111,53 @@
                 </HorizontalStackLayout>
             </Grid>
         </Grid>
-        <!--  Product Grid CollectionView  -->
+
+        <!--  Product Grid (SfListView)  -->
         <Grid Grid.Row="1" Grid.Column="0">
             <Border
                 Margin="10"
                 Background="{StaticResource Brush.BackgroundGradient}"
+                HorizontalOptions="Fill"
                 Shadow="{StaticResource Sh.CyanLg}"
                 StrokeShape="RoundRectangle 25"
-                StrokeThickness="0">
-                <CollectionView
-                    Grid.Column="0"
-                    Margin="10,10,10,0"
-                    ItemsSource="{Binding AllProducts}"
-                    SelectionMode="None"
-                    VerticalScrollBarVisibility="Never">
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout
-                            Orientation="Vertical"
-                            Span="3"
-                            VerticalItemSpacing="10" />
-                    </CollectionView.ItemsLayout>
+                StrokeThickness="0"
+                VerticalOptions="Fill">
 
-                    <CollectionView.ItemTemplate>
+                <syncfusion:SfListView
+                    x:Name="ProductsList"
+                    Margin="10,10,10,0"
+                    AutoFitMode="Height"
+                    ItemSpacing="10"
+                    ItemsSource="{Binding AllProducts}"
+                    SelectionMode="None">
+
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="3" />
+                    </syncfusion:SfListView.ItemsLayout>
+
+                    <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Product">
                             <Border
                                 Padding="0"
                                 Background="{StaticResource Brush.CardBgGradient}"
+                                MinimumHeightRequest="340"
                                 Shadow="{StaticResource Sh.CyanLg}"
                                 Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
                                 StrokeShape="RoundRectangle 10"
-                                StrokeThickness="1"
-                                WidthRequest="320">
+                                StrokeThickness="1">
 
                                 <Grid
                                     Padding="12"
                                     RowDefinitions="240,Auto,Auto,Auto"
                                     RowSpacing="4">
 
-                                    <!--  Product Image with Badges  -->
+                                    <!--  Image + badges  -->
                                     <Grid Grid.Row="0">
                                         <Border HeightRequest="240" StyleClass="image-holder">
                                             <Image Aspect="AspectFit" Source="{Binding ImageUrl}" />
                                         </Border>
 
-                                        <!--  Top Badges  -->
                                         <Grid Margin="8">
-                                            <!--  Left Side - Unique Badge  -->
                                             <Border
                                                 Padding="6,3"
                                                 Background="{StaticResource Warn}"
@@ -175,7 +172,6 @@
                                                     TextColor="White" />
                                             </Border>
 
-                                            <!--  Right Side - Hallmark Badge  -->
                                             <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start">
                                                 <Border
                                                     Padding="5"
@@ -193,7 +189,7 @@
                                                     </Grid>
                                                 </Border>
                                             </HorizontalStackLayout>
-                                            <!--  Category Badge - Bottom Left Corner  -->
+
                                             <Border
                                                 Padding="5"
                                                 Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
@@ -212,7 +208,7 @@
                                         </Grid>
                                     </Grid>
 
-                                    <!--  Product Name  -->
+                                    <!--  Name  -->
                                     <Label
                                         Grid.Row="1"
                                         Margin="0,2,0,0"
@@ -221,13 +217,12 @@
                                         StyleClass="h4"
                                         Text="{Binding Name}" />
 
-                                    <!--  Weight & Stock on same row  -->
+                                    <!--  Weight & Stock  -->
                                     <Grid
                                         Grid.Row="2"
                                         Margin="0,1,0,0"
                                         ColumnDefinitions="*,*"
                                         ColumnSpacing="8">
-                                        <!--  Weight  -->
                                         <Label
                                             Grid.Column="0"
                                             StyleClass="body"
@@ -240,7 +235,6 @@
                                             </Label.FormattedText>
                                         </Label>
 
-                                        <!--  Stock - Modern inline display  -->
                                         <Label
                                             Grid.Column="1"
                                             HorizontalOptions="End"
@@ -255,7 +249,7 @@
                                         </Label>
                                     </Grid>
 
-                                    <!--  Price and Add to Cart  -->
+                                    <!--  Price + Add  -->
                                     <Grid
                                         Grid.Row="3"
                                         Margin="0,2,0,0"
@@ -281,13 +275,12 @@
                                 </Grid>
                             </Border>
                         </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
             </Border>
-
         </Grid>
-        <!--  Cart Section - Full Height  -->
-        <!--  Cart Section - Full Height  -->
+
+        <!--  Cart Section  -->
         <Border
             Grid.Row="0"
             Grid.RowSpan="2"
@@ -301,7 +294,6 @@
 
             <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15">
 
-                <!--  Cart Title with Reset Button  -->
                 <Grid
                     Grid.Row="0"
                     ColumnDefinitions="*,Auto"
@@ -311,8 +303,6 @@
                         StyleClass="h2"
                         Text="Current Sale"
                         VerticalOptions="Center" />
-
-                    <!--  Reset Cart Button  -->
                     <ImageButton
                         Grid.Column="1"
                         BackgroundColor="Transparent"
@@ -323,13 +313,19 @@
                         WidthRequest="30" />
                 </Grid>
 
-                <!--  Cart Items List with CollectionView  -->
-                <CollectionView
+                <!--  Cart Items (SfListView)  -->
+                <syncfusion:SfListView
+                    x:Name="CartList"
                     Grid.Row="1"
+                    AutoFitMode="Height"
                     ItemsSource="{Binding CartItems}"
-                    VerticalOptions="Fill">
+                    SelectionBackground="Transparent"
+                    SelectionMode="None">
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:LinearLayout />
+                    </syncfusion:SfListView.ItemsLayout>
 
-                    <CollectionView.EmptyView>
+                    <syncfusion:SfListView.EmptyView>
                         <VerticalStackLayout
                             HorizontalOptions="Center"
                             Spacing="20"
@@ -345,11 +341,9 @@
                                 StyleClass="h4"
                                 Text="Cart is Empty" />
                         </VerticalStackLayout>
-                    </CollectionView.EmptyView>
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
+                    </syncfusion:SfListView.EmptyView>
+
+                    <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="models:Product">
                             <Border
                                 Margin="0,0,0,10"
@@ -360,14 +354,10 @@
                                 StrokeThickness="0">
 
                                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
-
-                                    <!--  Top Row: Image & Details with Delete Button  -->
                                     <Grid
                                         Grid.Row="0"
                                         ColumnDefinitions="Auto,*,Auto"
                                         ColumnSpacing="12">
-
-                                        <!--  Product Image  -->
                                         <Border
                                             Grid.Column="0"
                                             Background="{StaticResource Secondary}"
@@ -378,7 +368,6 @@
                                             <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
                                         </Border>
 
-                                        <!--  Product Details  -->
                                         <VerticalStackLayout
                                             Grid.Column="1"
                                             Spacing="6"
@@ -390,7 +379,6 @@
                                                 MaxLines="2"
                                                 Text="{Binding Name}"
                                                 TextColor="{StaticResource TextDark}" />
-
                                             <HorizontalStackLayout Spacing="6">
                                                 <Label
                                                     FontSize="13"
@@ -401,7 +389,6 @@
                                                     Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}"
                                                     TextColor="{StaticResource TextLight}" />
                                             </HorizontalStackLayout>
-
                                             <Label
                                                 FontFamily="NexaHeavy"
                                                 FontSize="15"
@@ -409,7 +396,6 @@
                                                 TextColor="{StaticResource Primary}" />
                                         </VerticalStackLayout>
 
-                                        <!--  Delete Button - Top Right  -->
                                         <Border
                                             Grid.Column="2"
                                             Padding="10"
@@ -431,50 +417,42 @@
                                         </Border>
                                     </Grid>
 
-                                    <!--  Divider  -->
                                     <BoxView
                                         Grid.Row="1"
                                         BackgroundColor="{StaticResource Border}"
                                         HeightRequest="1"
                                         Opacity="0.5" />
 
-                                    <!--  Bottom Row: Quantity Controls  -->
                                     <Grid
                                         Grid.Row="2"
                                         ColumnDefinitions="Auto,*"
                                         ColumnSpacing="10">
-
                                         <Label
                                             Grid.Column="0"
                                             FontSize="14"
                                             Text="Quantity:"
                                             TextColor="{StaticResource TextLight}"
                                             VerticalOptions="Center" />
-
                                         <Grid
                                             Grid.Column="1"
                                             ColumnDefinitions="Auto,Auto,Auto"
                                             ColumnSpacing="8"
                                             HorizontalOptions="Start">
-
                                             <Button
                                                 Grid.Column="0"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.DecreaseQuantityCommand}"
                                                 CommandParameter="{Binding .}"
                                                 StyleClass="qty-btn"
                                                 Text="-" />
-
                                             <Label
-                                                x:Name="QuantityLabel"
                                                 Grid.Column="1"
                                                 FontFamily="NexaHeavy"
                                                 FontSize="15"
                                                 HorizontalTextAlignment="Center"
-                                                Text="1"
+                                                Text="{Binding CurrentStock}"
                                                 TextColor="{StaticResource TextDark}"
                                                 VerticalOptions="Center"
                                                 WidthRequest="40" />
-
                                             <Button
                                                 Grid.Column="2"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.IncreaseQuantityCommand}"
@@ -486,16 +464,14 @@
                                 </Grid>
                             </Border>
                         </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
 
-                <!--  Cart Summary  -->
+                <!--  Summary  -->
                 <Grid
                     Grid.Row="2"
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                     RowSpacing="10">
-
-                    <!--  Subtotal  -->
                     <Grid
                         Grid.Row="0"
                         ColumnDefinitions="*,Auto"
@@ -512,7 +488,6 @@
                             VerticalOptions="Center" />
                     </Grid>
 
-                    <!--  Discount - Fixed Amount  -->
                     <Grid
                         Grid.Row="1"
                         ColumnDefinitions="*,Auto"
@@ -522,7 +497,6 @@
                             StyleClass="body"
                             Text="Discount"
                             VerticalOptions="Center" />
-
                         <Entry
                             Grid.Column="1"
                             BackgroundColor="{StaticResource Secondary}"
@@ -534,14 +508,12 @@
                             WidthRequest="100" />
                     </Grid>
 
-                    <!--  Divider  -->
                     <BoxView
                         Grid.Row="2"
                         Margin="0,5"
                         BackgroundColor="{StaticResource Border}"
                         HeightRequest="1" />
 
-                    <!--  Total  -->
                     <Grid
                         Grid.Row="3"
                         ColumnDefinitions="*,Auto"
@@ -558,7 +530,6 @@
                             VerticalOptions="Center" />
                     </Grid>
 
-                    <!--  Complete Sale Button  -->
                     <Button
                         Grid.Row="4"
                         Margin="0,10,0,0"
@@ -578,6 +549,3 @@
 
     </Grid>
 </ContentPage>
-
-
-

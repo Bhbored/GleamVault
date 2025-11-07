@@ -1,4 +1,5 @@
-﻿using Shared.Models.Enums;
+﻿using PropertyChanged;
+using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Shared.Models
 {
+    [AddINotifyPropertyChangedInterface]
+
     public class Product
     {
         public Guid Id { get; set; }

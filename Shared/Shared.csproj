@@ -10,4 +10,8 @@
     <Folder Include="DTO%27S\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+  </ItemGroup>
+
 </Project>
