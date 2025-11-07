@@ -20,7 +20,7 @@ namespace GleamVault.Converters
                     "necklaces" => Color.FromArgb("#4ECDC4"),   // Teal
                     "earrings" => Color.FromArgb("#45B7D1"),    // Sky blue
                     "bracelets" => Color.FromArgb("#96CEB4"),   // Mint green
-                    "watches" => Color.FromArgb("#FFEAA7"),     // Light yellow
+                    "watches" => Color.FromArgb("#0389ff"),     // Light yellow
                     "brooches" => Color.FromArgb("#DDA0DD"),    // Plum
                     "cufflinks" => Color.FromArgb("#87CEEB"),   // Light sky blue
                     "anklets" => Color.FromArgb("#98FB98"),     // Pale green

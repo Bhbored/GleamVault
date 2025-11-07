@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
     xmlns:conv="clr-namespace:GleamVault.Converters"
     xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
     xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
@@ -64,10 +65,10 @@
             <!--  Title  -->
             <VerticalStackLayout Grid.Row="0" Spacing="5">
                 <HorizontalStackLayout Spacing="8">
-                    <Label
-                        StyleClass="h2"
-                        Text="💎"
-                        VerticalOptions="Center" />
+                    <Image
+                        HeightRequest="30"
+                        Source="diamond.png"
+                        WidthRequest="30" />
                     <Label StyleClass="h2" Text="Gleam &amp; Co." />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
@@ -364,6 +365,44 @@
 
                 </HorizontalStackLayout>
             </Grid>
+            <HorizontalStackLayout
+                Grid.Row="2"
+                HorizontalOptions="End"
+                VerticalOptions="Center">
+                <Border
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <buttons:SfSegmentedControl
+                        AutoScrollToSelectedSegment="False"
+                        CornerRadius="10"
+                        HorizontalOptions="End"
+                        MinimumWidthRequest="200"
+                        SelectedIndex="{Binding SortIndex, Mode=TwoWay}"
+                        SelectionChanged="SortSeg_SelectionChanged"
+                        SelectionMode="Single"
+                        ShowSeparator="False"
+                        Stroke="Transparent"
+                        VerticalOptions="Center"
+                        VisibleSegmentsCount="3">
+
+                        <buttons:SfSegmentedControl.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>A–Z</x:String>
+                                <x:String>Z–A</x:String>
+                                <x:String>None</x:String>
+                            </x:Array>
+
+                        </buttons:SfSegmentedControl.ItemsSource>
+                        <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                            <buttons:SelectionIndicatorSettings Background="{StaticResource Primary}" SelectionIndicatorPlacement="Fill" />
+                        </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                    </buttons:SfSegmentedControl>
+                </Border>
+
+            </HorizontalStackLayout>
+
+
         </Grid>
 
         <!--  Product Grid (SfListView)  -->
@@ -386,7 +425,7 @@
                     SelectionMode="None">
 
                     <syncfusion:SfListView.ItemsLayout>
-                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="3" />
+                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="4" />
                     </syncfusion:SfListView.ItemsLayout>
 
                     <syncfusion:SfListView.ItemTemplate>
@@ -754,12 +793,12 @@
                         <Entry
                             Grid.Column="1"
                             BackgroundColor="{StaticResource Secondary}"
-                            HeightRequest="35"
+                            HeightRequest="25"
                             HorizontalTextAlignment="Center"
                             Keyboard="Numeric"
                             Placeholder="0.00"
                             Text="{Binding DiscountAmount}"
-                            WidthRequest="100" />
+                            WidthRequest="70" />
                     </Grid>
 
                     <BoxView

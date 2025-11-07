@@ -9,13 +9,19 @@
     <!--  Flyout Header (Optional)  -->
     <Shell.FlyoutHeader>
         <Grid Background="{StaticResource Brush.BackgroundGradient}" HeightRequest="150">
-            <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                <Image />
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="15"
+                VerticalOptions="Center">
+                <Image
+                    HeightRequest="30"
+                    Source="diamond.png"
+                    WidthRequest="30" />
                 <Label
                     FontFamily="NexaHeavy"
                     FontSize="18"
                     HorizontalOptions="Center"
-                    Text="POS System"
+                    Text="Gleam &amp; Co."
                     TextColor="Black"
                     VerticalOptions="Center" />
             </HorizontalStackLayout>

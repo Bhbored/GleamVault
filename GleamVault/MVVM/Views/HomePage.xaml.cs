@@ -1,7 +1,9 @@
 using GleamVault.MVVM.ViewModels;
 using Microsoft.Maui.Controls;
 using Shared.Models;
-
+using Syncfusion.Maui.DataSource;
+using System.ComponentModel;
+using ListSortDirection = Syncfusion.Maui.DataSource.ListSortDirection;
 namespace GleamVault.MVVM.Views;
 
 public partial class HomePage : ContentPage
@@ -54,5 +56,14 @@ public partial class HomePage : ContentPage
         {
             vm.FilterProductsByCategory();
         }
+    }
+
+    private void SortSeg_SelectionChanged(object sender, Syncfusion.Maui.Buttons.SelectionChangedEventArgs e)
+    {
+        if (BindingContext is HomeVM vm)
+        {
+            vm.SortNow();
+        }
+
     }
 }
