@@ -44,7 +44,14 @@ public partial class HomePage : ContentPage
     {
         if (BindingContext is HomeVM vm)
         {
-            //vm.SelectedCategory = e.AddedItems?.FirstOrDefault() as Category;
+            vm.FilterProductsByCategory();
+        }
+    }
+
+    private void HallmarkCombo_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
+    {
+        if (BindingContext is HomeVM vm)
+        {
             vm.FilterProductsByCategory();
         }
     }

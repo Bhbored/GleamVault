@@ -1,4 +1,5 @@
 ﻿using GleamVault.Utility;
+using PropertyChanged;
 using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace GleamVault.Converters
 {
+    [AddINotifyPropertyChangedInterface]
+
     public class HallmarkTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

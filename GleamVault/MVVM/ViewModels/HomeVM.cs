@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using GleamVault.TestData;
 using PropertyChanged;
 using Shared.Models;
+using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,13 +29,35 @@ namespace GleamVault.MVVM.ViewModels
         private float _discountAmount;
         private bool _hasItemsInCart;
         private Category selectedCategory = new();
+        private ObservableCollection<HallmarkType> allHallmarks = new();
         private readonly Dictionary<Product, Product> _mapInventoryToCart = new();
         private readonly Dictionary<Product, Product> _mapCartToInventory = new();
+        private HallmarkType? selectedHallmark;
         #endregion
 
 
         #region Properties
         public IList<object> SelectedProducts { get; set; } = [];
+        public ObservableCollection<HallmarkType> AllHallmarks
+        {
+            get => allHallmarks;
+            set
+            {
+                allHallmarks = value;
+                OnPropertyChanged();
+            }
+        }
+        public HallmarkType? SelectedHallmark
+        {
+            get => selectedHallmark;
+            set
+            {
+                if (selectedHallmark == value) return;
+                selectedHallmark = value;
+                OnPropertyChanged();
+                FilterProductsByCategory();
+            }
+        }
         public Category SelectedCategory
         {
             get => selectedCategory;
@@ -57,7 +80,7 @@ namespace GleamVault.MVVM.ViewModels
             get => _filteredProducts;
             set { if (_filteredProducts == value) return; _filteredProducts = value; OnPropertyChanged(); }
         }
-      
+
         public ObservableCollection<Product> CartItems
         {
             get => _cartItems;
@@ -314,23 +337,29 @@ namespace GleamVault.MVVM.ViewModels
         }
         public void FilterProductsByCategory()
         {
-            if (SelectedCategory == null)
+            IEnumerable<Product> query = AllProducts;
+
+            if (SelectedCategory != null)
             {
-                ReplaceCollection(FilteredProducts, AllProducts);
-                return;
+                var catId = SelectedCategory.Id;
+                var catName = SelectedCategory.Name;
+
+                query = query.Where(p =>
+                    p.CategoryId == catId ||
+                    (p.Category?.Id == catId) ||
+                    (p.Category?.Name?.Equals(catName, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
-           
-            var catId = SelectedCategory.Id; 
-            var catName = SelectedCategory.Name;
+            if (SelectedHallmark is HallmarkType hm)
+            {
+                query = query.Where(p => p.Hallmark == hm);
+            }
 
-            var results = AllProducts.Where(p =>
-                (p.CategoryId == catId) ||
-                (p.Category?.Id == catId) ||
-                (p.Category?.Name?.Equals(catName, StringComparison.OrdinalIgnoreCase) ?? false));
-
-            ReplaceCollection(FilteredProducts, results);
+            ReplaceCollection(FilteredProducts, query);
         }
+
+      
+
 
         private static void ReplaceCollection(ObservableCollection<Product> target, IEnumerable<Product> source)
         {
@@ -338,10 +367,16 @@ namespace GleamVault.MVVM.ViewModels
             foreach (var item in source)
                 target.Add(item);
         }
+        public void GetHallmarks()
+        {
+            AllHallmarks.Clear();
+            foreach (var v in Enum.GetValues<HallmarkType>())
+                AllHallmarks.Add(v);
+
+        }
         #endregion
 
-
-        public async Task LoadDataAsync()
+        public void ClearALL()
         {
             AllProducts.Clear();
             AllCategories.Clear();
@@ -349,9 +384,15 @@ namespace GleamVault.MVVM.ViewModels
             CartItems.Clear();
             _mapCartToInventory.Clear();
             _mapInventoryToCart.Clear();
+            AllHallmarks.Clear();
             DiscountAmount = 0;
-            RefreshCart();
             SelectedCategory = new Category();
+        }
+        public async Task LoadDataAsync()
+        {
+            ClearALL();
+            RefreshCart();
+            GetHallmarks();
             await Task.Delay(100);
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));

@@ -6,6 +6,7 @@
     xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
     xmlns:conv="clr-namespace:GleamVault.Converters"
     xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
     xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
@@ -22,6 +23,8 @@
         <conv:StockStatusColorConverter x:Key="StockStatusColorConverter" />
         <conv:StockStatusTextConverter x:Key="StockStatusTextConverter" />
         <conv:StockToBoolConverter x:Key="StockToBoolConverter" />
+        <conv:HallmarkColorConverter x:Key="HallmarkColorConverter" />
+
     </ContentPage.Resources>
 
     <Grid ColumnDefinitions="75*,25*" RowDefinitions="Auto,*">
@@ -93,6 +96,7 @@
                             DropDownBackground="White"
                             DropDownItemHeight="72"
                             EnableAutoSize="True"
+                            FontFamily="NexaLight"
                             HorizontalOptions="Fill"
                             ItemsSource="{Binding AllProducts}"
                             Placeholder="Search Product by Name..."
@@ -235,11 +239,12 @@
                                 DropDownBackground="White"
                                 DropDownIconColor="{StaticResource Primary}"
                                 EnableAutoSize="True"
+                                FontFamily="NexaLight"
                                 HorizontalOptions="Fill"
                                 IsEditable="False"
                                 ItemsSource="{Binding AllCategories}"
                                 MaxDropDownHeight="320"
-                                Placeholder="All categories"
+                                Placeholder="All Categories"
                                 SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
                                 SelectionChanged="CategoryCombo_SelectionChanged"
                                 SelectionMode="Single"
@@ -264,6 +269,7 @@
                                                 WidthRequest="12" />
                                             <Label
                                                 Grid.Column="1"
+                                                FontFamily="NexaLight"
                                                 FontSize="14"
                                                 LineBreakMode="TailTruncation"
                                                 MaxLines="1"
@@ -288,10 +294,74 @@
                         StyleClass="body"
                         Text="Hallmark"
                         VerticalOptions="Center" />
-                    <Button
-                        Padding="16,8"
-                        StyleClass="chip"
-                        Text="Sterlng 925" />
+                    <Border
+                        Padding="10,6"
+                        Background="{StaticResource Brush.CardBgGradient}"
+                        HorizontalOptions="Start"
+                        Shadow="{StaticResource Sh.CyanSm}"
+                        Stroke="{StaticResource Border}"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="1">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                            <!--  leading icon  -->
+                            <Image
+                                Grid.Column="0"
+                                HeightRequest="25"
+                                Source="karat.png"
+                                VerticalOptions="Center"
+                                WidthRequest="25" />
+
+                            <!--  Hallmark dropdown (enum)  -->
+                            <editors:SfComboBox
+                                x:Name="HallmarkCombo"
+                                Grid.Column="1"
+                                Background="Transparent"
+                                ClearButtonIconColor="Cyan"
+                                DropDownBackground="White"
+                                DropDownIconColor="{StaticResource Primary}"
+                                DropDownItemHeight="44"
+                                EnableAutoSize="True"
+                                FontFamily="NexaLight"
+                                IsEditable="False"
+                                ItemsSource="{Binding AllHallmarks}"
+                                Placeholder="All Hallmarks"
+                                SelectedItem="{Binding SelectedHallmark, Mode=TwoWay}"
+                                Stroke="Transparent"
+                                TextColor="{StaticResource TextDark}"
+                                WidthRequest="180">
+
+                                <!--  each row shows converter output  -->
+                                <editors:SfComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="enums:HallmarkType">
+                                        <Grid
+                                            Padding="8"
+                                            ColumnDefinitions="Auto,*"
+                                            ColumnSpacing="10">
+                                            <Border
+                                                Grid.Column="0"
+                                                Background="{Binding Converter={StaticResource HallmarkColorConverter}}"
+                                                HeightRequest="12"
+                                                StrokeShape="RoundRectangle 999"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center"
+                                                WidthRequest="12" />
+                                            <Label
+                                                Grid.Column="1"
+                                                FontFamily="NexaLight"
+                                                FontSize="14"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding Converter={StaticResource HallmarkTypeConverter}}"
+                                                TextColor="{StaticResource TextDark}"
+                                                VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </editors:SfComboBox.ItemTemplate>
+                            </editors:SfComboBox>
+
+                        </Grid>
+                    </Border>
+
                 </HorizontalStackLayout>
             </Grid>
         </Grid>
