@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GleamVault.MVVM.Views.ProductPage"
-             Title="ProductPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    x:Class="GleamVault.MVVM.Views.ProductPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    Title="ProductPage">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" HeightRequest="240">
+            <!--  Wave 1  -->
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,160 Q180,210 360,160 T720,160 L720,0 Z"
+                Fill="{StaticResource Brush.HeaderGradient}"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="1"
+                VerticalOptions="Fill" />
+
+            <!--  Subtle overlay wave for depth  -->
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,175 Q180,225 360,175 T720,175 L720,0 Z"
+                Fill="White"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="0.12"
+                VerticalOptions="Fill" />
+        </Grid>
+    </Grid>
 </ContentPage>

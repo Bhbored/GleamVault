@@ -5,12 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
     Title="InventoryPage">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-        <!--  Background Wave  -->
+
+    <Grid RowDefinitions="Auto,*">
         <Grid Grid.Row="0" HeightRequest="240">
             <!--  Wave 1  -->
             <shapes:Path
@@ -32,5 +28,6 @@
                 Opacity="0.12"
                 VerticalOptions="Fill" />
         </Grid>
-    </VerticalStackLayout>
+    </Grid>
+
 </ContentPage>

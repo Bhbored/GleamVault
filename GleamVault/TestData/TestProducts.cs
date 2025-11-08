@@ -198,5 +198,124 @@ namespace GleamVault.TestData
             };
             return categories;
         }
+
+        public static List<Customer> GetCustomers()
+        {
+            var testCustomers = new List<Customer>
+{
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "John Smith",
+        PhoneNumber = "+1-555-0101",
+        Email = "john.smith@email.com",
+        Address = "123 Main St, New York, NY 10001",
+        DateOfBirth = new DateTime(1985, 3, 15),
+        Notes = "Preferred customer, likes email communication",
+        LoyaltyPoints = 150
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Sarah Johnson",
+        PhoneNumber = "+1-555-0102",
+        Email = "sarah.j@email.com",
+        Address = "456 Oak Avenue, Los Angeles, CA 90210",
+        DateOfBirth = new DateTime(1990, 7, 22),
+        Notes = "Frequent buyer, prefers text messages",
+        LoyaltyPoints = 275
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Michael Chen",
+        PhoneNumber = "+1-555-0103",
+        Email = "michael.chen@email.com",
+        Address = "789 Pine Road, Chicago, IL 60616",
+        DateOfBirth = new DateTime(1982, 11, 8),
+        Notes = "VIP customer, handle with care",
+        LoyaltyPoints = 500
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Emily Davis",
+        PhoneNumber = "+1-555-0104",
+        Email = null, // Customer prefers not to share email
+        Address = "321 Elm Street, Miami, FL 33101",
+        DateOfBirth = null, // Date of birth not provided
+        Notes = "New customer",
+        LoyaltyPoints = 25
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Robert Wilson",
+        PhoneNumber = null, // No phone number provided
+        Email = "robert.wilson@email.com",
+        Address = "654 Maple Drive, Seattle, WA 98101",
+        DateOfBirth = new DateTime(1978, 12, 3),
+        Notes = "Corporate account",
+        LoyaltyPoints = 180
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Lisa Martinez",
+        PhoneNumber = "+1-555-0106",
+        Email = "lisa.martinez@email.com",
+        Address = null, // Address not provided
+        DateOfBirth = new DateTime(1995, 5, 18),
+        Notes = "Student discount applied",
+        LoyaltyPoints = 75
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "David Brown",
+        PhoneNumber = "+1-555-0107",
+        Email = "david.brown@email.com",
+        Address = "987 Cedar Lane, Boston, MA 02108",
+        DateOfBirth = new DateTime(1988, 9, 30),
+        Notes = "Returns items frequently",
+        LoyaltyPoints = 45
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Jennifer Lee",
+        PhoneNumber = "+1-555-0108",
+        Email = "jennifer.lee@email.com",
+        Address = "147 Walnut Avenue, San Francisco, CA 94102",
+        DateOfBirth = new DateTime(1992, 2, 14),
+        Notes = "Loyal customer for 5 years",
+        LoyaltyPoints = 650
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Thomas Anderson",
+        PhoneNumber = "+1-555-0109",
+        Email = "thomas.a@email.com",
+        Address = "258 Spruce Court, Austin, TX 73301",
+        DateOfBirth = null,
+        Notes = "Bulk order customer",
+        LoyaltyPoints = 320
+    },
+    new Customer
+    {
+        Id = Guid.NewGuid(),
+        FullName = "Amanda Taylor",
+        PhoneNumber = null,
+        Email = null,
+        Address = "369 Birch Road, Denver, CO 80202",
+        DateOfBirth = new DateTime(1987, 6, 9),
+        Notes = "Minimal contact information provided",
+        LoyaltyPoints = 10
+    }
+};
+
+            return testCustomers;
+        }
     }
 }

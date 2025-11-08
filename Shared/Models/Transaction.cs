@@ -9,9 +9,10 @@ namespace Shared.Models
 {
     public class Transaction
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public TransactionType Type { get; set; }
         public float TotalAmount { get; set; }
+        public float SubTotalAmount { get; set; }//added this anwaryooo
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
         public Guid? CustomerId { get; set; }

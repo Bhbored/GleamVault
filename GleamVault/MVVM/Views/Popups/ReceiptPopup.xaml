@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.ReceiptPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:GleamVault.MVVM.ViewModels"
+    Padding="10"
+    x:DataType="viewmodels:HomeVM"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    HeightRequest="350"
+    WidthRequest="600">
+
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+
+        <!--  Header  -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="Auto,*"
+            ColumnSpacing="12">
+            <Image
+                Grid.Column="0"
+                HeightRequest="36"
+                Source="success.png"
+                WidthRequest="36" />
+            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                <Label StyleClass="h4" Text="Sale recorded successfully" />
+                <Label
+                    FontSize="12"
+                    Text="{Binding CompletedAt, StringFormat='{}{0:dddd, MMM dd • HH:mm}'}"
+                    TextColor="{StaticResource TextLight}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!--  Toggles  -->
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,Auto,*"
+            ColumnSpacing="16">
+            <!--  Saved customer  -->
+            <Border
+                Padding="10"
+                Background="{StaticResource Secondary}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Label Text="Saved customer" VerticalOptions="Center" />
+                    <Switch
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource Secondary}"
+                        HorizontalOptions="End"
+                        IsToggled="{Binding UseSavedCustomer}"
+                        OnColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource Secondary}" />
+                </Grid>
+            </Border>
+
+            <BoxView
+                Grid.Column="1"
+                Opacity="0"
+                WidthRequest="1" />
+
+            <!--  Transaction type  -->
+            <Border
+                Grid.Column="2"
+                Padding="10"
+                Background="{StaticResource Secondary}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Grid RowDefinitions="Auto,Auto">
+                    <Label
+                        FontSize="12"
+                        Text="Transaction Type"
+                        TextColor="{StaticResource TextLight}" />
+                    <buttons:SfSegmentedControl
+                        Grid.Row="1"
+                        Padding="10,6"
+                        AutoScrollToSelectedSegment="False"
+                        CornerRadius="10"
+                        SelectedIndex="{Binding TransactionTypeIndex, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        ShowSeparator="False"
+                        Stroke="Transparent">
+                        <buttons:SfSegmentedControl.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>In-Store</x:String>
+                                <x:String>Online</x:String>
+                            </x:Array>
+                        </buttons:SfSegmentedControl.ItemsSource>
+                        <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                            <buttons:SelectionIndicatorSettings Background="{StaticResource Primary}" SelectionIndicatorPlacement="Fill" />
+                        </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                    </buttons:SfSegmentedControl>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Customer + summary  -->
+        <Grid
+            Grid.Row="2"
+            RowDefinitions="Auto,Auto,Auto,*"
+            RowSpacing="12">
+
+            <!--  Customer autocomplete (visible only when toggled)  -->
+            <Border
+                Padding="12"
+                Background="{StaticResource Brush.CardBgGradient}"
+                IsVisible="{Binding UseSavedCustomer}"
+                Stroke="{StaticResource Border}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="1">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                    <Image
+                        Grid.Column="0"
+                        HeightRequest="18"
+                        Source="user_search.png"
+                        VerticalOptions="Center"
+                        WidthRequest="18" />
+                    <editors:SfAutocomplete
+                        Grid.Column="1"
+                        Background="Transparent"
+                        ClearButtonIconColor="Cyan"
+                        DisplayMemberPath="FullName"
+                        DropDownBackground="White"
+                        DropDownItemHeight="56"
+                        EnableAutoSize="True"
+                        FontFamily="NexaLight"
+                        HorizontalOptions="Fill"
+                        ItemsSource="{Binding Customers}"
+                        MaxDropDownHeight="260"
+                        Placeholder="Search Customer by Name..."
+                        SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionTextHighlightColor="LightGray"
+                        Stroke="Transparent"
+                        Text="{Binding CustomerSearch, Mode=TwoWay}"
+                        VerticalOptions="Fill">
+                        <editors:SfAutocomplete.ItemTemplate>
+                            <DataTemplate x:DataType="models:Customer">
+                                <Grid
+                                    Padding="6"
+                                    ColumnDefinitions="Auto,*"
+                                    ColumnSpacing="10">
+                                    <Image
+                                        Grid.Column="0"
+                                        HeightRequest="24"
+                                        Source="{Binding ImageUrl}"
+                                        WidthRequest="24" />
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="13"
+                                            Text="{Binding FullName}" />
+                                        <Label
+                                            FontSize="11"
+                                            Text="{Binding PhoneNumber}"
+                                            TextColor="{StaticResource TextLight}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </editors:SfAutocomplete.ItemTemplate>
+                    </editors:SfAutocomplete>
+                </Grid>
+            </Border>
+
+            <!--  (Keep your summary + notes + actions as-is)  -->
+
+        </Grid>
+
+        <!--  Actions  -->
+        <Grid Grid.Row="3">
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="30">
+                <Button
+                    Grid.Column="0"
+                    BackgroundColor="{StaticResource Secondary}"
+                    Clicked="Button_Clicked"
+                    FontFamily="NexaHeavy"
+                    HorizontalOptions="Start"
+                    Text="Close"
+                    TextColor="{StaticResource TextDark}" />
+                <Button
+                    Grid.Column="1"
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    Clicked="Button_Clicked_1"
+                    FontFamily="NexaHeavy"
+                    HorizontalOptions="End"
+                    Text="Confirm &amp; Print"
+                    TextColor="White" />
+            </HorizontalStackLayout>
+
+        </Grid>
+    </Grid>
+</toolkit:Popup>

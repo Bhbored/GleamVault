@@ -1,5 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GleamVault.MVVM.Views.Popups;
 using GleamVault.TestData;
 using PropertyChanged;
 using Shared.Models;
@@ -35,10 +38,56 @@ namespace GleamVault.MVVM.ViewModels
         private readonly Dictionary<Product, Product> _mapCartToInventory = new();
         private HallmarkType? selectedHallmark;
         private int sortIndex = 2;
+        private ObservableCollection<Customer> customers = new();
+        private Customer selectedCustomer = new Customer();
+        private bool useSavedCustomer = false;
+        private string customerSearch = string.Empty;
+        private DateTime completedAt = DateTime.Now;
+        private int transactionTypeIndex = 0;
         #endregion
 
 
         #region Properties
+
+        public string CustomerSearch
+        {
+            get => customerSearch;
+            set { if (customerSearch == value) return; customerSearch = value; OnPropertyChanged(); }
+        }
+        public int TransactionTypeIndex
+        {
+            get => transactionTypeIndex;
+            set
+            {
+                transactionTypeIndex = value;
+            }
+        }
+        public DateTime CompletedAt
+        {
+            get => completedAt;
+            set
+            {
+                completedAt = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool UseSavedCustomer
+        {
+            get => useSavedCustomer;
+            set
+            {
+                useSavedCustomer = value;
+                OnPropertyChanged();
+            }
+        }
+        public Customer SelectedCustomer
+        {
+            get => selectedCustomer;
+            set
+            {
+                if (selectedCustomer == value) return; selectedCustomer = value; OnPropertyChanged();
+            }
+        }
         public IList<object> SelectedProducts { get; set; } = [];
         public int SortIndex
         {
@@ -49,6 +98,15 @@ namespace GleamVault.MVVM.ViewModels
                 sortIndex = value;
                 OnPropertyChanged();
                 SortNow();
+            }
+        }
+        public ObservableCollection<Customer> Customers
+        {
+            get => customers;
+            set
+            {
+                customers = value;
+                OnPropertyChanged();
             }
         }
         public ObservableCollection<HallmarkType> AllHallmarks
@@ -121,7 +179,13 @@ namespace GleamVault.MVVM.ViewModels
         public float DiscountAmount
         {
             get => _discountAmount;
-            set { if (_discountAmount == value) return; _discountAmount = value; OnPropertyChanged(); RecalculateTotals(); }
+            set
+            {
+                var v = float.IsNaN(value) ? 0 : Math.Max(0, value);
+                if (Math.Abs(_discountAmount - v) < 0.0001f) return;
+                _discountAmount = v; OnPropertyChanged();
+                RecalculateTotals();
+            }
         }
 
         public bool HasItemsInCart
@@ -288,7 +352,96 @@ namespace GleamVault.MVVM.ViewModels
         public async Task CompleteSaleAsync()
         {
             if (!HasItemsInCart) return;
+            await Shell.Current.ShowPopupAsync(new ReceiptPopup(this));
             await Task.CompletedTask;
+        }
+        public async Task CompleteSaleConfirmationAsync()
+        {
+
+            if (!HasItemsInCart || CartItems.Count == 0)
+            {
+                await Shell.Current.DisplayAlert("🛒 Cart is empty.", "Your cart has no items.", "OK"); return;
+            }
+
+            if (UseSavedCustomer && SelectedCustomer is null)
+            {
+                await Shell.Current.DisplayAlert("🤔 No Customer Selected", "Please select a saved customer, or turn off the toggle.", "OK");
+                return;
+            }
+            if (HasItemsInCart && CartItems.Count > 0 && UseSavedCustomer && SelectedCustomer != null)
+            {
+                Transaction tx = new Transaction
+                {
+                    //need real api to adjust stock
+                    CreatedAt = DateTime.Now,
+                    Channel = TransactionTypeIndex == 0 ? SaleChannel.InStore : SaleChannel.Online,
+                    SubTotalAmount = CartSubtotal,
+                    DiscountValue = DiscountAmount,
+                    Type = TransactionType.Sell,
+                    TotalAmount = CartTotal,
+                    CustomerId = SelectedCustomer.Id,
+                    Customer = SelectedCustomer,
+
+                };
+                tx.Items = CartItems.Select(p => new TransactionItem
+                {
+                    TransactionId = tx.Id,
+                    ProductId = p.Id,
+                    Name = p.Name,
+                    Quantity = p.CurrentStock,
+                    UnitPrice = p.UnitPrice,
+                    Sku = p.Sku,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    Category = p.Category,
+                    ImageUrl = p.ImageUrl,
+                    Hallmark = p.Hallmark,
+                    WeightUnit = p.WeightUnit,
+                    Weight = p.Weight,
+                    OfferPrice = p.OfferPrice,
+                    IsUniquePiece = p.IsUniquePiece,
+                    UnitCost = p.UnitCost,
+                }).ToList();
+                TestTransactions.Transactions.Add(tx);
+            }
+
+            if (HasItemsInCart && CartItems.Count > 0 && !UseSavedCustomer)
+            {
+                var tx = new Transaction
+                {
+                    //need real api to adjust stock
+                    CreatedAt = DateTime.Now,
+                    Channel = TransactionTypeIndex == 0 ? SaleChannel.InStore : SaleChannel.Online,
+                    SubTotalAmount = CartSubtotal,
+                    DiscountValue = DiscountAmount,
+                    Type = TransactionType.Sell,
+                    TotalAmount = CartTotal,
+                };
+                tx.Items = CartItems.Select(p => new TransactionItem
+                {
+                    TransactionId = tx.Id,
+                    ProductId = p.Id,
+                    Name = p.Name,
+                    Quantity = p.CurrentStock,
+                    UnitPrice = p.UnitPrice,
+                    Sku = p.Sku,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    Category = p.Category,
+                    ImageUrl = p.ImageUrl,
+                    Hallmark = p.Hallmark,
+                    WeightUnit = p.WeightUnit,
+                    Weight = p.Weight,
+                    OfferPrice = p.OfferPrice,
+                    IsUniquePiece = p.IsUniquePiece,
+                    UnitCost = p.UnitCost,
+                }).ToList();
+
+
+                TestTransactions.Transactions.Add(tx);
+            }
+            await Shell.Current.DisplayAlert("Transaction saved.", "OK", "Success");
+
         }
 
         #endregion
@@ -413,6 +566,8 @@ namespace GleamVault.MVVM.ViewModels
             };
             ReplaceCollection(FilteredProducts, sortedList);
         }
+
+
         #endregion
 
         public void ClearALL()
@@ -426,6 +581,13 @@ namespace GleamVault.MVVM.ViewModels
             AllHallmarks.Clear();
             DiscountAmount = 0;
             SelectedCategory = new Category();
+            Customers.Clear();
+            SelectedCustomer = new Customer();
+            UseSavedCustomer = false;
+            CompletedAt = DateTime.Now;
+            CustomerSearch = string.Empty;
+            TransactionTypeIndex = 0;
+
         }
         public async Task LoadDataAsync()
         {
@@ -435,6 +597,7 @@ namespace GleamVault.MVVM.ViewModels
             await Task.Delay(100);
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
 
         }
