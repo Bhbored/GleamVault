@@ -568,7 +568,7 @@
                     <syncfusion:SfListView
                         x:Name="ProductsList"
                         Margin="10,10,10,0"
-                        AutoFitMode="DynamicHeight"
+                        AutoFitMode="Height"
                         IsVisible="{Binding ShimmerNotLoading}"
                         ItemSpacing="10"
                         ItemsSource="{Binding FilteredProducts}"
@@ -582,25 +582,26 @@
                                 <Border
                                     Padding="0"
                                     Background="White"
-                                    MinimumHeightRequest="340"
+                                    HeightRequest="340"
                                     Shadow="{StaticResource Sh.CyanSm}"
                                     StrokeShape="RoundRectangle 14"
                                     StrokeThickness="0">
-                                    <AbsoluteLayout>
+                                    <Grid RowDefinitions="*,Auto">
                                         <Image
-                                            AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                            AbsoluteLayout.LayoutFlags="All"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
                                             Aspect="AspectFill"
                                             Source="{Binding ImageUrl}" />
                                         <Border
-                                            Margin="0,0,0,0"
+                                            Grid.Row="0"
+                                            Margin="0,8,8,0"
                                             Padding="5"
-                                            AbsoluteLayout.LayoutBounds="0.95,0,35,35"
-                                            AbsoluteLayout.LayoutFlags="XProportional,YProportional"
                                             BackgroundColor="White"
                                             HeightRequest="30"
+                                            HorizontalOptions="End"
                                             StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0"
+                                            VerticalOptions="Start"
                                             WidthRequest="30">
                                             <Image
                                                 Aspect="AspectFit"
@@ -611,14 +612,14 @@
                                             </Border.GestureRecognizers>
                                         </Border>
                                         <Border
+                                            Grid.Row="1"
                                             Padding="10"
-                                            AbsoluteLayout.LayoutBounds="0,1,1,80"
-                                            AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
                                             Background="#dbe1e3"
+                                            HeightRequest="80"
                                             StrokeThickness="0">
                                             <Grid
                                                 ColumnDefinitions="*,Auto"
-                                                RowDefinitions="Auto,Auto,Auto"
+                                                RowDefinitions="Auto,Auto"
                                                 RowSpacing="6">
                                                 <Label
                                                     Grid.Row="0"
@@ -670,7 +671,7 @@
                                                 </VerticalStackLayout>
                                             </Grid>
                                         </Border>
-                                    </AbsoluteLayout>
+                                    </Grid>
                                 </Border>
                             </DataTemplate>
                         </syncfusion:SfListView.ItemTemplate>
