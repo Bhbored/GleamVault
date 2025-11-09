@@ -10,51 +10,6 @@ namespace GleamVault.TestData
 
     public class TestProducts
     {
-        private ObservableCollection<Category> categories = new ObservableCollection<Category>(GetCategories());
-
-
-
-        public static ObservableCollection<Product> Products { get; set; } = new()
-        {
-             new Product
-        {
-            Id = Guid.NewGuid(),
-            Sku = "RG001",
-            Name = "Classic Gold Wedding Band",
-            Description = "Elegant 18K gold wedding band with polished finish",
-            CategoryId = Guid.NewGuid(),
-            UnitCost = 450f,
-            UnitPrice = 899f,
-            OfferPrice = 799f,
-            CurrentStock = 15,
-            Hallmark = HallmarkType.Gold18K,
-            WeightUnit = WeightUnit.Grams,
-            Weight = 4.2f
-        },
-        new Product
-        {
-            Id = Guid.NewGuid(),
-            Sku = "RG002",
-            Name = "Diamond Engagement Ring",
-            Description = "Stunning 1-carat solitaire diamond ring in platinum setting",
-            CategoryId = Guid.NewGuid(),
-            UnitCost = 1200f,
-            UnitPrice = 2500f,
-            CurrentStock = 8,
-            Hallmark = HallmarkType.Sterling925,
-            WeightUnit = WeightUnit.Carats,
-            Weight = 1.0f
-        },
-
-        };
-        public ObservableCollection<Category> Categories
-        {
-            get => categories;
-            set
-            {
-                categories = value;
-            }
-        }
         public static List<Product> GetProducts()
         {
             var categories = new List<Category>
@@ -233,18 +188,21 @@ namespace GleamVault.TestData
         public static List<Category> GetCategories()
         {
             var categories = new List<Category>
-            {
-                new Category { Id = Guid.NewGuid(), Name = "Rings", Description = "Beautiful rings for every occasion" },
-                new Category { Id = Guid.NewGuid(), Name = "Necklaces", Description = "Elegant necklaces and pendants" },
-                new Category { Id = Guid.NewGuid(), Name = "Earrings", Description = "Stunning earrings in various styles" },
-                new Category { Id = Guid.NewGuid(), Name = "Bracelets", Description = "Charming bracelets and bangles" },
-                new Category { Id = Guid.NewGuid(), Name = "Watches", Description = "Luxury timepieces" },
-                new Category { Id = Guid.NewGuid(), Name = "Brooches", Description = "Elegant brooches and pins" },
-                new Category { Id = Guid.NewGuid(), Name = "Cufflinks", Description = "Stylish cufflinks for formal wear" },
-                new Category { Id = Guid.NewGuid(), Name = "Anklets", Description = "Delicate ankle bracelets" },
-                new Category { Id = Guid.NewGuid(), Name = "Charms", Description = "Charm bracelets and individual charms" },
-                new Category { Id = Guid.NewGuid(), Name = "Bridal", Description = "Wedding and engagement jewelry" }
-            };
+        {
+            new Category { Id = Guid.NewGuid(), Name = "Rings", Description = "Finger rings of all types" },
+            new Category { Id = Guid.NewGuid(), Name = "Necklaces", Description = "Complete necklace sets" },
+            new Category { Id = Guid.NewGuid(), Name = "Pendants", Description = "Individual pendants only" },
+            new Category { Id = Guid.NewGuid(), Name = "Chains", Description = "Necklace chains only" },
+            new Category { Id = Guid.NewGuid(), Name = "Earrings", Description = "All ear jewelry styles" },
+            new Category { Id = Guid.NewGuid(), Name = "Bracelets", Description = "Wrist jewelry and bangles" },
+            new Category { Id = Guid.NewGuid(), Name = "Anklets", Description = "Ankle bracelets" },
+            new Category { Id = Guid.NewGuid(), Name = "Watches", Description = "Timepieces and smart watches" },
+            new Category { Id = Guid.NewGuid(), Name = "Cufflinks", Description = "Shirt cuff accessories" },
+            new Category { Id = Guid.NewGuid(), Name = "Brooches", Description = "Pins and brooches" },
+            new Category { Id = Guid.NewGuid(), Name = "Jewelry Sets", Description = "Matching jewelry collections" },
+            new Category { Id = Guid.NewGuid(), Name = "Bridal Collections", Description = "Wedding and engagement sets" },
+            new Category { Id = Guid.NewGuid(), Name = "Charms", Description = "Individual charms for bracelets" }
+        };
             return categories;
         }
 

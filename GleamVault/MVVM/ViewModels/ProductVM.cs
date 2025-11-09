@@ -50,6 +50,8 @@ namespace GleamVault.MVVM.ViewModels
         });
 
         public ICommand ShowAddDiscountPopupCommand => new Command(async () => await ShowAddDiscountPopupAsync());
+
+        public ICommand ShowAddProductPopupCommand => new Command(async () => await ShowAddProductPopupAsync());
         #endregion
 
         #region Properties
@@ -147,12 +149,100 @@ namespace GleamVault.MVVM.ViewModels
             get => _allCategories;
             set { if (_allCategories == value) return; _allCategories = value; OnPropertyChanged(); }
         }
+
+        private Product _newProduct = new Product();
+        public Product NewProduct
+        {
+            get => _newProduct;
+            set
+            {
+                if (_newProduct == value) return;
+                _newProduct = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<WeightUnit> _allWeightUnits = new();
+        public ObservableCollection<WeightUnit> AllWeightUnits
+        {
+            get => _allWeightUnits;
+            set
+            {
+                if (_allWeightUnits == value) return;
+                _allWeightUnits = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Tasks
         public async Task ShowAddDiscountPopupAsync()
         {
             await Shell.Current.ShowPopupAsync(new AddDiscountPopup(this));
+        }
+
+        public async Task ShowAddProductPopupAsync()
+        {
+            NewProduct = new Product();
+            GetWeightUnits();
+            if (AllCategories.Count == 0)
+            {
+                TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            }
+            await Shell.Current.ShowPopupAsync(new AddProductPopup(this));
+        }
+
+        public async Task AddProductAsync(
+            string name,
+            string? description,
+            Category? category,
+            HallmarkType? hallmark,
+            float unitCost,
+            float unitPrice,
+            string? imageUrl,
+            WeightUnit weightUnit,
+            float weight,
+            bool isUniquePiece)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                await Shell.Current.DisplayAlert("⚠️ Validation Error", "Product name is required.", "OK");
+                return;
+            }
+
+            if (category == null)
+            {
+                await Shell.Current.DisplayAlert("⚠️ Validation Error", "Category is required.", "OK");
+                return;
+            }
+
+            if (hallmark == null)
+            {
+                await Shell.Current.DisplayAlert("⚠️ Validation Error", "Hallmark is required.", "OK");
+                return;
+            }
+
+            var sku = GenerateSku(category.Name, hallmark.Value);
+            var product = new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                Description = description,
+                Category = category,
+                CategoryId = category.Id,
+                Sku = sku,
+                Hallmark = hallmark.Value,
+                UnitCost = unitCost,
+                UnitPrice = unitPrice,
+                ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? "default_product.gif" : imageUrl,
+                WeightUnit = weightUnit,
+                Weight = weight,
+                IsUniquePiece = isUniquePiece,
+            };
+
+            AllProducts.Add(product);
+            FilteredProducts = new ObservableCollection<Product>(AllProducts);
+            await LoadDataAsync();
         }
 
         public async Task ShowDiscountPromptForProductAsync(Product product)
@@ -297,7 +387,67 @@ namespace GleamVault.MVVM.ViewModels
             AllHallmarks.Clear();
             foreach (var v in Enum.GetValues<HallmarkType>())
                 AllHallmarks.Add(v);
+        }
 
+        public void GetWeightUnits()
+        {
+            AllWeightUnits.Clear();
+            foreach (var v in Enum.GetValues<WeightUnit>())
+                AllWeightUnits.Add(v);
+        }
+
+        private string GenerateSku(string categoryName, HallmarkType hallmark)
+        {
+            var categoryPrefix = GetCategoryPrefix(categoryName);
+            var existingProducts = AllProducts.Where(p => p.Sku != null && p.Sku.StartsWith(categoryPrefix)).ToList();
+            var maxNumber = 0;
+
+            foreach (var product in existingProducts)
+            {
+                if (product.Sku != null && product.Sku.Length > categoryPrefix.Length)
+                {
+                    var numberPart = product.Sku.Substring(categoryPrefix.Length);
+                    if (int.TryParse(numberPart, out int num) && num > maxNumber)
+                    {
+                        maxNumber = num;
+                    }
+                }
+            }
+
+            string newSku;
+            int attemptNumber = maxNumber + 1;
+            do
+            {
+                newSku = $"{categoryPrefix}{attemptNumber:D3}";
+                if (!AllProducts.Any(p => p.Sku == newSku))
+                {
+                    return newSku;
+                }
+                attemptNumber++;
+            } while (attemptNumber < 1000);
+
+            return $"{categoryPrefix}{attemptNumber:D3}";
+        }
+
+        private string GetCategoryPrefix(string categoryName)
+        {
+            return categoryName?.ToUpper() switch
+            {
+                "RINGS" => "RG",
+                "NECKLACES" => "NK",
+                "PENDANTS" => "PD",
+                "CHAINS" => "CH",
+                "EARRINGS" => "ER",
+                "BRACELETS" => "BR",
+                "ANKLETS" => "AK",
+                "WATCHES" => "WT",
+                "CUFFLINKS" => "CF",
+                "BROOCHES" => "BC",
+                "JEWELRY SETS" => "JS",
+                "BRIDAL COLLECTIONS" => "BD",
+                "CHARMS" => "CM",
+                _ => "PR"
+            };
         }
         public void SortNow()
         {
@@ -335,11 +485,6 @@ namespace GleamVault.MVVM.ViewModels
             ClearALL();
             GetHallmarks();
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
-            //var product = TestProducts.Products;
-            //foreach (var p in product)
-            //{
-            //    AllProducts.Add(p);
-            //}
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await Task.Delay(3000);

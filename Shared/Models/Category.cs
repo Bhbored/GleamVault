@@ -13,6 +13,7 @@ namespace Shared.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
+        public string? Icon { get; set; }
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

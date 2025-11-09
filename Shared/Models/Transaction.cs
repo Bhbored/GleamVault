@@ -12,6 +12,7 @@ namespace Shared.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public TransactionType Type { get; set; }
         public float TotalAmount { get; set; }
+        public string? Description { get; set; } = string.Empty;
         public float SubTotalAmount { get; set; }//added this anwaryooo
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }

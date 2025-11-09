@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.AddProductPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:ProductVM"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    MaximumHeightRequest="900"
+    WidthRequest="700">
+    <toolkit:Popup.Resources>
+        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter" />
+        <conv:WeightUnitConverter x:Key="WeightUnitConverter" />
+
+        <Color x:Key="LightCyan">#E0FFFF</Color>
+
+        <Style TargetType="Entry">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource TextLight}" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Focused">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Editor">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource TextLight}" />
+        </Style>
+
+        <Style TargetType="Picker">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            <Setter Property="TitleColor" Value="{StaticResource TextLight}" />
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+        </Style>
+    </toolkit:Popup.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
+        <Border
+            Grid.Row="0"
+            Padding="24,20"
+            Background="{StaticResource Brush.HeaderGradient}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <Border
+                    Grid.Column="0"
+                    HeightRequest="48"
+                    StyleClass="icon-circle"
+                    WidthRequest="48">
+                    <Image
+                        HeightRequest="28"
+                        Source="add.png"
+                        WidthRequest="28" />
+                </Border>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="4"
+                    VerticalOptions="Center">
+                    <Label StyleClass="h3" Text="Add New Product" />
+                    <Label
+                        FontSize="12"
+                        Text="Fill in the product details below"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1" Padding="24,20">
+            <VerticalStackLayout Spacing="20">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Product Name *"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="NameEntry"
+                            Placeholder="Enter product name"
+                            Text="{Binding NewProduct.Name}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Description"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Editor
+                            x:Name="DescriptionEditor"
+                            HeightRequest="80"
+                            Placeholder="Enter product description (optional)"
+                            Text="{Binding NewProduct.Description}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Category *"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <editors:SfComboBox
+                            x:Name="CategoryCombo"
+                            Background="Transparent"
+                            ClearButtonIconColor="Cyan"
+                            DisplayMemberPath="Name"
+                            DropDownBackground="White"
+                            DropDownIconColor="{StaticResource Primary}"
+                            EnableAutoSize="True"
+                            FontFamily="NexaLight"
+                            IsEditable="False"
+                            ItemsSource="{Binding AllCategories}"
+                            MaxDropDownHeight="200"
+                            Placeholder="Select category"
+                            SelectedItem="{Binding NewProduct.Category}"
+                            SelectionMode="Single"
+                            Stroke="Transparent"
+                            TextColor="{StaticResource TextDark}">
+                            <editors:SfComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Category">
+                                    <Grid
+                                        Padding="8"
+                                        ColumnDefinitions="Auto,*"
+                                        ColumnSpacing="10">
+                                        <Image
+                                            Grid.Column="0"
+                                            HeightRequest="20"
+                                            Source="{Binding Icon}"
+                                            VerticalOptions="Center"
+                                            WidthRequest="20" />
+                                        <Label
+                                            Grid.Column="1"
+                                            FontFamily="NexaLight"
+                                            Text="{Binding Name}"
+                                            TextColor="{StaticResource TextLight}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </editors:SfComboBox.ItemTemplate>
+                        </editors:SfComboBox>
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="SKU"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="SkuEntry"
+                            IsReadOnly="True"
+                            Placeholder="SKU (auto-generated)"
+                            Text="{Binding NewProduct.Sku}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Hallmark *"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Picker
+                            x:Name="HallmarkPicker"
+                            ItemDisplayBinding="{Binding ., Converter={StaticResource HallmarkTypeConverter}}"
+                            ItemsSource="{Binding AllHallmarks}"
+                            SelectedItem="{Binding NewProduct.Hallmark}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <VerticalStackLayout Grid.Column="0" Spacing="8">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Unit Cost *"
+                            TextColor="{StaticResource TextDark}" />
+                        <Border
+                            BackgroundColor="Transparent"
+                            Stroke="{StaticResource LightCyan}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1">
+                            <Entry
+                                x:Name="UnitCostEntry"
+                                Keyboard="Numeric"
+                                Placeholder="Enter unit cost"
+                                Text="{Binding NewProduct.UnitCost}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="8">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Unit Price *"
+                            TextColor="{StaticResource TextDark}" />
+                        <Border
+                            BackgroundColor="Transparent"
+                            Stroke="{StaticResource LightCyan}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1">
+                            <Entry
+                                x:Name="UnitPriceEntry"
+                                Keyboard="Numeric"
+                                Placeholder="Enter unit price"
+                                Text="{Binding NewProduct.UnitPrice}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Image"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="ImageUrlEntry"
+                            Placeholder="Image URL (optional)"
+                            Text="{Binding NewProduct.ImageUrl}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <VerticalStackLayout Grid.Column="0" Spacing="8">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Weight Unit *"
+                            TextColor="{StaticResource TextDark}" />
+                        <Border
+                            BackgroundColor="Transparent"
+                            Stroke="{StaticResource LightCyan}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1">
+                            <Picker
+                                x:Name="WeightUnitPicker"
+                                ItemDisplayBinding="{Binding ., Converter={StaticResource WeightUnitConverter}}"
+                                ItemsSource="{Binding AllWeightUnits}"
+                                SelectedItem="{Binding NewProduct.WeightUnit}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="8">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Weight *"
+                            TextColor="{StaticResource TextDark}" />
+                        <Border
+                            BackgroundColor="Transparent"
+                            Stroke="{StaticResource LightCyan}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1">
+                            <Entry
+                                x:Name="WeightEntry"
+                                Keyboard="Numeric"
+                                Placeholder="Enter weight"
+                                Text="{Binding NewProduct.Weight}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Is Unique Piece"
+                        TextColor="{StaticResource TextDark}" />
+                    <Switch
+                        x:Name="IsUniquePieceSwitch"
+                        IsToggled="{Binding NewProduct.IsUniquePiece}"
+                        OnColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource Secondary}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border
+            Grid.Row="2"
+            Padding="24,20"
+            Background="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button
+                    Grid.Column="0"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Clicked="CancelButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    Text="Cancel"
+                    TextColor="{StaticResource TextDark}" />
+                <Button
+                    Grid.Column="1"
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    Clicked="SaveButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    Shadow="{StaticResource Sh.CyanMd}"
+                    Text="Save Product"
+                    TextColor="White" />
+            </Grid>
+        </Border>
+    </Grid>
+</toolkit:Popup>
+

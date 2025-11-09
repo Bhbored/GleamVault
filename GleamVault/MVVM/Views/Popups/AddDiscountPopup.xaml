@@ -122,26 +122,19 @@
                                         Text="{Binding Name}"
                                         TextColor="{StaticResource TextDark}" />
 
-                                    <HorizontalStackLayout Grid.Row="1" Spacing="6">
+                                    <Border
+                                        Grid.Row="1"
+                                        Padding="6,2"
+                                        Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                        StrokeShape="RoundRectangle 6"
+                                        StrokeThickness="0">
                                         <Label
-                                            FontSize="12"
+                                            FontSize="11"
                                             LineBreakMode="TailTruncation"
                                             MaxLines="1"
-                                            Text="{Binding Sku}"
-                                            TextColor="{StaticResource TextLight}" />
-                                        <Border
-                                            Padding="6,2"
-                                            Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
-                                            StrokeShape="RoundRectangle 6"
-                                            StrokeThickness="0">
-                                            <Label
-                                                FontSize="11"
-                                                LineBreakMode="TailTruncation"
-                                                MaxLines="1"
-                                                Text="{Binding Category.Name}"
-                                                TextColor="White" />
-                                        </Border>
-                                    </HorizontalStackLayout>
+                                            Text="{Binding Category.Name}"
+                                            TextColor="White" />
+                                    </Border>
                                 </Grid>
 
                                 <VerticalStackLayout

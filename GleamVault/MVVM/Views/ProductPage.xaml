@@ -77,25 +77,6 @@
                     Spacing="20"
                     VerticalOptions="Center">
                     <Border
-                        Padding="10"
-                        Background="{StaticResource Brush.CardBgGradient}"
-                        Shadow="{StaticResource Sh.CyanSm}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Image
-                                HeightRequest="25"
-                                Source="reports.png"
-                                WidthRequest="25" />
-                            <Label
-                                Margin="0"
-                                FontAttributes="Bold"
-                                StyleClass="body"
-                                Text="Export CSV"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </Border>
-                    <Border
                         Padding="12,10"
                         Background="{StaticResource Brush.ButtonGradient}"
                         Shadow="{StaticResource Sh.CyanSm}"
@@ -136,6 +117,9 @@
                                 Text="Add Product"
                                 VerticalOptions="Center" />
                         </HorizontalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ShowAddProductPopupCommand}" />
+                        </Border.GestureRecognizers>
                     </Border>
                 </HorizontalStackLayout>
             </Grid>
@@ -584,7 +568,7 @@
                     <syncfusion:SfListView
                         x:Name="ProductsList"
                         Margin="10,10,10,0"
-                        AutoFitMode="Height"
+                        AutoFitMode="DynamicHeight"
                         IsVisible="{Binding ShimmerNotLoading}"
                         ItemSpacing="10"
                         ItemsSource="{Binding FilteredProducts}"
@@ -609,19 +593,19 @@
                                             Aspect="AspectFill"
                                             Source="{Binding ImageUrl}" />
                                         <Border
-                                            Margin="0,8,0,0"
+                                            Margin="0,0,0,0"
+                                            Padding="5"
                                             AbsoluteLayout.LayoutBounds="0.95,0,35,35"
                                             AbsoluteLayout.LayoutFlags="XProportional,YProportional"
                                             BackgroundColor="White"
-                                            HeightRequest="35"
+                                            HeightRequest="30"
                                             StrokeShape="RoundRectangle 10"
                                             StrokeThickness="0"
-                                            WidthRequest="35">
+                                            WidthRequest="30">
                                             <Image
+                                                Aspect="AspectFit"
                                                 BackgroundColor="Transparent"
-                                                HeightRequest="30"
-                                                Source="more.png"
-                                                WidthRequest="30" />
+                                                Source="more.png" />
                                             <Border.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:ProductPage}}, Path=BindingContext.MoreCommand}" CommandParameter="{Binding .}" />
                                             </Border.GestureRecognizers>
@@ -630,7 +614,7 @@
                                             Padding="10"
                                             AbsoluteLayout.LayoutBounds="0,1,1,80"
                                             AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
-                                            Background="#B3000000"
+                                            Background="#dbe1e3"
                                             StrokeThickness="0">
                                             <Grid
                                                 ColumnDefinitions="*,Auto"
@@ -658,8 +642,8 @@
                                                     VerticalOptions="Start" />
                                                 <VerticalStackLayout
                                                     Grid.Row="0"
-                                                    Grid.Column="1"
                                                     Grid.RowSpan="2"
+                                                    Grid.Column="1"
                                                     HorizontalOptions="End"
                                                     Spacing="4"
                                                     VerticalOptions="Start">
