@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core">
+    <conv:PriceConverter x:Key="PriceConverter" />
+
+    <DataTemplate x:Key="ProductTemplate" x:DataType="models:Product">
+        <Border
+            Padding="0"
+            Background="White"
+            MinimumHeightRequest="340"
+            Shadow="{StaticResource Sh.CyanSm}"
+            StrokeShape="RoundRectangle 14"
+            StrokeThickness="0">
+            <AbsoluteLayout>
+                <Image
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    Aspect="AspectFill"
+                    Source="{Binding ImageUrl}" />
+                <Border
+                    Margin="0,8,0,0"
+                    AbsoluteLayout.LayoutBounds="0.95,0,35,35"
+                    AbsoluteLayout.LayoutFlags="XProportional,YProportional"
+                    BackgroundColor="White"
+                    HeightRequest="35"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    WidthRequest="35">
+                    <Image
+                        BackgroundColor="Transparent"
+                        HeightRequest="30"
+                        Source="more.png"
+                        WidthRequest="30" />
+                </Border>
+                <Border
+                    Padding="10"
+                    AbsoluteLayout.LayoutBounds="0,1,1,80"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    Background="#B3000000"
+                    StrokeThickness="0">
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="6">
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            FontFamily="NexaHeavy"
+                            FontSize="16"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="1"
+                            Text="{Binding Name}"
+                            TextColor="White"
+                            VerticalOptions="Start" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            FontFamily="NexaLight"
+                            FontSize="12"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="1"
+                            Text="{Binding Sku, StringFormat='SKU: {0}'}"
+                            TextColor="#B0B0B0"
+                            VerticalOptions="Start" />
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontFamily="NexaHeavy"
+                            FontSize="16"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                            TextColor="White"
+                            VerticalOptions="Start" />
+                    </Grid>
+                </Border>
+            </AbsoluteLayout>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ShimmerTemplate">
+        <Border
+            Padding="0"
+            Background="White"
+            MinimumHeightRequest="340"
+            Shadow="{StaticResource Sh.CyanSm}"
+            StrokeShape="RoundRectangle 14"
+            StrokeThickness="0">
+            <AbsoluteLayout>
+                <shimmer:SfShimmer
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    AnimationDuration="1000"
+                    Fill="{StaticResource Brush.CardBgGradient}"
+                    IsActive="True"
+                    RepeatCount="3"
+                    WaveColor="{StaticResource Secondary}"
+                    WaveWidth="70">
+                    <BoxView BackgroundColor="#E0E0E0" HeightRequest="240" />
+                </shimmer:SfShimmer>
+                <Border
+                    Margin="0,8,0,0"
+                    AbsoluteLayout.LayoutBounds="0.95,0,35,35"
+                    AbsoluteLayout.LayoutFlags="XProportional,YProportional"
+                    BackgroundColor="White"
+                    HeightRequest="35"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    WidthRequest="35">
+                    <BoxView
+                        BackgroundColor="#E0E0E0"
+                        HeightRequest="30"
+                        WidthRequest="30" />
+                </Border>
+                <Border
+                    Padding="10"
+                    AbsoluteLayout.LayoutBounds="0,1,1,80"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    Background="#B3000000"
+                    StrokeThickness="0">
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="6">
+                        <shimmer:SfShimmer
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            IsActive="True">
+                            <BoxView
+                                BackgroundColor="#4A4A4A"
+                                HeightRequest="16"
+                                WidthRequest="120" />
+                        </shimmer:SfShimmer>
+                        <shimmer:SfShimmer
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            IsActive="True">
+                            <BoxView
+                                BackgroundColor="#4A4A4A"
+                                HeightRequest="12"
+                                WidthRequest="80" />
+                        </shimmer:SfShimmer>
+                        <shimmer:SfShimmer
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            IsActive="True">
+                            <BoxView
+                                BackgroundColor="#4A4A4A"
+                                HeightRequest="16"
+                                WidthRequest="60" />
+                        </shimmer:SfShimmer>
+                    </Grid>
+                </Border>
+            </AbsoluteLayout>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

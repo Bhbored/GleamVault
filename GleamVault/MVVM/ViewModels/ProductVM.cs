@@ -1,16 +1,19 @@
-﻿using System;
+﻿using GleamVault.TestData;
+using PropertyChanged;
+using Shared.Models;
+using Shared.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using GleamVault.TestData;
-using Shared.Models;
-using Shared.Models.Enums;
 
 namespace GleamVault.MVVM.ViewModels
 {
+    [AddINotifyPropertyChangedInterface]
+
     public partial class ProductVM : INotifyPropertyChanged
     {
         #region Fields
@@ -21,9 +24,19 @@ namespace GleamVault.MVVM.ViewModels
         private ObservableCollection<HallmarkType> allHallmarks = new();
         private HallmarkType? selectedHallmark;
         private int sortIndex = 2;
+        private bool isDataLoading = true;
         #endregion
 
         #region Properties
+        public bool IsDataLoading
+        {
+            get => isDataLoading;
+            set
+            {
+                isDataLoading = value;
+                OnPropertyChanged();
+            }
+        }
         public IList<object> SelectedProducts { get; set; } = [];
         public int SortIndex
         {
@@ -182,15 +195,17 @@ namespace GleamVault.MVVM.ViewModels
             FilteredProducts.Clear();
             AllHallmarks.Clear();
             SelectedCategory = new Category();
+            IsDataLoading = true;
         }
         public async Task LoadDataAsync()
         {
             ClearALL();
             GetHallmarks();
-            await Task.Delay(100);
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
+            await Task.Delay(3000); // Simulate data loading delay
+            IsDataLoading = false;
 
         }
         #endregion

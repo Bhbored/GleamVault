@@ -1,14 +1,32 @@
 using GleamVault.MVVM.ViewModels;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace GleamVault.MVVM.Views;
 
 public partial class ProductPage : ContentPage
 {
-	public ProductPage(ProductVM vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
+    public ProductPage(ProductVM vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+        var selector = Resources["ProductTemplateSelector"] as Converters.ProductTemplateSelector;
+        if (selector != null)
+        {
+            selector.ViewModel = vm;
+        }
+
+        vm.PropertyChanged += ViewModel_PropertyChanged;
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ProductVM.IsDataLoading) && ProductsList != null)
+        {
+            var currentItems = ProductsList.ItemsSource;
+            ProductsList.ItemsSource = null;
+            ProductsList.ItemsSource = currentItems;
+        }
     }
     protected override void OnSizeAllocated(double width, double height)
     {
