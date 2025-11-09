@@ -3,12 +3,17 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
     xmlns:conv="clr-namespace:GleamVault.Converters"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core">
-    <conv:PriceConverter x:Key="PriceConverter" />
+    <conv:PriceConverter x:Key="PriceConverter"/>
+    <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter"/>
+    <conv:DiscountPriceColorConverter x:Key="DiscountPriceColorConverter"/>
+    <conv:DiscountTextDecorationsConverter x:Key="DiscountTextDecorationsConverter"/>
 
-    <DataTemplate x:Key="ProductTemplate" x:DataType="models:Product">
+    <DataTemplate x:Key="ProductTemplate"
+                  x:DataType="models:Product">
         <Border
             Padding="0"
             Background="White"
@@ -21,7 +26,7 @@
                     AbsoluteLayout.LayoutBounds="0,0,1,1"
                     AbsoluteLayout.LayoutFlags="All"
                     Aspect="AspectFill"
-                    Source="{Binding ImageUrl}" />
+                    Source="{Binding ImageUrl}"/>
                 <Border
                     Margin="0,8,0,0"
                     AbsoluteLayout.LayoutBounds="0.95,0,35,35"
@@ -35,7 +40,11 @@
                         BackgroundColor="Transparent"
                         HeightRequest="30"
                         Source="more.png"
-                        WidthRequest="30" />
+                        WidthRequest="30"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:ProductPage}}, Path=BindingContext.MoreCommand}"
+                                              CommandParameter="{Binding .}"/>
+                    </Border.GestureRecognizers>
                 </Border>
                 <Border
                     Padding="10"
@@ -45,7 +54,7 @@
                     StrokeThickness="0">
                     <Grid
                         ColumnDefinitions="*,Auto"
-                        RowDefinitions="Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto"
                         RowSpacing="6">
                         <Label
                             Grid.Row="0"
@@ -56,26 +65,42 @@
                             MaxLines="1"
                             Text="{Binding Name}"
                             TextColor="White"
-                            VerticalOptions="Start" />
+                            VerticalOptions="Start"/>
                         <Label
                             Grid.Row="1"
                             Grid.Column="0"
                             FontFamily="NexaLight"
-                            FontSize="12"
+                            FontSize="14"
                             LineBreakMode="TailTruncation"
                             MaxLines="1"
                             Text="{Binding Sku, StringFormat='SKU: {0}'}"
-                            TextColor="#B0B0B0"
-                            VerticalOptions="Start" />
+                            TextColor="White"
+                            VerticalOptions="Start"/>
                         <Label
                             Grid.Row="0"
                             Grid.Column="1"
                             FontFamily="NexaHeavy"
                             FontSize="16"
                             HorizontalTextAlignment="End"
-                            Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                            TextColor="{Binding OfferPrice, Converter={StaticResource DiscountPriceColorConverter}}"
+                            VerticalOptions="Start">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                          TextDecorations="{Binding OfferPrice, Converter={StaticResource DiscountTextDecorationsConverter}}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontFamily="NexaHeavy"
+                            FontSize="16"
+                            HorizontalTextAlignment="End"
+                            IsVisible="{Binding OfferPrice, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                            Text="{Binding OfferPrice, Converter={StaticResource PriceConverter}}"
                             TextColor="White"
-                            VerticalOptions="Start" />
+                            VerticalOptions="Start"/>
                     </Grid>
                 </Border>
             </AbsoluteLayout>
@@ -100,7 +125,8 @@
                     RepeatCount="3"
                     WaveColor="{StaticResource Secondary}"
                     WaveWidth="70">
-                    <BoxView BackgroundColor="#E0E0E0" HeightRequest="240" />
+                    <BoxView BackgroundColor="#E0E0E0"
+                             HeightRequest="240"/>
                 </shimmer:SfShimmer>
                 <Border
                     Margin="0,8,0,0"
@@ -114,7 +140,7 @@
                     <BoxView
                         BackgroundColor="#E0E0E0"
                         HeightRequest="30"
-                        WidthRequest="30" />
+                        WidthRequest="30"/>
                 </Border>
                 <Border
                     Padding="10"
@@ -133,7 +159,7 @@
                             <BoxView
                                 BackgroundColor="#4A4A4A"
                                 HeightRequest="16"
-                                WidthRequest="120" />
+                                WidthRequest="120"/>
                         </shimmer:SfShimmer>
                         <shimmer:SfShimmer
                             Grid.Row="1"
@@ -142,7 +168,7 @@
                             <BoxView
                                 BackgroundColor="#4A4A4A"
                                 HeightRequest="12"
-                                WidthRequest="80" />
+                                WidthRequest="80"/>
                         </shimmer:SfShimmer>
                         <shimmer:SfShimmer
                             Grid.Row="0"
@@ -152,7 +178,7 @@
                             <BoxView
                                 BackgroundColor="#4A4A4A"
                                 HeightRequest="16"
-                                WidthRequest="60" />
+                                WidthRequest="60"/>
                         </shimmer:SfShimmer>
                     </Grid>
                 </Border>

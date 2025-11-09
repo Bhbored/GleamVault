@@ -1,4 +1,5 @@
 using GleamVault.MVVM.ViewModels;
+using Microsoft.Maui.ApplicationModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -23,9 +24,15 @@ public partial class ProductPage : ContentPage
     {
         if (e.PropertyName == nameof(ProductVM.IsDataLoading) && ProductsList != null)
         {
-            var currentItems = ProductsList.ItemsSource;
-            ProductsList.ItemsSource = null;
-            ProductsList.ItemsSource = currentItems;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var currentItems = ProductsList.ItemsSource;
+                if (currentItems != null)
+                {
+                    ProductsList.ItemsSource = null;
+                    ProductsList.ItemsSource = currentItems;
+                }
+            });
         }
     }
     protected override void OnSizeAllocated(double width, double height)
@@ -41,11 +48,15 @@ public partial class ProductPage : ContentPage
         if (ProductGridLayout.SpanCount != span)
             ProductGridLayout.SpanCount = span;
     }
+    private bool _isDataLoaded = false;
     protected async override void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is ProductVM vm)
+        if (BindingContext is ProductVM vm && !_isDataLoaded)
+        {
+            _isDataLoaded = true;
             await vm.LoadDataAsync();
+        }
     }
 
     private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)

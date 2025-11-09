@@ -1,4 +1,6 @@
-﻿using GleamVault.TestData;
+﻿using CommunityToolkit.Maui.Extensions;
+using GleamVault.MVVM.Views.Popups;
+using GleamVault.TestData;
 using PropertyChanged;
 using Shared.Models;
 using Shared.Models.Enums;
@@ -9,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GleamVault.MVVM.ViewModels
 {
@@ -27,6 +30,14 @@ namespace GleamVault.MVVM.ViewModels
         private bool isDataLoading = true;
         #endregion
 
+        #region Commands
+        public ICommand MoreCommand => new Command<Product>(async (product) =>
+        {
+            if (product == null) return;
+            await Shell.Current.ShowPopupAsync(new ProductDetailsPopup(product));
+
+        });
+        #endregion
         #region Properties
         public bool IsDataLoading
         {
