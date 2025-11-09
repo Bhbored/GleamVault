@@ -28,6 +28,9 @@ namespace GleamVault.MVVM.ViewModels
         private HallmarkType? selectedHallmark;
         private int sortIndex = 2;
         private bool isDataLoading = true;
+        private bool shimmerLoading = true;
+        private bool shimmerNotLoading = false;
+        private readonly ObservableCollection<object> _shimmerItems = new();
         #endregion
 
         #region Commands
@@ -39,6 +42,31 @@ namespace GleamVault.MVVM.ViewModels
         });
         #endregion
         #region Properties
+        public ObservableCollection<object> ShimmerItems
+        {
+            get => _shimmerItems;
+        }
+
+        public bool ShimmerNotLoading
+        {
+            get => shimmerNotLoading;
+            set
+            {
+                shimmerNotLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ShimmerLoading
+        {
+            get => shimmerLoading;
+            set
+            {
+                shimmerLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsDataLoading
         {
             get => isDataLoading;
@@ -207,6 +235,14 @@ namespace GleamVault.MVVM.ViewModels
             AllHallmarks.Clear();
             SelectedCategory = new Category();
             IsDataLoading = true;
+            ShimmerLoading = true;
+            ShimmerNotLoading = false;
+            _shimmerItems.Clear();
+            for (int i = 0; i < 6; i++)
+            {
+                _shimmerItems.Add(new object());
+            }
+            OnPropertyChanged(nameof(ShimmerItems));
         }
         public async Task LoadDataAsync()
         {
@@ -217,6 +253,8 @@ namespace GleamVault.MVVM.ViewModels
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await Task.Delay(3000); // Simulate data loading delay
             IsDataLoading = false;
+            ShimmerLoading = false;
+            ShimmerNotLoading = true;
 
         }
         #endregion

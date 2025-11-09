@@ -44,11 +44,37 @@ namespace GleamVault.MVVM.ViewModels
         private string customerSearch = string.Empty;
         private DateTime completedAt = DateTime.Now;
         private int transactionTypeIndex = 0;
+        private bool shimmerLoading = true;
+        private bool shimmerNotLoading = false;
+        private readonly ObservableCollection<object> _shimmerItems = new();
         #endregion
 
 
         #region Properties
+        public ObservableCollection<object> ShimmerItems
+        {
+            get => _shimmerItems;
+        }
 
+        public bool ShimmerNotLoading
+        {
+            get => shimmerNotLoading;
+            set
+            {
+                shimmerNotLoading = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool ShimmerLoading
+        {
+            get => shimmerLoading;
+            set
+            {
+                shimmerLoading = value;
+                OnPropertyChanged();
+
+            }
+        }
         public string CustomerSearch
         {
             get => customerSearch;
@@ -372,7 +398,6 @@ namespace GleamVault.MVVM.ViewModels
             {
                 Transaction tx = new Transaction
                 {
-                    //need real api to adjust stock
                     CreatedAt = DateTime.Now,
                     Channel = TransactionTypeIndex == 0 ? SaleChannel.InStore : SaleChannel.Online,
                     SubTotalAmount = CartSubtotal,
@@ -389,7 +414,7 @@ namespace GleamVault.MVVM.ViewModels
                     ProductId = p.Id,
                     Name = p.Name,
                     Quantity = p.CurrentStock,
-                    UnitPrice = p.UnitPrice,
+                    UnitPrice = GetEffectivePrice(p),
                     Sku = p.Sku,
                     Description = p.Description,
                     CategoryId = p.CategoryId,
@@ -423,7 +448,7 @@ namespace GleamVault.MVVM.ViewModels
                     ProductId = p.Id,
                     Name = p.Name,
                     Quantity = p.CurrentStock,
-                    UnitPrice = p.UnitPrice,
+                    UnitPrice = GetEffectivePrice(p),
                     Sku = p.Sku,
                     Description = p.Description,
                     CategoryId = p.CategoryId,
@@ -447,9 +472,16 @@ namespace GleamVault.MVVM.ViewModels
         #endregion
 
         #region methods
+
+        private float GetEffectivePrice(Product product)
+        {
+            if (product == null) return 0f;
+            return product.OfferPrice > 0 ? product.OfferPrice : product.UnitPrice;
+        }
+
         private void RecalculateTotals()
         {
-            CartSubtotal = CartItems.Sum(p => p.UnitPrice * p.CurrentStock);
+            CartSubtotal = CartItems.Sum(p => GetEffectivePrice(p) * p.CurrentStock);
             CartTotal = CartSubtotal - DiscountAmount;
             if (CartTotal < 0) CartTotal = 0;
         }
@@ -587,6 +619,14 @@ namespace GleamVault.MVVM.ViewModels
             CompletedAt = DateTime.Now;
             CustomerSearch = string.Empty;
             TransactionTypeIndex = 0;
+            ShimmerLoading = true;
+            ShimmerNotLoading = false;
+            _shimmerItems.Clear();
+            for (int i = 0; i < 8; i++)
+            {
+                _shimmerItems.Add(new object());
+            }
+            OnPropertyChanged(nameof(ShimmerItems));
 
         }
         public async Task LoadDataAsync()
@@ -594,11 +634,13 @@ namespace GleamVault.MVVM.ViewModels
             ClearALL();
             RefreshCart();
             GetHallmarks();
-            await Task.Delay(100);
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
             TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
+            await Task.Delay(3000);
+            ShimmerLoading = false;
+            ShimmerNotLoading = true;
 
         }
 

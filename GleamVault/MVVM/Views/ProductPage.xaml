@@ -17,15 +17,19 @@
     Background="{StaticResource Brush.BackgroundGradient}">
 
     <ContentPage.Resources>
-        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter" />
-        <conv:WeightUnitConverter x:Key="WeightUnitConverter" />
-        <conv:CategoryColorConverter x:Key="CategoryColorConverter" />
-        <conv:HallmarkColorConverter x:Key="HallmarkColorConverter" />
-        <conv:ProductTemplateSelector x:Key="ProductTemplateSelector" />
+        <conv:PriceConverter x:Key="PriceConverter"/>
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter"/>
+        <conv:DiscountPriceColorConverter x:Key="DiscountPriceColorConverter"/>
+        <conv:DiscountTextDecorationsConverter x:Key="DiscountTextDecorationsConverter"/>
+        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter"/>
+        <conv:WeightUnitConverter x:Key="WeightUnitConverter"/>
+        <conv:CategoryColorConverter x:Key="CategoryColorConverter"/>
+        <conv:HallmarkColorConverter x:Key="HallmarkColorConverter"/>
     </ContentPage.Resources>
     <Grid RowDefinitions="Auto,*">
 
-        <Grid Grid.Row="0" HeightRequest="240">
+        <Grid Grid.Row="0"
+              HeightRequest="240">
             <!--  Wave 1  -->
             <shapes:Path
                 Aspect="Fill"
@@ -34,7 +38,7 @@
                 HorizontalOptions="Fill"
                 InputTransparent="True"
                 Opacity="1"
-                VerticalOptions="Fill" />
+                VerticalOptions="Fill"/>
 
             <!--  Subtle overlay wave for depth  -->
             <shapes:Path
@@ -44,7 +48,7 @@
                 HorizontalOptions="Fill"
                 InputTransparent="True"
                 Opacity="0.12"
-                VerticalOptions="Fill" />
+                VerticalOptions="Fill"/>
         </Grid>
         <!--  header  -->
         <Grid
@@ -66,8 +70,9 @@
                     <Image
                         HeightRequest="30"
                         Source="diamond.png"
-                        WidthRequest="30" />
-                    <Label StyleClass="h2" Text="Gleam &amp; Co." />
+                        WidthRequest="30"/>
+                    <Label StyleClass="h2"
+                           Text="Gleam &amp; Co."/>
                 </HorizontalStackLayout>
                 <HorizontalStackLayout
                     Grid.Column="1"
@@ -79,17 +84,18 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10"
+                                               VerticalOptions="Center">
                             <Image
                                 HeightRequest="25"
                                 Source="reports.png"
-                                WidthRequest="25" />
+                                WidthRequest="25"/>
                             <Label
                                 Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Export CSV"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </Border>
                     <Border
@@ -98,17 +104,18 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10"
+                                               VerticalOptions="Center">
                             <Image
                                 HeightRequest="25"
                                 Source="discount.png"
-                                WidthRequest="25" />
+                                WidthRequest="25"/>
                             <Label
                                 Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Add Discount"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </Border>
                     <Border
@@ -117,17 +124,18 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10"
+                                               VerticalOptions="Center">
                             <Image
                                 HeightRequest="25"
                                 Source="add.png"
-                                WidthRequest="25" />
+                                WidthRequest="25"/>
                             <Label
                                 Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Add Product"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </Border>
                 </HorizontalStackLayout>
@@ -145,13 +153,14 @@
                     Shadow="{StaticResource Sh.CyanSm}"
                     StrokeShape="RoundRectangle 14"
                     StrokeThickness="0">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="10">
                         <Image
                             Grid.Column="0"
                             HeightRequest="25"
                             Source="search.png"
                             VerticalOptions="Center"
-                            WidthRequest="25" />
+                            WidthRequest="25"/>
                         <editors:SfAutocomplete
                             x:Name="SearchBox"
                             Grid.Column="1"
@@ -189,7 +198,8 @@
                                             StrokeThickness="0"
                                             VerticalOptions="Center"
                                             WidthRequest="40">
-                                            <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                            <Image Aspect="AspectFill"
+                                                   Source="{Binding ImageUrl}"/>
                                         </Border>
 
                                         <!--  Middle: name + meta  -->
@@ -204,15 +214,16 @@
                                                 LineBreakMode="TailTruncation"
                                                 MaxLines="1"
                                                 Text="{Binding Name}"
-                                                TextColor="{StaticResource TextDark}" />
+                                                TextColor="{StaticResource TextDark}"/>
 
-                                            <HorizontalStackLayout Grid.Row="1" Spacing="6">
+                                            <HorizontalStackLayout Grid.Row="1"
+                                                                   Spacing="6">
                                                 <Label
                                                     FontSize="12"
                                                     LineBreakMode="TailTruncation"
                                                     MaxLines="1"
                                                     Text="{Binding Sku}"
-                                                    TextColor="{StaticResource TextLight}" />
+                                                    TextColor="{StaticResource TextLight}"/>
                                                 <Border
                                                     Padding="6,2"
                                                     Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
@@ -223,7 +234,7 @@
                                                         LineBreakMode="TailTruncation"
                                                         MaxLines="1"
                                                         Text="{Binding Category.Name}"
-                                                        TextColor="White" />
+                                                        TextColor="White"/>
                                                 </Border>
                                             </HorizontalStackLayout>
                                         </Grid>
@@ -239,7 +250,7 @@
                                                 FontSize="13"
                                                 HorizontalTextAlignment="End"
                                                 Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
-                                                TextColor="{StaticResource Primary}" />
+                                                TextColor="{StaticResource Primary}"/>
 
                                             <Border
                                                 Padding="6,2"
@@ -253,7 +264,7 @@
                                                     LineBreakMode="TailTruncation"
                                                     MaxLines="1"
                                                     Text="{Binding CurrentStock, Converter={StaticResource StockStatusTextConverter}}"
-                                                    TextColor="{Binding CurrentStock, Converter={StaticResource StockStatusColorConverter}}" />
+                                                    TextColor="{Binding CurrentStock, Converter={StaticResource StockStatusColorConverter}}"/>
                                             </Border>
                                         </VerticalStackLayout>
                                     </Grid>
@@ -292,7 +303,8 @@
 
                         </buttons:SfSegmentedControl.ItemsSource>
                         <buttons:SfSegmentedControl.SelectionIndicatorSettings>
-                            <buttons:SelectionIndicatorSettings Background="{StaticResource Primary}" SelectionIndicatorPlacement="Fill" />
+                            <buttons:SelectionIndicatorSettings Background="{StaticResource Primary}"
+                                                                SelectionIndicatorPlacement="Fill"/>
                         </buttons:SfSegmentedControl.SelectionIndicatorSettings>
                     </buttons:SfSegmentedControl>
                 </Border>
@@ -303,11 +315,12 @@
                 Grid.Row="2"
                 ColumnDefinitions="Auto,*"
                 ColumnSpacing="15">
-                <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                <HorizontalStackLayout Grid.Column="0"
+                                       Spacing="10">
                     <Label
                         StyleClass="body"
                         Text="Category"
-                        VerticalOptions="Center" />
+                        VerticalOptions="Center"/>
                     <Border
                         Padding="10,6"
                         Background="{StaticResource Brush.CardBgGradient}"
@@ -316,14 +329,15 @@
                         Stroke="{StaticResource Border}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="1">
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Grid ColumnDefinitions="Auto,*"
+                              ColumnSpacing="8">
                             <!--  leading icon  -->
                             <Image
                                 Grid.Column="0"
                                 HeightRequest="18"
                                 Source="filter.png"
                                 VerticalOptions="Center"
-                                WidthRequest="18" />
+                                WidthRequest="18"/>
 
                             <!--  modern dropdown  -->
                             <editors:SfComboBox
@@ -362,7 +376,7 @@
                                                 HeightRequest="12"
                                                 StrokeShape="RoundRectangle 999"
                                                 StrokeThickness="0"
-                                                WidthRequest="12" />
+                                                WidthRequest="12"/>
                                             <Label
                                                 Grid.Column="1"
                                                 FontFamily="NexaLight"
@@ -370,7 +384,7 @@
                                                 LineBreakMode="TailTruncation"
                                                 MaxLines="1"
                                                 Text="{Binding Name}"
-                                                TextColor="{StaticResource TextDark}" />
+                                                TextColor="{StaticResource TextDark}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </editors:SfComboBox.ItemTemplate>
@@ -389,7 +403,7 @@
                     <Label
                         StyleClass="body"
                         Text="Hallmark"
-                        VerticalOptions="Center" />
+                        VerticalOptions="Center"/>
                     <Border
                         Padding="10,6"
                         Background="{StaticResource Brush.CardBgGradient}"
@@ -398,14 +412,15 @@
                         Stroke="{StaticResource Border}"
                         StrokeShape="RoundRectangle 12"
                         StrokeThickness="1">
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Grid ColumnDefinitions="Auto,*"
+                              ColumnSpacing="8">
                             <!--  leading icon  -->
                             <Image
                                 Grid.Column="0"
                                 HeightRequest="25"
                                 Source="karat.png"
                                 VerticalOptions="Center"
-                                WidthRequest="25" />
+                                WidthRequest="25"/>
 
                             <!--  Hallmark dropdown (enum)  -->
                             <editors:SfComboBox
@@ -440,7 +455,7 @@
                                                 StrokeShape="RoundRectangle 999"
                                                 StrokeThickness="0"
                                                 VerticalOptions="Center"
-                                                WidthRequest="12" />
+                                                WidthRequest="12"/>
                                             <Label
                                                 Grid.Column="1"
                                                 FontFamily="NexaLight"
@@ -449,7 +464,7 @@
                                                 MaxLines="1"
                                                 Text="{Binding Converter={StaticResource HallmarkTypeConverter}}"
                                                 TextColor="{StaticResource TextDark}"
-                                                VerticalOptions="Center" />
+                                                VerticalOptions="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </editors:SfComboBox.ItemTemplate>
@@ -462,7 +477,8 @@
             </Grid>
 
         </Grid>
-        <Grid Grid.Row="1" Margin="20,0,20,20">
+        <Grid Grid.Row="1"
+              Margin="20,0,20,20">
             <Border
                 Background="{StaticResource Brush.BackgroundGradient}"
                 HorizontalOptions="Fill"
@@ -470,19 +486,223 @@
                 StrokeShape="RoundRectangle 25"
                 StrokeThickness="0"
                 VerticalOptions="Fill">
-                <syncfusion:SfListView
-                    x:Name="ProductsList"
-                    Margin="10,10,10,0"
-                    AutoFitMode="Height"
-                    ItemSpacing="10"
-                    ItemTemplate="{StaticResource ProductTemplateSelector}"
-                    ItemsSource="{Binding FilteredProducts}"
-                    SelectionBackground="Transparent"
-                    SelectionMode="None">
-                    <syncfusion:SfListView.ItemsLayout>
-                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="3" />
-                    </syncfusion:SfListView.ItemsLayout>
-                </syncfusion:SfListView>
+                <Grid>
+                    <!--  Shimmer ListView  -->
+                    <syncfusion:SfListView
+                        x:Name="ShimmerList"
+                        Margin="10,10,10,0"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerLoading}"
+                        ItemSpacing="10"
+                        ItemsSource="{Binding ShimmerItems}"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout x:Name="ShimmerGridLayout"
+                                                   SpanCount="3"/>
+                        </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Padding="0"
+                                    Background="White"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanSm}"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0">
+                                    <AbsoluteLayout>
+                                        <shimmer:SfShimmer
+                                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                            AbsoluteLayout.LayoutFlags="All"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView BackgroundColor="#E0E0E0"
+                                                     HeightRequest="240"/>
+                                        </shimmer:SfShimmer>
+                                        <Border
+                                            Margin="0,8,0,0"
+                                            AbsoluteLayout.LayoutBounds="0.95,0,35,35"
+                                            AbsoluteLayout.LayoutFlags="XProportional,YProportional"
+                                            BackgroundColor="White"
+                                            HeightRequest="35"
+                                            StrokeShape="RoundRectangle 10"
+                                            StrokeThickness="0"
+                                            WidthRequest="35">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="30"
+                                                WidthRequest="30"/>
+                                        </Border>
+                                        <Border
+                                            Padding="10"
+                                            AbsoluteLayout.LayoutBounds="0,1,1,80"
+                                            AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                                            Background="#B3000000"
+                                            StrokeThickness="0">
+                                            <Grid
+                                                ColumnDefinitions="*,Auto"
+                                                RowDefinitions="Auto,Auto,Auto"
+                                                RowSpacing="6">
+                                                <shimmer:SfShimmer
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    IsActive="True">
+                                                    <BoxView
+                                                        BackgroundColor="#4A4A4A"
+                                                        HeightRequest="16"
+                                                        WidthRequest="120"/>
+                                                </shimmer:SfShimmer>
+                                                <shimmer:SfShimmer
+                                                    Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    IsActive="True">
+                                                    <BoxView
+                                                        BackgroundColor="#4A4A4A"
+                                                        HeightRequest="14"
+                                                        WidthRequest="80"/>
+                                                </shimmer:SfShimmer>
+                                                <shimmer:SfShimmer
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    HorizontalOptions="End"
+                                                    IsActive="True">
+                                                    <BoxView
+                                                        BackgroundColor="#4A4A4A"
+                                                        HeightRequest="16"
+                                                        WidthRequest="60"/>
+                                                </shimmer:SfShimmer>
+                                                <shimmer:SfShimmer
+                                                    Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    HorizontalOptions="End"
+                                                    IsActive="True">
+                                                    <BoxView
+                                                        BackgroundColor="#4A4A4A"
+                                                        HeightRequest="16"
+                                                        WidthRequest="60"/>
+                                                </shimmer:SfShimmer>
+                                            </Grid>
+                                        </Border>
+                                    </AbsoluteLayout>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+
+                    <!--  Products ListView  -->
+                    <syncfusion:SfListView
+                        x:Name="ProductsList"
+                        Margin="10,10,10,0"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerNotLoading}"
+                        ItemSpacing="10"
+                        ItemsSource="{Binding FilteredProducts}"
+                        SelectionBackground="Transparent"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout x:Name="ProductGridLayout"
+                                                   SpanCount="3"/>
+                        </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Product">
+                                <Border
+                                    Padding="0"
+                                    Background="White"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanSm}"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0">
+                                    <AbsoluteLayout>
+                                        <Image
+                                            AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                            AbsoluteLayout.LayoutFlags="All"
+                                            Aspect="AspectFill"
+                                            Source="{Binding ImageUrl}"/>
+                                        <Border
+                                            Margin="0,8,0,0"
+                                            AbsoluteLayout.LayoutBounds="0.95,0,35,35"
+                                            AbsoluteLayout.LayoutFlags="XProportional,YProportional"
+                                            BackgroundColor="White"
+                                            HeightRequest="35"
+                                            StrokeShape="RoundRectangle 10"
+                                            StrokeThickness="0"
+                                            WidthRequest="35">
+                                            <Image
+                                                BackgroundColor="Transparent"
+                                                HeightRequest="30"
+                                                Source="more.png"
+                                                WidthRequest="30"/>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:ProductPage}}, Path=BindingContext.MoreCommand}"
+                                                                      CommandParameter="{Binding .}"/>
+                                            </Border.GestureRecognizers>
+                                        </Border>
+                                        <Border
+                                            Padding="10"
+                                            AbsoluteLayout.LayoutBounds="0,1,1,80"
+                                            AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                                            Background="#B3000000"
+                                            StrokeThickness="0">
+                                            <Grid
+                                                ColumnDefinitions="*,Auto"
+                                                RowDefinitions="Auto,Auto,Auto"
+                                                RowSpacing="6">
+                                                <Label
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="16"
+                                                    LineBreakMode="TailTruncation"
+                                                    MaxLines="1"
+                                                    Text="{Binding Name}"
+                                                    TextColor="White"
+                                                    VerticalOptions="Start"/>
+                                                <Label
+                                                    Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    FontFamily="NexaLight"
+                                                    FontSize="14"
+                                                    LineBreakMode="TailTruncation"
+                                                    MaxLines="1"
+                                                    Text="{Binding Sku, StringFormat='SKU: {0}'}"
+                                                    TextColor="White"
+                                                    VerticalOptions="Start"/>
+                                                <Label
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="16"
+                                                    HorizontalTextAlignment="End"
+                                                    TextColor="{Binding OfferPrice, Converter={StaticResource DiscountPriceColorConverter}}"
+                                                    VerticalOptions="Start">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                                  TextDecorations="{Binding OfferPrice, Converter={StaticResource DiscountTextDecorationsConverter}}"/>
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                                <Label
+                                                    Grid.Row="2"
+                                                    Grid.Column="1"
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="16"
+                                                    HorizontalTextAlignment="End"
+                                                    IsVisible="{Binding OfferPrice, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                                    Text="{Binding OfferPrice, Converter={StaticResource PriceConverter}}"
+                                                    TextColor="White"
+                                                    VerticalOptions="Start"/>
+                                            </Grid>
+                                        </Border>
+                                    </AbsoluteLayout>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

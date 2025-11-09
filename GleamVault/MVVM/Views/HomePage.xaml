@@ -10,6 +10,7 @@
     xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
     xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
     x:DataType="vm:HomeVM"
@@ -25,6 +26,8 @@
         <conv:StockStatusTextConverter x:Key="StockStatusTextConverter" />
         <conv:StockToBoolConverter x:Key="StockToBoolConverter" />
         <conv:HallmarkColorConverter x:Key="HallmarkColorConverter" />
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        <conv:EffectivePriceConverter x:Key="EffectivePriceConverter" />
 
     </ContentPage.Resources>
 
@@ -174,7 +177,7 @@
                                                 FontFamily="NexaHeavy"
                                                 FontSize="13"
                                                 HorizontalTextAlignment="End"
-                                                Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
                                                 TextColor="{StaticResource Primary}" />
 
                                             <Border
@@ -415,161 +418,277 @@
                 StrokeShape="RoundRectangle 25"
                 StrokeThickness="0"
                 VerticalOptions="Fill">
+                <Grid>
+                    <!--  Shimmer ListView  -->
+                    <syncfusion:SfListView
+                        x:Name="ShimmerList"
+                        Margin="10,10,10,0"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerLoading}"
+                        ItemSpacing="10"
+                        ItemsSource="{Binding ShimmerItems}"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout x:Name="ShimmerGridLayout" SpanCount="4" />
+                        </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Padding="0"
+                                    Background="{StaticResource Brush.CardBgGradient}"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanLg}"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="1">
+                                    <Grid
+                                        Padding="12"
+                                        RowDefinitions="240,Auto,Auto,Auto"
+                                        RowSpacing="4">
+                                        <!--  Image shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="0"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView BackgroundColor="#E0E0E0" HeightRequest="240" />
+                                        </shimmer:SfShimmer>
+                                        <!--  Name shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="1"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                Margin="0,2,0,0"
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="20" />
+                                        </shimmer:SfShimmer>
+                                        <!--  Weight & Stock shimmer  -->
+                                        <Grid
+                                            Grid.Row="2"
+                                            Margin="0,1,0,0"
+                                            ColumnDefinitions="*,*"
+                                            ColumnSpacing="8">
+                                            <shimmer:SfShimmer
+                                                Grid.Column="0"
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView BackgroundColor="#E0E0E0" HeightRequest="16" />
+                                            </shimmer:SfShimmer>
+                                            <shimmer:SfShimmer
+                                                Grid.Column="1"
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                HorizontalOptions="End"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="16"
+                                                    HorizontalOptions="End"
+                                                    WidthRequest="80" />
+                                            </shimmer:SfShimmer>
+                                        </Grid>
+                                        <!--  Price shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="3"
+                                            Margin="0,2,0,0"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="24"
+                                                WidthRequest="100" />
+                                        </shimmer:SfShimmer>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
 
-                <syncfusion:SfListView
-                    x:Name="ProductsList"
-                    Margin="10,10,10,0"
-                    AutoFitMode="Height"
-                    ItemSpacing="10"
-                    ItemsSource="{Binding FilteredProducts}"
-                    SelectionMode="None">
+                    <!--  Products ListView  -->
+                    <syncfusion:SfListView
+                        x:Name="ProductsList"
+                        Margin="10,10,10,0"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerNotLoading}"
+                        ItemSpacing="10"
+                        ItemsSource="{Binding FilteredProducts}"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="4" />
+                        </syncfusion:SfListView.ItemsLayout>
 
-                    <syncfusion:SfListView.ItemsLayout>
-                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="4" />
-                    </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Product">
+                                <Border
+                                    Padding="0"
+                                    Background="{StaticResource Brush.CardBgGradient}"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanLg}"
+                                    Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="1">
 
-                    <syncfusion:SfListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Product">
-                            <Border
-                                Padding="0"
-                                Background="{StaticResource Brush.CardBgGradient}"
-                                MinimumHeightRequest="340"
-                                Shadow="{StaticResource Sh.CyanLg}"
-                                Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
-                                StrokeShape="RoundRectangle 10"
-                                StrokeThickness="1">
+                                    <Grid
+                                        Padding="12"
+                                        RowDefinitions="240,Auto,Auto,Auto"
+                                        RowSpacing="4">
 
-                                <Grid
-                                    Padding="12"
-                                    RowDefinitions="240,Auto,Auto,Auto"
-                                    RowSpacing="4">
-
-                                    <!--  Image + badges  -->
-                                    <Grid Grid.Row="0">
-                                        <Border HeightRequest="240" StyleClass="image-holder">
-                                            <Image Aspect="AspectFit" Source="{Binding ImageUrl}" />
-                                        </Border>
-
-                                        <Grid Margin="8">
-                                            <Border
-                                                Padding="6,3"
-                                                Background="{StaticResource Warn}"
-                                                HorizontalOptions="Start"
-                                                IsVisible="{Binding IsUniquePiece}"
-                                                StrokeShape="RoundRectangle 8"
-                                                StrokeThickness="0"
-                                                VerticalOptions="Start">
-                                                <Label
-                                                    StyleClass="caption"
-                                                    Text="UNIQUE"
-                                                    TextColor="White" />
+                                        <!--  Image + badges  -->
+                                        <Grid Grid.Row="0">
+                                            <Border HeightRequest="240" StyleClass="image-holder">
+                                                <Image Aspect="AspectFit" Source="{Binding ImageUrl}" />
                                             </Border>
 
-                                            <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start">
+                                            <Grid Margin="8">
+                                                <Border
+                                                    Padding="6,3"
+                                                    Background="{StaticResource Warn}"
+                                                    HorizontalOptions="Start"
+                                                    IsVisible="{Binding IsUniquePiece}"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    StrokeThickness="0"
+                                                    VerticalOptions="Start">
+                                                    <Label
+                                                        StyleClass="caption"
+                                                        Text="UNIQUE"
+                                                        TextColor="White" />
+                                                </Border>
+
+                                                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start">
+                                                    <Border
+                                                        Padding="5"
+                                                        Background="{StaticResource Primary}"
+                                                        StrokeShape="RoundRectangle 5"
+                                                        StrokeThickness="0">
+                                                        <Grid>
+                                                            <Label
+                                                                FontFamily="NexaHeavy"
+                                                                FontSize="12"
+                                                                HorizontalOptions="Center"
+                                                                Text="{Binding Hallmark, Converter={StaticResource HallmarkTypeConverter}}"
+                                                                TextColor="White"
+                                                                VerticalOptions="Center" />
+                                                        </Grid>
+                                                    </Border>
+                                                </HorizontalStackLayout>
+
                                                 <Border
                                                     Padding="5"
-                                                    Background="{StaticResource Primary}"
+                                                    Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                                    HorizontalOptions="Start"
                                                     StrokeShape="RoundRectangle 5"
-                                                    StrokeThickness="0">
-                                                    <Grid>
-                                                        <Label
-                                                            FontFamily="NexaHeavy"
-                                                            FontSize="12"
-                                                            HorizontalOptions="Center"
-                                                            Text="{Binding Hallmark, Converter={StaticResource HallmarkTypeConverter}}"
-                                                            TextColor="White"
-                                                            VerticalOptions="Center" />
-                                                    </Grid>
+                                                    StrokeThickness="0"
+                                                    VerticalOptions="End">
+                                                    <Label
+                                                        FontFamily="NexaHeavy"
+                                                        FontSize="12"
+                                                        HorizontalOptions="Center"
+                                                        Text="{Binding Category.Name}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
                                                 </Border>
-                                            </HorizontalStackLayout>
+                                            </Grid>
+                                        </Grid>
 
-                                            <Border
-                                                Padding="5"
-                                                Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
-                                                HorizontalOptions="Start"
-                                                StrokeShape="RoundRectangle 5"
-                                                StrokeThickness="0"
-                                                VerticalOptions="End">
+                                        <!--  Name  -->
+                                        <Label
+                                            Grid.Row="1"
+                                            Margin="0,2,0,0"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2"
+                                            StyleClass="h4"
+                                            Text="{Binding Name}" />
+
+                                        <!--  Weight & Stock  -->
+                                        <Grid
+                                            Grid.Row="2"
+                                            Margin="0,1,0,0"
+                                            ColumnDefinitions="*,*"
+                                            ColumnSpacing="8">
+                                            <Label
+                                                Grid.Column="0"
+                                                StyleClass="body"
+                                                TextColor="{StaticResource TextLight}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding Weight, StringFormat='{0}  '}" />
+                                                        <Span Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                            <Label
+                                                Grid.Column="1"
+                                                HorizontalOptions="End"
+                                                StyleClass="body"
+                                                TextColor="{Binding CurrentStock, Converter={StaticResource StockStatusColorConverter}}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="• " />
+                                                        <Span Text="{Binding CurrentStock, Converter={StaticResource StockStatusTextConverter}}" />
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Grid>
+
+                                        <!--  Price + Add  -->
+                                        <Grid
+                                            Grid.Row="3"
+                                            Margin="0,2,0,0"
+                                            ColumnDefinitions="*,Auto"
+                                            ColumnSpacing="8">
+                                            <HorizontalStackLayout
+                                                Grid.Column="0"
+                                                Spacing="8"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    StyleClass="h4"
+                                                    Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
+                                                    VerticalOptions="Center" />
                                                 <Label
                                                     FontFamily="NexaHeavy"
                                                     FontSize="12"
-                                                    HorizontalOptions="Center"
-                                                    Text="{Binding Category.Name}"
-                                                    TextColor="White"
+                                                    IsVisible="{Binding OfferPrice, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                                    Text="OFFER"
+                                                    TextColor="Red"
                                                     VerticalOptions="Center" />
-                                            </Border>
+                                            </HorizontalStackLayout>
+                                            <Image
+                                                Grid.Column="1"
+                                                HeightRequest="35"
+                                                IsEnabled="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
+                                                IsVisible="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
+                                                Source="add.png"
+                                                WidthRequest="35">
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.AddToCartCommand}" CommandParameter="{Binding .}" />
+                                                </Image.GestureRecognizers>
+                                            </Image>
                                         </Grid>
                                     </Grid>
-
-                                    <!--  Name  -->
-                                    <Label
-                                        Grid.Row="1"
-                                        Margin="0,2,0,0"
-                                        LineBreakMode="TailTruncation"
-                                        MaxLines="2"
-                                        StyleClass="h4"
-                                        Text="{Binding Name}" />
-
-                                    <!--  Weight & Stock  -->
-                                    <Grid
-                                        Grid.Row="2"
-                                        Margin="0,1,0,0"
-                                        ColumnDefinitions="*,*"
-                                        ColumnSpacing="8">
-                                        <Label
-                                            Grid.Column="0"
-                                            StyleClass="body"
-                                            TextColor="{StaticResource TextLight}">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="{Binding Weight, StringFormat='{0}  '}" />
-                                                    <Span Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-
-                                        <Label
-                                            Grid.Column="1"
-                                            HorizontalOptions="End"
-                                            StyleClass="body"
-                                            TextColor="{Binding CurrentStock, Converter={StaticResource StockStatusColorConverter}}">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="• " />
-                                                    <Span Text="{Binding CurrentStock, Converter={StaticResource StockStatusTextConverter}}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </Grid>
-
-                                    <!--  Price + Add  -->
-                                    <Grid
-                                        Grid.Row="3"
-                                        Margin="0,2,0,0"
-                                        ColumnDefinitions="*,Auto"
-                                        ColumnSpacing="8">
-                                        <Label
-                                            Grid.Column="0"
-                                            StyleClass="h4"
-                                            Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
-                                            VerticalOptions="Center" />
-                                        <Image
-                                            Grid.Column="1"
-                                            HeightRequest="35"
-                                            IsEnabled="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
-                                            IsVisible="{Binding CurrentStock, Converter={StaticResource StockToBoolConverter}}"
-                                            Source="add.png"
-                                            WidthRequest="35">
-                                            <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:HomePage}}, Path=BindingContext.AddToCartCommand}" CommandParameter="{Binding .}" />
-                                            </Image.GestureRecognizers>
-                                        </Image>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </syncfusion:SfListView.ItemTemplate>
-                </syncfusion:SfListView>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+                </Grid>
             </Border>
         </Grid>
 
@@ -626,7 +745,7 @@
                             <Image
                                 Aspect="AspectFit"
                                 HorizontalOptions="Center"
-                                IsAnimationPlaying="True"
+                                IsAnimationPlaying="False"
                                 Source="cart.gif"
                                 VerticalOptions="Center" />
                             <Label
@@ -685,7 +804,7 @@
                                             <Label
                                                 FontFamily="NexaHeavy"
                                                 FontSize="15"
-                                                Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
                                                 TextColor="{StaticResource Primary}" />
                                         </VerticalStackLayout>
 

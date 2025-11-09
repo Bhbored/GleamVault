@@ -1,4 +1,5 @@
 using GleamVault.MVVM.ViewModels;
+using System.ComponentModel;
 namespace GleamVault.MVVM.Views;
 
 public partial class HomePage : ContentPage
@@ -7,8 +8,23 @@ public partial class HomePage : ContentPage
     {
         InitializeComponent();
         BindingContext = vm;
+        vm.PropertyChanged += ViewModel_PropertyChanged;
     }
-
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ProductVM.IsDataLoading) && ProductsList != null)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var currentItems = ProductsList.ItemsSource;
+                if (currentItems != null)
+                {
+                    ProductsList.ItemsSource = null;
+                    ProductsList.ItemsSource = currentItems;
+                }
+            });
+        }
+    }
     protected async override void OnAppearing()
     {
         base.OnAppearing();
@@ -28,6 +44,9 @@ public partial class HomePage : ContentPage
         };
         if (ProductGridLayout.SpanCount != span)
             ProductGridLayout.SpanCount = span;
+
+        if (ShimmerGridLayout != null && ShimmerGridLayout.SpanCount != span)
+            ShimmerGridLayout.SpanCount = span;
     }
     private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
     {

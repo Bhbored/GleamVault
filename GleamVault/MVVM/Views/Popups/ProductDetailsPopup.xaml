@@ -13,17 +13,16 @@
     MaximumHeightRequest="800"
     WidthRequest="550">
     <toolkit:Popup.Resources>
-        <conv:PriceConverter x:Key="PriceConverter"/>
-        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter"/>
-        <conv:WeightUnitConverter x:Key="WeightUnitConverter"/>
-        <conv:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter"/>
-        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter"/>
-        <conv:DiscountPriceColorConverter x:Key="DiscountPriceColorConverter"/>
-        <conv:DiscountTextDecorationsConverter x:Key="DiscountTextDecorationsConverter"/>
+        <conv:PriceConverter x:Key="PriceConverter" />
+        <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter" />
+        <conv:WeightUnitConverter x:Key="WeightUnitConverter" />
+        <conv:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        <conv:DiscountPriceColorConverter x:Key="DiscountPriceColorConverter" />
+        <conv:DiscountTextDecorationsConverter x:Key="DiscountTextDecorationsConverter" />
     </toolkit:Popup.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto"
-          RowSpacing="0">
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
         <!--  Header with Product Image  -->
         <Border
             Grid.Row="0"
@@ -31,8 +30,7 @@
             Background="{StaticResource Brush.HeaderGradient}"
             StrokeShape="RoundRectangle 10"
             StrokeThickness="0">
-            <Grid ColumnDefinitions="Auto,*,Auto"
-                  ColumnSpacing="16">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
                 <Border
                     Grid.Column="0"
                     HeightRequest="48"
@@ -41,25 +39,23 @@
                     <Image
                         HeightRequest="28"
                         Source="diamond.png"
-                        WidthRequest="28"/>
+                        WidthRequest="28" />
                 </Border>
                 <VerticalStackLayout
                     Grid.Column="1"
                     Spacing="4"
                     VerticalOptions="Center">
-                    <Label StyleClass="h3"
-                           Text="Product Details"/>
+                    <Label StyleClass="h3" Text="Product Details" />
                     <Label
                         FontSize="12"
                         Text="{Binding Name}"
-                        TextColor="{StaticResource TextLight}"/>
+                        TextColor="{StaticResource TextLight}" />
                 </VerticalStackLayout>
             </Grid>
         </Border>
 
         <!--  Product Details Content  -->
-        <ScrollView Grid.Row="1"
-                    Padding="0,20,0,20">
+        <ScrollView Grid.Row="1" Padding="0,20,0,20">
             <VerticalStackLayout Spacing="16">
                 <!--  Product Image Card  -->
                 <Border
@@ -72,7 +68,7 @@
                         <Image
                             Aspect="AspectFit"
                             BackgroundColor="Transparent"
-                            Source="{Binding ImageUrl}"/>
+                            Source="{Binding ImageUrl}" />
                     </Grid>
                 </Border>
 
@@ -84,14 +80,12 @@
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
                     <VerticalStackLayout Spacing="12">
-                        <Label StyleClass="h4"
-                               Text="Basic Information"/>
+                        <Label StyleClass="h4" Text="Basic Information" />
                         <BoxView
                             BackgroundColor="{StaticResource Border}"
                             HeightRequest="1"
-                            HorizontalOptions="Fill"/>
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto"
-                              RowSpacing="12">
+                            HorizontalOptions="Fill" />
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
                             <!--  SKU  -->
                             <Grid
                                 Grid.Row="0"
@@ -100,13 +94,13 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="SKU"/>
+                                    Text="SKU" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding Sku}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Grid>
                             <!--  Name  -->
                             <Grid
@@ -116,13 +110,13 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Name"/>
+                                    Text="Name" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding Name}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Grid>
                             <!--  Description  -->
                             <Grid
@@ -134,7 +128,7 @@
                                     Grid.Column="0"
                                     StyleClass="caption"
                                     Text="Description"
-                                    VerticalOptions="Start"/>
+                                    VerticalOptions="Start" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaLight"
@@ -142,7 +136,7 @@
                                     LineBreakMode="WordWrap"
                                     Text="{Binding Description}"
                                     TextColor="{StaticResource TextDark}"
-                                    VerticalOptions="Start"/>
+                                    VerticalOptions="Start" />
                             </Grid>
                             <!--  Category  -->
                             <Grid
@@ -152,13 +146,13 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Category"/>
+                                    Text="Category" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding Category.Name}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Grid>
                         </Grid>
                     </VerticalStackLayout>
@@ -172,14 +166,12 @@
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
                     <VerticalStackLayout Spacing="12">
-                        <Label StyleClass="h4"
-                               Text="Pricing"/>
+                        <Label StyleClass="h4" Text="Pricing" />
                         <BoxView
                             BackgroundColor="{StaticResource Border}"
                             HeightRequest="1"
-                            HorizontalOptions="Fill"/>
-                        <Grid RowDefinitions="Auto,Auto,Auto"
-                              RowSpacing="12">
+                            HorizontalOptions="Fill" />
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
                             <!--  Unit Cost  -->
                             <Grid
                                 Grid.Row="0"
@@ -188,13 +180,13 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Unit Cost"/>
+                                    Text="Unit Cost" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding UnitCost, StringFormat='${0:F2}'}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Grid>
                             <!--  Unit Price  -->
                             <Grid
@@ -204,7 +196,7 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Unit Price"/>
+                                    Text="Unit Price" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
@@ -213,9 +205,7 @@
                                     VerticalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
-                                            <Span
-                                                Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
-                                                TextDecorations="{Binding OfferPrice, Converter={StaticResource DiscountTextDecorationsConverter}}"/>
+                                            <Span Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}" TextDecorations="{Binding OfferPrice, Converter={StaticResource DiscountTextDecorationsConverter}}" />
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
@@ -229,14 +219,14 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Offer Price"/>
+                                    Text="Offer Price" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="18"
                                     Text="{Binding OfferPrice, Converter={StaticResource PriceConverter}}"
                                     TextColor="{StaticResource Primary}"
-                                    VerticalOptions="Center"/>
+                                    VerticalOptions="Center" />
                             </Grid>
                         </Grid>
                     </VerticalStackLayout>
@@ -250,18 +240,16 @@
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
                     <VerticalStackLayout Spacing="12">
-                        <Label StyleClass="h4"
-                               Text="Inventory"/>
+                        <Label StyleClass="h4" Text="Inventory" />
                         <BoxView
                             BackgroundColor="{StaticResource Border}"
                             HeightRequest="1"
-                            HorizontalOptions="Fill"/>
-                        <Grid ColumnDefinitions="100,*"
-                              ColumnSpacing="12">
+                            HorizontalOptions="Fill" />
+                        <Grid ColumnDefinitions="100,*" ColumnSpacing="12">
                             <Label
                                 Grid.Column="0"
                                 StyleClass="caption"
-                                Text="Stock"/>
+                                Text="Stock" />
                             <Border
                                 Grid.Column="1"
                                 Padding="8,6"
@@ -273,7 +261,7 @@
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding CurrentStock}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Border>
                         </Grid>
                     </VerticalStackLayout>
@@ -287,14 +275,12 @@
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="0">
                     <VerticalStackLayout Spacing="12">
-                        <Label StyleClass="h4"
-                               Text="Specifications"/>
+                        <Label StyleClass="h4" Text="Specifications" />
                         <BoxView
                             BackgroundColor="{StaticResource Border}"
                             HeightRequest="1"
-                            HorizontalOptions="Fill"/>
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto"
-                              RowSpacing="12">
+                            HorizontalOptions="Fill" />
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
                             <!--  Hallmark  -->
                             <Grid
                                 Grid.Row="0"
@@ -303,13 +289,13 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Hallmark"/>
+                                    Text="Hallmark" />
                                 <Label
                                     Grid.Column="1"
                                     FontFamily="NexaHeavy"
                                     FontSize="14"
                                     Text="{Binding Hallmark, Converter={StaticResource HallmarkTypeConverter}}"
-                                    TextColor="{StaticResource TextDark}"/>
+                                    TextColor="{StaticResource TextDark}" />
                             </Grid>
                             <!--  Weight  -->
                             <Grid
@@ -319,21 +305,20 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Weight"/>
-                                <HorizontalStackLayout Grid.Column="1"
-                                                       Spacing="5">
+                                    Text="Weight" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="5">
                                     <Label
                                         FontFamily="NexaHeavy"
                                         FontSize="14"
                                         Text="{Binding Weight, StringFormat='{0:F2}'}"
                                         TextColor="{StaticResource TextDark}"
-                                        VerticalOptions="Center"/>
+                                        VerticalOptions="Center" />
                                     <Label
                                         FontFamily="NexaLight"
                                         FontSize="14"
                                         Text="{Binding WeightUnit, Converter={StaticResource WeightUnitConverter}}"
                                         TextColor="{StaticResource TextLight}"
-                                        VerticalOptions="Center"/>
+                                        VerticalOptions="Center" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <!--  Is Unique Piece  -->
@@ -344,7 +329,7 @@
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="caption"
-                                    Text="Unique Piece"/>
+                                    Text="Unique Piece" />
                                 <Border
                                     Grid.Column="1"
                                     Padding="8,6"
@@ -356,7 +341,7 @@
                                         FontFamily="NexaHeavy"
                                         FontSize="14"
                                         Text="{Binding IsUniquePiece, StringFormat='{0}'}"
-                                        TextColor="{StaticResource TextDark}"/>
+                                        TextColor="{StaticResource TextDark}" />
                                 </Border>
                             </Grid>
                         </Grid>
@@ -381,7 +366,7 @@
                 HeightRequest="48"
                 HorizontalOptions="Fill"
                 Text="Close"
-                TextColor="White"/>
+                TextColor="White" />
         </Border>
     </Grid>
 </toolkit:Popup>

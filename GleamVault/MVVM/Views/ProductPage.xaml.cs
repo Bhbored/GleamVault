@@ -11,29 +11,6 @@ public partial class ProductPage : ContentPage
     {
         InitializeComponent();
         BindingContext = vm;
-        var selector = Resources["ProductTemplateSelector"] as Converters.ProductTemplateSelector;
-        if (selector != null)
-        {
-            selector.ViewModel = vm;
-        }
-
-        vm.PropertyChanged += ViewModel_PropertyChanged;
-    }
-
-    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ProductVM.IsDataLoading) && ProductsList != null)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                var currentItems = ProductsList.ItemsSource;
-                if (currentItems != null)
-                {
-                    ProductsList.ItemsSource = null;
-                    ProductsList.ItemsSource = currentItems;
-                }
-            });
-        }
     }
     protected override void OnSizeAllocated(double width, double height)
     {
@@ -47,6 +24,9 @@ public partial class ProductPage : ContentPage
         };
         if (ProductGridLayout.SpanCount != span)
             ProductGridLayout.SpanCount = span;
+
+        if (ShimmerGridLayout != null && ShimmerGridLayout.SpanCount != span)
+            ShimmerGridLayout.SpanCount = span;
     }
     private bool _isDataLoaded = false;
     protected async override void OnAppearing()
