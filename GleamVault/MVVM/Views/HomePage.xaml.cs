@@ -68,7 +68,7 @@ public partial class HomePage : ContentPage
     {
         if (BindingContext is HomeVM vm)
         {
-            vm.FilterProductsByCategory();
+            vm.FilterProductsByHallmark();
         }
     }
 

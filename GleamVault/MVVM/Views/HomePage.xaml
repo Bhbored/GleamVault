@@ -330,6 +330,7 @@
                                 ItemsSource="{Binding AllHallmarks}"
                                 Placeholder="All Hallmarks"
                                 SelectedItem="{Binding SelectedHallmark, Mode=TwoWay}"
+                                SelectionChanged="HallmarkCombo_SelectionChanged"
                                 Stroke="Transparent"
                                 TextColor="{StaticResource TextDark}"
                                 WidthRequest="180">
@@ -447,12 +448,10 @@
                                         <!--  Image shimmer  -->
                                         <shimmer:SfShimmer
                                             Grid.Row="0"
-                                            AnimationDuration="1000"
                                             Fill="{StaticResource Brush.CardBgGradient}"
                                             IsActive="True"
-                                            RepeatCount="3"
                                             WaveColor="{StaticResource Secondary}"
-                                            WaveWidth="70">
+                                            WaveWidth="50">
                                             <BoxView BackgroundColor="#E0E0E0" HeightRequest="240" />
                                         </shimmer:SfShimmer>
                                         <!--  Name shimmer  -->

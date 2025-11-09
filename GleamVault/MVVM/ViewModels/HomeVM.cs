@@ -566,7 +566,23 @@ namespace GleamVault.MVVM.ViewModels
             ReplaceCollection(FilteredProducts, results);
         }
 
+        public void FilterProductsByHallmark()
+        {
+            if (AllProducts is null || AllProducts.Count == 0)
+            {
+                ReplaceCollection(FilteredProducts, Array.Empty<Product>());
+                return;
+            }
 
+            IEnumerable<Product> query = AllProducts;      
+            if (SelectedHallmark is HallmarkType hm)
+            {
+                query = query.Where(p => p != null && p.Hallmark == hm);
+            }
+
+            var results = query.ToList();
+            ReplaceCollection(FilteredProducts, results);
+        }
 
 
         private static void ReplaceCollection(ObservableCollection<Product> target, IEnumerable<Product> source)

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.AddDiscountPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views.Popups"
+    xmlns:behaviors="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:ProductVM"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    MaximumHeightRequest="850"
+    VerticalOptions="Center"
+    WidthRequest="750">
+    <toolkit:Popup.Resources>
+        <conv:PriceConverter x:Key="PriceConverter" />
+        <conv:EffectivePriceConverter x:Key="EffectivePriceConverter" />
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        <conv:CategoryColorConverter x:Key="CategoryColorConverter" />
+    </toolkit:Popup.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+        <Border
+            Grid.Row="0"
+            Padding="24,20"
+            Background="{StaticResource Brush.HeaderGradient}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <Border
+                    Grid.Column="0"
+                    HeightRequest="48"
+                    StyleClass="icon-circle"
+                    WidthRequest="48">
+                    <Image
+                        HeightRequest="28"
+                        Source="discount.png"
+                        WidthRequest="28" />
+                </Border>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="4"
+                    VerticalOptions="Center">
+                    <Label StyleClass="h3" Text="Add Discount" />
+                    <Label
+                        FontSize="12"
+                        Text="Select products to apply discount"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Margin="24,16,24,0"
+            Padding="16,12"
+            Background="White"
+            Shadow="{StaticResource Sh.CyanSm}"
+            StrokeShape="RoundRectangle 16"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Image
+                    Grid.Column="0"
+                    HeightRequest="25"
+                    Source="search.png"
+                    VerticalOptions="Center"
+                    WidthRequest="25" />
+                <editors:SfAutocomplete
+                    x:Name="SearchBox"
+                    Grid.Column="1"
+                    Background="Transparent"
+                    ClearButtonIconColor="Cyan"
+                    DisplayMemberPath="Name"
+                    DropDownBackground="White"
+                    DropDownItemHeight="72"
+                    EnableAutoSize="True"
+                    FontFamily="NexaLight"
+                    HorizontalOptions="Fill"
+                    ItemsSource="{Binding AllProducts}"
+                    Placeholder="Search Product by Name..."
+                    PlaceholderColor="Black"
+                    SelectedItems="{Binding SelectedProducts, Mode=TwoWay}"
+                    SelectionChanged="autocomplete_SelectionChanged"
+                    SelectionMode="Multiple"
+                    SelectionTextHighlightColor="LightGray"
+                    Stroke="Transparent"
+                    TokensWrapMode="Wrap"
+                    VerticalOptions="Fill">
+
+                    <editors:SfAutocomplete.ItemTemplate>
+                        <DataTemplate x:DataType="models:Product">
+                            <Grid
+                                Padding="10"
+                                ColumnDefinitions="Auto,*,Auto"
+                                ColumnSpacing="12">
+                                <Border
+                                    Background="{StaticResource Secondary}"
+                                    HeightRequest="40"
+                                    HorizontalOptions="Center"
+                                    StrokeShape="RoundRectangle 999"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="40">
+                                    <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                </Border>
+
+                                <Grid
+                                    Grid.Column="1"
+                                    RowDefinitions="Auto,Auto"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        Grid.Row="0"
+                                        FontFamily="NexaHeavy"
+                                        FontSize="14"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="1"
+                                        Text="{Binding Name}"
+                                        TextColor="{StaticResource TextDark}" />
+
+                                    <HorizontalStackLayout Grid.Row="1" Spacing="6">
+                                        <Label
+                                            FontSize="12"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="1"
+                                            Text="{Binding Sku}"
+                                            TextColor="{StaticResource TextLight}" />
+                                        <Border
+                                            Padding="6,2"
+                                            Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0">
+                                            <Label
+                                                FontSize="11"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding Category.Name}"
+                                                TextColor="White" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <VerticalStackLayout
+                                    Grid.Column="2"
+                                    HorizontalOptions="End"
+                                    Spacing="6"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontFamily="NexaHeavy"
+                                        FontSize="13"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
+                                        TextColor="{StaticResource Primary}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </editors:SfAutocomplete.ItemTemplate>
+                </editors:SfAutocomplete>
+            </Grid>
+        </Border>
+        <CollectionView
+            Grid.Row="2"
+            Margin="10,20,24,10"
+            ItemsSource="{Binding FilteredProducts}"
+            SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Product">
+                    <Border
+                        Padding="20,18"
+                        Background="White"
+                        MinimumHeightRequest="100"
+                        Shadow="{StaticResource Sh.CyanSm}"
+                        StrokeShape="RoundRectangle 18"
+                        StrokeThickness="0">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="20">
+                            <Border
+                                Grid.Column="0"
+                                Background="{StaticResource Secondary}"
+                                HeightRequest="95"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                VerticalOptions="Center"
+                                WidthRequest="95">
+                                <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                            </Border>
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                Spacing="12"
+                                VerticalOptions="Center">
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="18"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="2"
+                                    Text="{Binding Name}"
+                                    TextColor="{StaticResource TextDark}" />
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Label
+                                        FontFamily="NexaHeavy"
+                                        FontSize="20"
+                                        Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
+                                        TextColor="{StaticResource Primary}"
+                                        VerticalOptions="Center" />
+                                    <Border
+                                        Padding="8,4"
+                                        BackgroundColor="#1AFF0000"
+                                        IsVisible="{Binding OfferPrice, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontFamily="NexaHeavy"
+                                            FontSize="12"
+                                            Text="OFFER"
+                                            TextColor="Red"
+                                            VerticalOptions="Center" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <Border
+                                Grid.Column="2"
+                                Padding="0"
+                                Background="{StaticResource Brush.ButtonGradient}"
+                                HeightRequest="50"
+                                StrokeShape="RoundRectangle 25"
+                                StrokeThickness="0"
+                                VerticalOptions="Center"
+                                WidthRequest="50">
+                                <Image
+                                    Aspect="AspectFit"
+                                    Source="pen.png"
+                                    VerticalOptions="Center" />
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:AddDiscountPopup}}, Path=BindingContext.ShowDiscountPromptCommand}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Border
+            Grid.Row="3"
+            Padding="24,20"
+            Background="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Button
+                Background="{StaticResource Brush.ButtonGradient}"
+                Clicked="CloseButton_Clicked"
+                CornerRadius="14"
+                FontFamily="NexaHeavy"
+                FontSize="17"
+                HeightRequest="52"
+                HorizontalOptions="Fill"
+                Shadow="{StaticResource Sh.CyanMd}"
+                Text="Close"
+                TextColor="White" />
+        </Border>
+    </Grid>
+</toolkit:Popup>

@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui.Extensions;
 using GleamVault.MVVM.Views.Popups;
 using GleamVault.TestData;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using PropertyChanged;
 using Shared.Models;
 using Shared.Models.Enums;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -38,9 +41,17 @@ namespace GleamVault.MVVM.ViewModels
         {
             if (product == null) return;
             await Shell.Current.ShowPopupAsync(new ProductDetailsPopup(product));
-
         });
+
+        public ICommand ShowDiscountPromptCommand => new Command<Product>(async (product) =>
+        {
+            if (product == null) return;
+            await ShowDiscountPromptForProductAsync(product);
+        });
+
+        public ICommand ShowAddDiscountPopupCommand => new Command(async () => await ShowAddDiscountPopupAsync());
         #endregion
+
         #region Properties
         public ObservableCollection<object> ShimmerItems
         {
@@ -138,6 +149,64 @@ namespace GleamVault.MVVM.ViewModels
         }
         #endregion
 
+        #region Tasks
+        public async Task ShowAddDiscountPopupAsync()
+        {
+            await Shell.Current.ShowPopupAsync(new AddDiscountPopup(this));
+        }
+
+        public async Task ShowDiscountPromptForProductAsync(Product product)
+        {
+            if (product == null) return;
+            var initialValue = product.OfferPrice > 0 ? product.OfferPrice.ToString("F2") : "";
+            var result = await Shell.Current.DisplayPromptAsync(
+                "Enter Discount Price",
+                $"Enter the discount price for {product.Name} (must be >= 50% of unit price ${product.UnitPrice:F2}):",
+                "OK",
+                "Cancel",
+                initialValue,
+                -1,
+                Keyboard.Numeric);
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return;
+            }
+
+            if (!float.TryParse(result, out float discountPrice))
+            {
+                await Shell.Current.DisplayAlert("⚠️ Invalid Input", "Please enter a valid number.", "OK");
+                return;
+            }
+
+            if (discountPrice <= 0)
+            {
+                await Shell.Current.DisplayAlert("⚠️ Invalid Price", "Discount price must be greater than 0.", "OK");
+                return;
+            }
+
+            var minPrice = product.UnitPrice * 0.5f;
+            if (discountPrice < minPrice)
+            {
+                await Shell.Current.DisplayAlert("⚠️ Invalid Price", $"Discount price must be at least 50% of unit price (${minPrice:F2}).", "OK");
+                return;
+            }
+
+            await UpdateProductDiscount(product, discountPrice);
+        }
+        public async Task UpdateProductDiscount(Product product, float discountPrice)
+        {
+            if (product == null) return;
+            var targetProduct = AllProducts.FirstOrDefault(p => p.Id == product.Id);
+            if (targetProduct != null && discountPrice > 0)
+            {
+                targetProduct.OfferPrice = discountPrice;
+                await LoadDataAsync();
+            }
+        }
+
+        #endregion
+
         #region Methods
         public void FilterProducts()
         {
@@ -196,7 +265,23 @@ namespace GleamVault.MVVM.ViewModels
             var results = query.ToList();
             ReplaceCollection(FilteredProducts, results);
         }
+        public void FilterProductsByHallmark()
+        {
+            if (AllProducts is null || AllProducts.Count == 0)
+            {
+                ReplaceCollection(FilteredProducts, Array.Empty<Product>());
+                return;
+            }
 
+            IEnumerable<Product> query = AllProducts;
+            if (SelectedHallmark is HallmarkType hm)
+            {
+                query = query.Where(p => p != null && p.Hallmark == hm);
+            }
+
+            var results = query.ToList();
+            ReplaceCollection(FilteredProducts, results);
+        }
         private static void ReplaceCollection(ObservableCollection<Product> target, IEnumerable<Product> source)
         {
             var list = source is IList<Product> l ? l : source.ToList();
@@ -227,6 +312,7 @@ namespace GleamVault.MVVM.ViewModels
             ReplaceCollection(FilteredProducts, sortedList);
         }
 
+        #endregion
         public void ClearALL()
         {
             AllProducts.Clear();
@@ -249,16 +335,18 @@ namespace GleamVault.MVVM.ViewModels
             ClearALL();
             GetHallmarks();
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            //var product = TestProducts.Products;
+            //foreach (var p in product)
+            //{
+            //    AllProducts.Add(p);
+            //}
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
-            await Task.Delay(3000); // Simulate data loading delay
+            await Task.Delay(3000);
             IsDataLoading = false;
             ShimmerLoading = false;
             ShimmerNotLoading = true;
-
         }
-        #endregion
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

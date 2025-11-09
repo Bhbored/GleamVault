@@ -59,7 +59,7 @@ public partial class ProductPage : ContentPage
     {
         if (BindingContext is ProductVM vm)
         {
-            vm.FilterProductsByCategory();
+            vm.FilterProductsByHallmark();
         }
     }
 

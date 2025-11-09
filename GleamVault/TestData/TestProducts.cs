@@ -1,12 +1,60 @@
 using Bogus;
+using PropertyChanged;
 using Shared.Models;
 using Shared.Models.Enums;
+using System.Collections.ObjectModel;
 
 namespace GleamVault.TestData
 {
+    [AddINotifyPropertyChangedInterface]
+
     public class TestProducts
     {
+        private ObservableCollection<Category> categories = new ObservableCollection<Category>(GetCategories());
 
+
+
+        public static ObservableCollection<Product> Products { get; set; } = new()
+        {
+             new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "RG001",
+            Name = "Classic Gold Wedding Band",
+            Description = "Elegant 18K gold wedding band with polished finish",
+            CategoryId = Guid.NewGuid(),
+            UnitCost = 450f,
+            UnitPrice = 899f,
+            OfferPrice = 799f,
+            CurrentStock = 15,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 4.2f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "RG002",
+            Name = "Diamond Engagement Ring",
+            Description = "Stunning 1-carat solitaire diamond ring in platinum setting",
+            CategoryId = Guid.NewGuid(),
+            UnitCost = 1200f,
+            UnitPrice = 2500f,
+            CurrentStock = 8,
+            Hallmark = HallmarkType.Sterling925,
+            WeightUnit = WeightUnit.Carats,
+            Weight = 1.0f
+        },
+
+        };
+        public ObservableCollection<Category> Categories
+        {
+            get => categories;
+            set
+            {
+                categories = value;
+            }
+        }
         public static List<Product> GetProducts()
         {
             var categories = new List<Category>
@@ -35,6 +83,7 @@ namespace GleamVault.TestData
             Category = categories[0],
             UnitCost = 450f,
             UnitPrice = 899f,
+            OfferPrice = 799f,
             CurrentStock = 15,
             Hallmark = HallmarkType.Gold18K,
             WeightUnit = WeightUnit.Grams,
@@ -317,5 +366,8 @@ namespace GleamVault.TestData
 
             return testCustomers;
         }
+
+
+
     }
 }
