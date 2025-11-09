@@ -126,8 +126,10 @@
                                         Grid.Row="1"
                                         Padding="6,2"
                                         Background="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
+                                        HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 6"
-                                        StrokeThickness="0">
+                                        StrokeThickness="0"
+                                        WidthRequest="80">
                                         <Label
                                             FontSize="11"
                                             LineBreakMode="TailTruncation"

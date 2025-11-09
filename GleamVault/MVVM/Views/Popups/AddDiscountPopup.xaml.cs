@@ -1,8 +1,9 @@
+using CommunityToolkit.Maui.Views;
 using GleamVault.MVVM.ViewModels;
 
 namespace GleamVault.MVVM.Views.Popups;
 
-public partial class AddDiscountPopup : CommunityToolkit.Maui.Views.Popup
+public partial class AddDiscountPopup : Popup
 {
     public AddDiscountPopup(ProductVM viewModel)
     {

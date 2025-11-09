@@ -28,7 +28,6 @@ public partial class AddProductPopup : Popup
         var hallmark = HallmarkPicker.SelectedItem as HallmarkType?;
         var unitCost = float.TryParse(UnitCostEntry.Text, out var cost) ? cost : 0f;
         var unitPrice = float.TryParse(UnitPriceEntry.Text, out var price) ? price : 0f;
-        var imageUrl = ImageUrlEntry.Text?.Trim();
         var weightUnit = WeightUnitPicker.SelectedItem as WeightUnit? ?? WeightUnit.Grams;
         var weight = float.TryParse(WeightEntry.Text, out var w) ? w : 0f;
         var isUniquePiece = IsUniquePieceSwitch.IsToggled;
@@ -40,7 +39,6 @@ public partial class AddProductPopup : Popup
             hallmark,
             unitCost,
             unitPrice,
-            imageUrl,
             weightUnit,
             weight,
             isUniquePiece

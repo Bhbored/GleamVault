@@ -1,12 +1,20 @@
 ﻿using GleamVault.MVVM.ViewModels;
 using GleamVault.MVVM.Views;
+using GleamVault.Services.Interfaces;
 
 
 namespace GleamVault.Services
 {
     public static class DIContainer
     {
+        public static IServiceCollection RegisterImageServices(this IServiceCollection services)
+        {
 
+            services.AddSingleton<IImageService, MockImageService>();
+            services.AddSingleton<IImageService, ImageService>();
+            services.AddSingleton<CleanupService>();
+            return services;
+        }
         public static IServiceCollection RegisterAuthServices(this IServiceCollection services)
         {
 
@@ -36,6 +44,7 @@ namespace GleamVault.Services
         public static IServiceCollection RegisterDependencies(this IServiceCollection services)
         {
             return services
+                    .RegisterImageServices()
                     .RegisterViews()
                     .RegisterViewModels();
         }

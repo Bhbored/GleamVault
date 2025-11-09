@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Extensions;
 using GleamVault.MVVM.Views.Popups;
+using GleamVault.Services.Interfaces;
 using GleamVault.TestData;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -22,6 +23,12 @@ namespace GleamVault.MVVM.ViewModels
 
     public partial class ProductVM : INotifyPropertyChanged
     {
+
+        public ProductVM(IImageService imageService)
+        {
+            _imageService = imageService;
+        }
+
         #region Fields
         private ObservableCollection<Product> _allProducts = new();
         private ObservableCollection<Product> _filteredProducts = new();
@@ -34,6 +41,8 @@ namespace GleamVault.MVVM.ViewModels
         private bool shimmerLoading = true;
         private bool shimmerNotLoading = false;
         private readonly ObservableCollection<object> _shimmerItems = new();
+        private readonly IImageService? _imageService;
+        private string? _selectedImagePath;
         #endregion
 
         #region Commands
@@ -52,6 +61,10 @@ namespace GleamVault.MVVM.ViewModels
         public ICommand ShowAddDiscountPopupCommand => new Command(async () => await ShowAddDiscountPopupAsync());
 
         public ICommand ShowAddProductPopupCommand => new Command(async () => await ShowAddProductPopupAsync());
+
+        public ICommand PickImageCommand => new Command(async () => await PickImageAsync());
+
+        public ICommand ClearImageCommand => new Command(() => ClearSelectedImage());
         #endregion
 
         #region Properties
@@ -173,9 +186,24 @@ namespace GleamVault.MVVM.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public string? SelectedImagePath
+        {
+            get => _selectedImagePath;
+            set
+            {
+                if (_selectedImagePath == value) return;
+                _selectedImagePath = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasSelectedImage));
+            }
+        }
+
+        public bool HasSelectedImage => !string.IsNullOrWhiteSpace(_selectedImagePath);
         #endregion
 
         #region Tasks
+
         public async Task ShowAddDiscountPopupAsync()
         {
             await Shell.Current.ShowPopupAsync(new AddDiscountPopup(this));
@@ -184,6 +212,7 @@ namespace GleamVault.MVVM.ViewModels
         public async Task ShowAddProductPopupAsync()
         {
             NewProduct = new Product();
+            SelectedImagePath = null;
             GetWeightUnits();
             if (AllCategories.Count == 0)
             {
@@ -199,7 +228,6 @@ namespace GleamVault.MVVM.ViewModels
             HallmarkType? hallmark,
             float unitCost,
             float unitPrice,
-            string? imageUrl,
             WeightUnit weightUnit,
             float weight,
             bool isUniquePiece)
@@ -222,6 +250,43 @@ namespace GleamVault.MVVM.ViewModels
                 return;
             }
 
+            string imageUrl = "default_product.gif";
+            if (!string.IsNullOrWhiteSpace(_selectedImagePath))
+            {
+                if (_imageService != null)
+                {
+                    var imagesPath = @"C:\Users\Bhbored\Documents\C#\Maui\GleamVault\GleamVault\Resources\Images";
+                    if (!Directory.Exists(imagesPath))
+                        Directory.CreateDirectory(imagesPath);
+
+                    var fileName = Path.GetFileName(_selectedImagePath);
+                    var destPath = Path.Combine(imagesPath, fileName);
+
+                    if (File.Exists(_selectedImagePath))
+                    {
+                        if (File.Exists(destPath))
+                        {
+                            var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                            var extension = Path.GetExtension(fileName);
+                            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                            fileName = $"{nameWithoutExt}_{timestamp}{extension}";
+                            destPath = Path.Combine(imagesPath, fileName);
+                        }
+
+                        File.Copy(_selectedImagePath, destPath, true);
+                        imageUrl = destPath;
+                    }
+                    else
+                    {
+                        imageUrl = _selectedImagePath;
+                    }
+                }
+                else
+                {
+                    imageUrl = _selectedImagePath;
+                }
+            }
+
             var sku = GenerateSku(category.Name, hallmark.Value);
             var product = new Product
             {
@@ -234,15 +299,46 @@ namespace GleamVault.MVVM.ViewModels
                 Hallmark = hallmark.Value,
                 UnitCost = unitCost,
                 UnitPrice = unitPrice,
-                ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? "default_product.gif" : imageUrl,
+                ImageUrl = imageUrl,
                 WeightUnit = weightUnit,
                 Weight = weight,
                 IsUniquePiece = isUniquePiece,
             };
 
             AllProducts.Add(product);
-            FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await LoadDataAsync();
+        }
+
+        public async Task PickImageAsync()
+        {
+            try
+            {
+                var fileResult = await FilePicker.Default.PickAsync(new PickOptions
+                {
+                    PickerTitle = "Select Product Image",
+                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                    {
+                        { DevicePlatform.WinUI, new[] { ".jpg", ".jpeg", ".png", ".gif" } },
+                        { DevicePlatform.Android, new[] { "image/*" } },
+                        { DevicePlatform.iOS, new[] { "public.image" } },
+                        { DevicePlatform.MacCatalyst, new[] { "public.image" } }
+                    })
+                });
+
+                if (fileResult != null)
+                {
+                    SelectedImagePath = fileResult.FullPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to pick image: {ex.Message}", "OK");
+            }
+        }
+
+        public void ClearSelectedImage()
+        {
+            SelectedImagePath = null;
         }
 
         public async Task ShowDiscountPromptForProductAsync(Product product)
@@ -469,6 +565,7 @@ namespace GleamVault.MVVM.ViewModels
             AllCategories.Clear();
             FilteredProducts.Clear();
             AllHallmarks.Clear();
+            SelectedImagePath = null;
             SelectedCategory = new Category();
             IsDataLoading = true;
             ShimmerLoading = true;
@@ -479,6 +576,7 @@ namespace GleamVault.MVVM.ViewModels
                 _shimmerItems.Add(new object());
             }
             OnPropertyChanged(nameof(ShimmerItems));
+
         }
         public async Task LoadDataAsync()
         {
