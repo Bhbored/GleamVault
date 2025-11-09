@@ -20,10 +20,6 @@
         <conv:HallmarkTypeConverter x:Key="HallmarkTypeConverter" />
         <conv:WeightUnitConverter x:Key="WeightUnitConverter" />
         <conv:CategoryColorConverter x:Key="CategoryColorConverter" />
-        <conv:StockToColorConverter x:Key="StockToColorConverter" />
-        <conv:StockStatusColorConverter x:Key="StockStatusColorConverter" />
-        <conv:StockStatusTextConverter x:Key="StockStatusTextConverter" />
-        <conv:StockToBoolConverter x:Key="StockToBoolConverter" />
         <conv:HallmarkColorConverter x:Key="HallmarkColorConverter" />
 
     </ContentPage.Resources>
@@ -75,20 +71,21 @@
                 </HorizontalStackLayout>
                 <HorizontalStackLayout
                     Grid.Column="1"
-                    Spacing="10"
+                    Spacing="20"
                     VerticalOptions="Center">
                     <Border
-                        Padding="12,10"
+                        Padding="10"
                         Background="{StaticResource Brush.CardBgGradient}"
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                             <Image
-                                HeightRequest="20"
+                                HeightRequest="25"
                                 Source="reports.png"
-                                WidthRequest="20" />
+                                WidthRequest="25" />
                             <Label
+                                Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Export CSV"
@@ -101,12 +98,13 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                             <Image
-                                HeightRequest="20"
+                                HeightRequest="25"
                                 Source="discount.png"
-                                WidthRequest="20" />
+                                WidthRequest="25" />
                             <Label
+                                Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Add Discount"
@@ -119,12 +117,13 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 10"
                         StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
                             <Image
-                                HeightRequest="20"
+                                HeightRequest="25"
                                 Source="add.png"
-                                WidthRequest="20" />
+                                WidthRequest="25" />
                             <Label
+                                Margin="0"
                                 FontAttributes="Bold"
                                 StyleClass="body"
                                 Text="Add Product"
@@ -299,7 +298,6 @@
                 </Border>
             </Grid>
 
-
             <!--  Filters  -->
             <Grid
                 Grid.Row="2"
@@ -463,7 +461,103 @@
                 </HorizontalStackLayout>
             </Grid>
 
-
+        </Grid>
+        <Grid Grid.Row="1" Margin="20,0,20,20">
+            <Border
+                Background="{StaticResource Brush.BackgroundGradient}"
+                HorizontalOptions="Fill"
+                Shadow="{StaticResource Sh.CyanLg}"
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0"
+                VerticalOptions="Fill">
+                <syncfusion:SfListView
+                    x:Name="ProductsList"
+                    Margin="10,10,10,0"
+                    AutoFitMode="Height"
+                    ItemSpacing="10"
+                    ItemsSource="{Binding FilteredProducts}"
+                    SelectionBackground="Transparent"
+                    SelectionMode="None">
+                    <syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="3" />
+                    </syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Product">
+                            <Border
+                                Padding="0"
+                                Background="White"
+                                MinimumHeightRequest="340"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0">
+                                <AbsoluteLayout>
+                                    <Image
+                                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                        AbsoluteLayout.LayoutFlags="All"
+                                        Aspect="AspectFill"
+                                        Source="{Binding ImageUrl}" />
+                                    <Border
+                                        Margin="0,8,0,0"
+                                        AbsoluteLayout.LayoutBounds="0.95,0,35,35"
+                                        AbsoluteLayout.LayoutFlags="XProportional,YProportional"
+                                        BackgroundColor="White"
+                                        HeightRequest="35"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        WidthRequest="35">
+                                        <Image
+                                            BackgroundColor="Transparent"
+                                            HeightRequest="30"
+                                            Source="more.png"
+                                            WidthRequest="30" />
+                                    </Border>
+                                    <Border
+                                        Padding="10"
+                                        AbsoluteLayout.LayoutBounds="0,1,1,80"
+                                        AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                                        Background="#B3000000"
+                                        StrokeThickness="0">
+                                        <Grid
+                                            ColumnDefinitions="*,Auto"
+                                            RowDefinitions="Auto,Auto"
+                                            RowSpacing="6">
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                FontFamily="NexaHeavy"
+                                                FontSize="16"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding Name}"
+                                                TextColor="White"
+                                                VerticalOptions="Start" />
+                                            <Label
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                FontFamily="NexaLight"
+                                                FontSize="12"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding Sku, StringFormat='SKU: {0}'}"
+                                                TextColor="#B0B0B0"
+                                                VerticalOptions="Start" />
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                FontFamily="NexaHeavy"
+                                                FontSize="16"
+                                                HorizontalTextAlignment="End"
+                                                Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                TextColor="White"
+                                                VerticalOptions="Start" />
+                                        </Grid>
+                                    </Border>
+                                </AbsoluteLayout>
+                            </Border>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+            </Border>
         </Grid>
     </Grid>
 </ContentPage>

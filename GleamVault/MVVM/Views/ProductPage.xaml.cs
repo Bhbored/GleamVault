@@ -10,6 +10,19 @@ public partial class ProductPage : ContentPage
 		InitializeComponent();
 		BindingContext = vm;
     }
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+        if (ProductGridLayout == null) return;
+        var span = width switch
+        {
+            < 900 => 2,
+            < 1300 => 3,
+            _ => 3
+        };
+        if (ProductGridLayout.SpanCount != span)
+            ProductGridLayout.SpanCount = span;
+    }
     protected async override void OnAppearing()
     {
         base.OnAppearing();
