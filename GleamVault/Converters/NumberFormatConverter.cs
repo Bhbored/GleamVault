@@ -4,23 +4,27 @@ using Microsoft.Maui.Controls;
 
 namespace GleamVault.Converters
 {
-    public class TrendColorConverter : IValueConverter
+    public class NumberFormatConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is float floatValue)
             {
-                return floatValue >= 0f ? Colors.Green : Colors.Red;
+                return floatValue.ToString("#,##0");
             }
             if (value is double doubleValue)
             {
-                return doubleValue >= 0 ? Colors.Green : Colors.Red;
+                return doubleValue.ToString("#,##0");
+            }
+            if (value is int intValue)
+            {
+                return intValue.ToString("#,##0");
             }
             if (value is decimal decimalValue)
             {
-                return decimalValue >= 0 ? Colors.Green : Colors.Red;
+                return decimalValue.ToString("#,##0");
             }
-            return Colors.Green;
+            return value?.ToString() ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

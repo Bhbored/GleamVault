@@ -1,5 +1,6 @@
 ﻿using GleamVault.Services.Interfaces;
 using GleamVault.TestData;
+using GleamVault.Utility;
 using PropertyChanged;
 using Shared.Models;
 using Shared.Models.Enums;
@@ -14,6 +15,7 @@ using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using System.Timers;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Graphics;
 
 namespace GleamVault.MVVM.ViewModels
 {
@@ -29,6 +31,18 @@ namespace GleamVault.MVVM.ViewModels
         private bool _isLoading = true;
         private System.Timers.Timer _priceUpdateTimer;
         private Random _priceRandom = new Random();
+        #endregion
+
+        #region Properties - All Transactions
+        public ObservableCollection<Transaction> AllTransactions
+        {
+            get => _allTransactions;
+            set
+            {
+                _allTransactions = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Properties - Gold Price
@@ -91,9 +105,7 @@ namespace GleamVault.MVVM.ViewModels
 
         #region Properties - E-Commerce Sales
         public float ECommerceRevenue { get; set; }
-        public float ECommerceGoldWeight { get; set; }
-        public ObservableCollection<ChannelData> ECommerceRevenueByChannel { get; set; } = new();
-        public ObservableCollection<ChannelData> ECommerceGoldWeightByChannel { get; set; } = new();
+        public ObservableCollection<SaleTypeData> ECommerceRevenueByMaterial { get; set; } = new();
         #endregion
 
         #region Constructor
@@ -124,11 +136,14 @@ namespace GleamVault.MVVM.ViewModels
             _isLoading = true;
             OnPropertyChanged(nameof(IsLoading));
 
+            ClearAll();
+
             var products = TestProducts.GetProducts();
             var customers = TestProducts.GetCustomers();
             TestTransactions.GenerateTestTransactions(products, customers);
 
             _allTransactions = TestTransactions.Transactions;
+            AllTransactions = new ObservableCollection<Transaction>(TestTransactions.Transactions);
             _allCustomers = new ObservableCollection<Customer>(customers);
 
             await LoadGoldPriceDataAsync();
@@ -140,6 +155,14 @@ namespace GleamVault.MVVM.ViewModels
 
             _isLoading = false;
             OnPropertyChanged(nameof(IsLoading));
+        }
+
+        private void ClearAll()
+        {
+            GoldWeightBySaleType.Clear();
+            RevenueBySaleType.Clear();
+            CustomerCountBySaleType.Clear();
+            ECommerceRevenueByMaterial.Clear();
         }
 
         private async Task LoadGoldPriceDataAsync()
@@ -227,33 +250,79 @@ namespace GleamVault.MVVM.ViewModels
         #endregion
 
         #region Methods - Calculations
+        private bool IsGoldHallmark(HallmarkType? hallmark)
+        {
+            if (!hallmark.HasValue) return false;
+            return hallmark.Value == HallmarkType.Gold9K ||
+                   hallmark.Value == HallmarkType.Gold10K ||
+                   hallmark.Value == HallmarkType.Gold14K ||
+                   hallmark.Value == HallmarkType.Gold18K ||
+                   hallmark.Value == HallmarkType.Gold21K;
+        }
+
+        private float ConvertToGrams(float weight, WeightUnit? weightUnit)
+        {
+            if (!weightUnit.HasValue || weightUnit.Value == WeightUnit.Grams)
+                return weight;
+
+            return weightUnit.Value switch
+            {
+                WeightUnit.Carats => weight * 0.2f,
+                WeightUnit.Ounces => weight * 28.3495f,
+                WeightUnit.Pennyweight => weight * 1.55517f,
+                WeightUnit.Kilograms => weight * 1000f,
+                _ => weight
+            };
+        }
+
         private void CalculateGoldWeightMetrics()
         {
-            var directSaleWeight = _allTransactions
-                .Where(t => t.Description == "Direct Sale" && t.Type == TransactionType.Sell)
+            var directSaleWeight = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell && t.Channel == SaleChannel.InStore)
                 .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+                .Where(i => IsGoldHallmark(i.Hallmark) && i.Weight.HasValue && i.Weight.Value > 0)
+                .Sum(i => ConvertToGrams(i.Weight.Value, i.WeightUnit) * i.Quantity);
 
-            var bespokeWeight = _allTransactions
-                .Where(t => t.Description == "Bespoke" && t.Type == TransactionType.CustomeOrder)
+            var onlineWeight = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell && t.Channel == SaleChannel.Online)
                 .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+                .Where(i => IsGoldHallmark(i.Hallmark) && i.Weight.HasValue && i.Weight.Value > 0)
+                .Sum(i => ConvertToGrams(i.Weight.Value, i.WeightUnit) * i.Quantity);
 
-            var goldBookingWeight = _allTransactions
-                .Where(t => t.Description == "Gold Booking" && t.Type == TransactionType.Sell)
+            var customOrderWeight = AllTransactions
+                .Where(t => t.Type == TransactionType.CustomeOrder)
                 .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+                .Where(i => IsGoldHallmark(i.Hallmark) && i.Weight.HasValue && i.Weight.Value > 0)
+                .Sum(i => ConvertToGrams(i.Weight.Value, i.WeightUnit) * i.Quantity);
 
-            TotalGoldWeightSold = directSaleWeight + bespokeWeight + goldBookingWeight;
+            TotalGoldWeightSold = directSaleWeight + onlineWeight + customOrderWeight;
             TotalGoldWeightValue = TotalGoldWeightSold * (float)CurrentGoldPrice.Price;
 
             GoldWeightBySaleType.Clear();
-            GoldWeightBySaleType.Add(new SaleTypeData { Name = "Direct Sale", Value = directSaleWeight, Percentage = TotalGoldWeightSold > 0 ? (directSaleWeight / TotalGoldWeightSold) * 100 : 0 });
-            GoldWeightBySaleType.Add(new SaleTypeData { Name = "Bespoke", Value = bespokeWeight, Percentage = TotalGoldWeightSold > 0 ? (bespokeWeight / TotalGoldWeightSold) * 100 : 0 });
-            GoldWeightBySaleType.Add(new SaleTypeData { Name = "Gold Booking", Value = goldBookingWeight, Percentage = TotalGoldWeightSold > 0 ? (goldBookingWeight / TotalGoldWeightSold) * 100 : 0 });
+            if (TotalGoldWeightSold > 0)
+            {
+                GoldWeightBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Direct Sale",
+                    Value = directSaleWeight,
+                    Percentage = (directSaleWeight / TotalGoldWeightSold) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#2D5016"))
+                });
+                GoldWeightBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Online",
+                    Value = onlineWeight,
+                    Percentage = (onlineWeight / TotalGoldWeightSold) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#7CB342"))
+                });
+                GoldWeightBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Custom Order",
+                    Value = customOrderWeight,
+                    Percentage = (customOrderWeight / TotalGoldWeightSold) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#8D6E63"))
+                });
+            }
 
             OnPropertyChanged(nameof(TotalGoldWeightSold));
             OnPropertyChanged(nameof(TotalGoldWeightValue));
@@ -262,36 +331,58 @@ namespace GleamVault.MVVM.ViewModels
 
         private void CalculateRevenueMetrics()
         {
-            var directSaleRevenue = _allTransactions
-                .Where(t => t.Description == "Direct Sale" && t.Type == TransactionType.Sell)
+            var directSaleRevenue = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell && t.Channel == SaleChannel.InStore)
+                .SelectMany(t => t.Items ?? new List<TransactionItem>())
+                .Sum(i => i.UnitPrice * i.Quantity);
+
+            var onlineRevenue = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell && t.Channel == SaleChannel.Online)
+                .SelectMany(t => t.Items ?? new List<TransactionItem>())
+                .Sum(i => i.UnitPrice * i.Quantity);
+
+            var customOrderRevenue = AllTransactions
+                .Where(t => t.Type == TransactionType.CustomeOrder)
+                .SelectMany(t => t.Items ?? new List<TransactionItem>())
+                .Sum(i => i.UnitPrice * i.Quantity);
+
+            var repairementRevenue = AllTransactions
+                .Where(t => t.Type == TransactionType.Repairement)
                 .Sum(t => t.TotalAmount);
 
-            var bespokeRevenue = _allTransactions
-                .Where(t => t.Description == "Bespoke" && t.Type == TransactionType.CustomeOrder)
-                .Sum(t => t.TotalAmount);
-
-            var repairRevenue = _allTransactions
-                .Where(t => t.Description == "Repair" && t.Type == TransactionType.Repairement)
-                .Sum(t => t.TotalAmount);
-
-            var goldBookingRevenue = _allTransactions
-                .Where(t => t.Description == "Gold Booking" && t.Type == TransactionType.Sell)
-                .Sum(t => t.TotalAmount);
-
-            var giftCardRevenue = _allTransactions
-                .Where(t => t.Description == "Gift Card" && t.Type == TransactionType.Sell)
-                .Sum(t => t.TotalAmount);
-
-            TotalSalesRevenue = directSaleRevenue + bespokeRevenue + repairRevenue + goldBookingRevenue + giftCardRevenue;
+            TotalSalesRevenue = directSaleRevenue + onlineRevenue + customOrderRevenue + repairementRevenue;
 
             RevenueBySaleType.Clear();
             if (TotalSalesRevenue > 0)
             {
-                RevenueBySaleType.Add(new SaleTypeData { Name = "Direct Sale", Value = directSaleRevenue, Percentage = (directSaleRevenue / TotalSalesRevenue) * 100 });
-                RevenueBySaleType.Add(new SaleTypeData { Name = "Bespoke", Value = bespokeRevenue, Percentage = (bespokeRevenue / TotalSalesRevenue) * 100 });
-                RevenueBySaleType.Add(new SaleTypeData { Name = "Repair", Value = repairRevenue, Percentage = (repairRevenue / TotalSalesRevenue) * 100 });
-                RevenueBySaleType.Add(new SaleTypeData { Name = "Gold Booking", Value = goldBookingRevenue, Percentage = (goldBookingRevenue / TotalSalesRevenue) * 100 });
-                RevenueBySaleType.Add(new SaleTypeData { Name = "Gift Cards", Value = giftCardRevenue, Percentage = (giftCardRevenue / TotalSalesRevenue) * 100 });
+                RevenueBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Direct Sale",
+                    Value = directSaleRevenue,
+                    Percentage = (directSaleRevenue / TotalSalesRevenue) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#2D5016"))
+                });
+                RevenueBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Online",
+                    Value = onlineRevenue,
+                    Percentage = (onlineRevenue / TotalSalesRevenue) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#7CB342"))
+                });
+                RevenueBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Custom Order",
+                    Value = customOrderRevenue,
+                    Percentage = (customOrderRevenue / TotalSalesRevenue) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#8D6E63"))
+                });
+                RevenueBySaleType.Add(new SaleTypeData
+                {
+                    Name = "Repairement",
+                    Value = repairementRevenue,
+                    Percentage = (repairementRevenue / TotalSalesRevenue) * 100,
+                    Brush = new SolidColorBrush(Color.FromArgb("#A1887F"))
+                });
             }
 
             OnPropertyChanged(nameof(TotalSalesRevenue));
@@ -300,59 +391,74 @@ namespace GleamVault.MVVM.ViewModels
 
         private void CalculateCustomerMetrics()
         {
-            var last30Days = DateTime.Now.AddDays(-30);
-            var previous30Days = DateTime.Now.AddDays(-60);
+            var now = DateTime.Now;
+            var sevenDaysAgo = now.AddDays(-7);
+            var thirtyDaysAgo = now.AddDays(-30);
+            var previous30DaysStart = now.AddDays(-60);
+            var previous30DaysEnd = now.AddDays(-30);
 
-            var recentCustomers = _allTransactions
-                .Where(t => t.CreatedAt >= last30Days && t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
-                .ToList();
-
-            var previousCustomers = _allTransactions
-                .Where(t => t.CreatedAt >= previous30Days && t.CreatedAt < last30Days && t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
-                .ToList();
-
-            var allCustomerIds = _allTransactions
+            var customerLatestTransactions = AllTransactions
                 .Where(t => t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
+                .GroupBy(t => t.CustomerId.Value)
+                .Select(g => new
+                {
+                    CustomerId = g.Key,
+                    LatestTransactionDate = g.Max(t => t.CreatedAt)
+                })
                 .ToList();
 
-            var newCustomerIds = recentCustomers.Except(previousCustomers).ToList();
-            var returningCustomerIds = recentCustomers.Intersect(previousCustomers).ToList();
+            var newCustomerIds = customerLatestTransactions
+                .Where(c => c.LatestTransactionDate >= sevenDaysAgo)
+                .Select(c => c.CustomerId)
+                .ToList();
+
+            var returningCustomerIds = customerLatestTransactions
+                .Where(c => c.LatestTransactionDate < thirtyDaysAgo)
+                .Select(c => c.CustomerId)
+                .ToList();
+
+            var allCustomerIds = customerLatestTransactions
+                .Select(c => c.CustomerId)
+                .ToList();
 
             NewCustomers = newCustomerIds.Count;
             ReturningCustomers = returningCustomerIds.Count;
             TotalCustomers = allCustomerIds.Count;
 
-            var previousNewCustomers = previousCustomers.Except(
-                _allTransactions
-                    .Where(t => t.CreatedAt >= previous30Days.AddDays(-30) && t.CreatedAt < previous30Days && t.CustomerId.HasValue)
-                    .Select(t => t.CustomerId.Value)
-                    .Distinct()
-            ).Count();
+            var previousCustomerLatestTransactions = AllTransactions
+                .Where(t => t.CustomerId.HasValue && t.CreatedAt < previous30DaysEnd)
+                .GroupBy(t => t.CustomerId.Value)
+                .Select(g => new
+                {
+                    CustomerId = g.Key,
+                    LatestTransactionDate = g.Max(t => t.CreatedAt)
+                })
+                .ToList();
 
-            var previousReturningCustomers = previousCustomers.Count;
-            var previousTotalCustomers = _allTransactions
-                .Where(t => t.CreatedAt < last30Days && t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
+            var previousSevenDaysAgo = previous30DaysEnd.AddDays(-7);
+            var previousNewCustomers = previousCustomerLatestTransactions
+                .Where(c => c.LatestTransactionDate >= previousSevenDaysAgo && c.LatestTransactionDate < previous30DaysEnd)
                 .Count();
+
+            var previousThirtyDaysAgo = previous30DaysEnd.AddDays(-30);
+            var previousReturningCustomers = previousCustomerLatestTransactions
+                .Where(c => c.LatestTransactionDate < previousThirtyDaysAgo)
+                .Count();
+
+            var previousTotalCustomers = previousCustomerLatestTransactions.Count;
 
             NewCustomersChangePercent = previousNewCustomers > 0 ? ((NewCustomers - previousNewCustomers) / (float)previousNewCustomers) * 100 : 0;
             ReturningCustomersChangePercent = previousReturningCustomers > 0 ? ((ReturningCustomers - previousReturningCustomers) / (float)previousReturningCustomers) * 100 : 0;
             TotalCustomersChangePercent = previousTotalCustomers > 0 ? ((TotalCustomers - previousTotalCustomers) / (float)previousTotalCustomers) * 100 : 0;
 
-            var totalVisits = _allTransactions.Count(t => t.CreatedAt >= last30Days);
-            var conversions = _allTransactions.Count(t => t.CreatedAt >= last30Days && t.Type == TransactionType.Sell);
-            OverallConversionRate = totalVisits > 0 ? (conversions / (float)totalVisits) * 100 : 0;
+            var last30Days = now.AddDays(-30);
+            var totalTransactions = AllTransactions.Count(t => t.CreatedAt >= last30Days);
+            var salesTransactions = AllTransactions.Count(t => t.CreatedAt >= last30Days && (t.Type == TransactionType.Sell || t.Type == TransactionType.CustomeOrder));
+            OverallConversionRate = totalTransactions > 0 ? (salesTransactions / (float)totalTransactions) * 100 : 0;
 
-            var previousTotalVisits = _allTransactions.Count(t => t.CreatedAt >= previous30Days && t.CreatedAt < last30Days);
-            var previousConversions = _allTransactions.Count(t => t.CreatedAt >= previous30Days && t.CreatedAt < last30Days && t.Type == TransactionType.Sell);
-            var previousConversionRate = previousTotalVisits > 0 ? (previousConversions / (float)previousTotalVisits) * 100 : 0;
+            var previousTotalTransactions = AllTransactions.Count(t => t.CreatedAt >= previous30DaysStart && t.CreatedAt < previous30DaysEnd);
+            var previousSalesTransactions = AllTransactions.Count(t => t.CreatedAt >= previous30DaysStart && t.CreatedAt < previous30DaysEnd && (t.Type == TransactionType.Sell || t.Type == TransactionType.CustomeOrder));
+            var previousConversionRate = previousTotalTransactions > 0 ? (previousSalesTransactions / (float)previousTotalTransactions) * 100 : 0;
             ConversionRateChangePercent = previousConversionRate > 0 ? ((OverallConversionRate - previousConversionRate) / previousConversionRate) * 100 : 0;
 
             OnPropertyChanged(nameof(NewCustomers));
@@ -367,51 +473,63 @@ namespace GleamVault.MVVM.ViewModels
 
         private void CalculateCustomerCountBySaleType()
         {
-            var directSaleCustomers = _allTransactions
-                .Where(t => t.Description == "Direct Sale" && t.CustomerId.HasValue)
+            var directSaleCustomers = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell
+                    && t.Channel == SaleChannel.InStore
+                    && t.CustomerId.HasValue)
                 .Select(t => t.CustomerId.Value)
                 .Distinct()
                 .Count();
 
-            var bespokeCustomers = _allTransactions
-                .Where(t => t.Description == "Bespoke" && t.CustomerId.HasValue)
+            var onlineCustomers = AllTransactions
+                .Where(t => t.Type == TransactionType.Sell
+                    && t.Channel == SaleChannel.Online
+                    && t.CustomerId.HasValue)
                 .Select(t => t.CustomerId.Value)
                 .Distinct()
                 .Count();
 
-            var appraisalCustomers = _allTransactions
-                .Where(t => t.Description == "Appraisal" && t.CustomerId.HasValue)
+            var customOrderCustomers = AllTransactions
+                .Where(t => t.Type == TransactionType.CustomeOrder
+                    && t.CustomerId.HasValue)
                 .Select(t => t.CustomerId.Value)
                 .Distinct()
                 .Count();
 
-            var repairCustomers = _allTransactions
-                .Where(t => t.Description == "Repair" && t.CustomerId.HasValue)
+            var repairementCustomers = AllTransactions
+                .Where(t => t.Type == TransactionType.Repairement
+                    && t.CustomerId.HasValue)
                 .Select(t => t.CustomerId.Value)
                 .Distinct()
                 .Count();
 
-            var goldBookingCustomers = _allTransactions
-                .Where(t => t.Description == "Gold Booking" && t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
-                .Count();
-
-            var giftCardCustomers = _allTransactions
-                .Where(t => t.Description == "Gift Card" && t.CustomerId.HasValue)
-                .Select(t => t.CustomerId.Value)
-                .Distinct()
-                .Count();
-
-            TotalCustomerCount = directSaleCustomers + bespokeCustomers + appraisalCustomers + repairCustomers + goldBookingCustomers + giftCardCustomers;
+            TotalCustomerCount = directSaleCustomers + onlineCustomers + customOrderCustomers + repairementCustomers;
 
             CustomerCountBySaleType.Clear();
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Direct Sale", Count = directSaleCustomers });
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Bespoke", Count = bespokeCustomers });
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Appraisal", Count = appraisalCustomers });
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Repair", Count = repairCustomers });
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Gold Booking", Count = goldBookingCustomers });
-            CustomerCountBySaleType.Add(new SaleTypeCountData { Name = "Gift Card", Count = giftCardCustomers });
+            CustomerCountBySaleType.Add(new SaleTypeCountData
+            {
+                Name = "Direct Sale",
+                Count = directSaleCustomers,
+                Color = Color.FromArgb("#4ECDC4")
+            });
+            CustomerCountBySaleType.Add(new SaleTypeCountData
+            {
+                Name = "Online",
+                Count = onlineCustomers,
+                Color = Color.FromArgb("#45B7D1")
+            });
+            CustomerCountBySaleType.Add(new SaleTypeCountData
+            {
+                Name = "Custom Order",
+                Count = customOrderCustomers,
+                Color = Color.FromArgb("#96CEB4")
+            });
+            CustomerCountBySaleType.Add(new SaleTypeCountData
+            {
+                Name = "Repairement",
+                Count = repairementCustomers,
+                Color = Color.FromArgb("#FF6B8E")
+            });
 
             OnPropertyChanged(nameof(TotalCustomerCount));
             OnPropertyChanged(nameof(CustomerCountBySaleType));
@@ -419,55 +537,71 @@ namespace GleamVault.MVVM.ViewModels
 
         private void CalculateECommerceMetrics()
         {
-            var onlineTransactions = _allTransactions
+            var onlineTransactions = AllTransactions
                 .Where(t => t.Channel == SaleChannel.Online)
                 .ToList();
 
-            ECommerceRevenue = onlineTransactions.Sum(t => t.TotalAmount);
-
-            ECommerceGoldWeight = onlineTransactions
+            var onlineItems = onlineTransactions
                 .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+                .ToList();
 
-            var websiteRevenue = onlineTransactions
-                .Where(t => t.Description == "Direct Sale" || t.Description == "Bespoke")
-                .Sum(t => t.TotalAmount);
+            var goldRevenue = onlineItems
+                .Where(i => IsGoldHallmark(i.Hallmark))
+                .Sum(i =>
+                {
+                    var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
+                    return (price - i.UnitCost) * i.Quantity;
+                });
 
-            var appRevenue = onlineTransactions
-                .Where(t => t.Description == "Gold Booking" || t.Description == "Gift Card")
-                .Sum(t => t.TotalAmount);
+            var silverRevenue = onlineItems
+                .Where(i => i.Hallmark == HallmarkType.Sterling925)
+                .Sum(i =>
+                {
+                    var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
+                    return (price - i.UnitCost) * i.Quantity;
+                });
 
-            var websiteWeight = onlineTransactions
-                .Where(t => t.Description == "Direct Sale" || t.Description == "Bespoke")
-                .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+            var luxuryRevenue = onlineItems
+                .Where(i => i.Hallmark == HallmarkType.LuxuryBrands)
+                .Sum(i =>
+                {
+                    var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
+                    return (price - i.UnitCost) * i.Quantity;
+                });
 
-            var appWeight = onlineTransactions
-                .Where(t => t.Description == "Gold Booking" || t.Description == "Gift Card")
-                .SelectMany(t => t.Items ?? new List<TransactionItem>())
-                .Where(i => i.WeightUnit == WeightUnit.Grams)
-                .Sum(i => (i.Weight ?? 0) * i.Quantity);
+            ECommerceRevenue = goldRevenue + silverRevenue + luxuryRevenue;
 
-            ECommerceRevenueByChannel.Clear();
+            ECommerceRevenueByMaterial.Clear();
             if (ECommerceRevenue > 0)
             {
-                ECommerceRevenueByChannel.Add(new ChannelData { Name = "Website", Value = websiteRevenue, Percentage = (websiteRevenue / ECommerceRevenue) * 100 });
-                ECommerceRevenueByChannel.Add(new ChannelData { Name = "App", Value = appRevenue, Percentage = (appRevenue / ECommerceRevenue) * 100 });
-            }
-
-            ECommerceGoldWeightByChannel.Clear();
-            if (ECommerceGoldWeight > 0)
-            {
-                ECommerceGoldWeightByChannel.Add(new ChannelData { Name = "Website", Value = websiteWeight, Percentage = (websiteWeight / ECommerceGoldWeight) * 100 });
-                ECommerceGoldWeightByChannel.Add(new ChannelData { Name = "App", Value = appWeight, Percentage = (appWeight / ECommerceGoldWeight) * 100 });
+                if (goldRevenue > 0)
+                    ECommerceRevenueByMaterial.Add(new SaleTypeData
+                    {
+                        Name = "Gold",
+                        Value = goldRevenue,
+                        Percentage = (goldRevenue / ECommerceRevenue) * 100,
+                        Brush = new SolidColorBrush(Color.FromArgb("#FFD700"))
+                    });
+                if (silverRevenue > 0)
+                    ECommerceRevenueByMaterial.Add(new SaleTypeData
+                    {
+                        Name = "Silver",
+                        Value = silverRevenue,
+                        Percentage = (silverRevenue / ECommerceRevenue) * 100,
+                        Brush = new SolidColorBrush(Color.FromArgb("#C0C0C0"))
+                    });
+                if (luxuryRevenue > 0)
+                    ECommerceRevenueByMaterial.Add(new SaleTypeData
+                    {
+                        Name = "Luxury",
+                        Value = luxuryRevenue,
+                        Percentage = (luxuryRevenue / ECommerceRevenue) * 100,
+                        Brush = new SolidColorBrush(Color.FromArgb("#8B4513"))
+                    });
             }
 
             OnPropertyChanged(nameof(ECommerceRevenue));
-            OnPropertyChanged(nameof(ECommerceGoldWeight));
-            OnPropertyChanged(nameof(ECommerceRevenueByChannel));
-            OnPropertyChanged(nameof(ECommerceGoldWeightByChannel));
+            OnPropertyChanged(nameof(ECommerceRevenueByMaterial));
         }
         #endregion
 
@@ -475,21 +609,30 @@ namespace GleamVault.MVVM.ViewModels
         public class SaleTypeData
         {
             public string Name { get; set; } = string.Empty;
-            public float Value { get; set; }
+            private float _value;
+            public float Value
+            {
+                get => _value;
+                set
+                {
+                    _value = value;
+                    DisplayValue = value.ToString("#,##0");
+                }
+            }
+            public string DisplayValue { get; private set; } = string.Empty;
             public float Percentage { get; set; }
+            public Brush Brush { get; set; }
+            public string FormattedValue => Value.ToString("#,##0");
+            public string Label => Value.ToString("#,##0");
+
+            public override string ToString() => DisplayValue;
         }
 
         public class SaleTypeCountData
         {
             public string Name { get; set; } = string.Empty;
             public int Count { get; set; }
-        }
-
-        public class ChannelData
-        {
-            public string Name { get; set; } = string.Empty;
-            public float Value { get; set; }
-            public float Percentage { get; set; }
+            public Color Color { get; set; } = Colors.Gray;
         }
         #endregion
 
