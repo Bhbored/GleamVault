@@ -26,7 +26,7 @@ namespace GleamVault.MVVM.ViewModels
 
         public ProductVM()
         {
-           
+
         }
 
         #region Fields
@@ -252,39 +252,37 @@ namespace GleamVault.MVVM.ViewModels
             string imageUrl = "default_product.gif";
             if (!string.IsNullOrWhiteSpace(_selectedImagePath))
             {
-                if (!string.IsNullOrWhiteSpace(_selectedImagePath))
+                var imagesPath = @"C:\Users\Bhbored\Documents\C#\Maui\GleamVault\GleamVault\Resources\Images";
+                if (!Directory.Exists(imagesPath))
+                    Directory.CreateDirectory(imagesPath);
+
+                var fileName = Path.GetFileName(_selectedImagePath);
+                var destPath = Path.Combine(imagesPath, fileName);
+
+                if (File.Exists(_selectedImagePath))
                 {
-                    var imagesPath = @"C:\Users\Bhbored\Documents\C#\Maui\GleamVault\GleamVault\Resources\Images";
-                    if (!Directory.Exists(imagesPath))
-                        Directory.CreateDirectory(imagesPath);
-
-                    var fileName = Path.GetFileName(_selectedImagePath);
-                    var destPath = Path.Combine(imagesPath, fileName);
-
-                    if (File.Exists(_selectedImagePath))
+                    if (File.Exists(destPath))
                     {
-                        if (File.Exists(destPath))
-                        {
-                            var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-                            var extension = Path.GetExtension(fileName);
-                            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                            fileName = $"{nameWithoutExt}_{timestamp}{extension}";
-                            destPath = Path.Combine(imagesPath, fileName);
-                        }
+                        var nameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                        var extension = Path.GetExtension(fileName);
+                        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        fileName = $"{nameWithoutExt}_{timestamp}{extension}";
+                        destPath = Path.Combine(imagesPath, fileName);
+                    }
 
-                        File.Copy(_selectedImagePath, destPath, true);
-                        imageUrl = destPath;
-                    }
-                    else
-                    {
-                        imageUrl = _selectedImagePath;
-                    }
+                    File.Copy(_selectedImagePath, destPath, true);
+                    imageUrl = destPath;
                 }
                 else
                 {
                     imageUrl = _selectedImagePath;
                 }
             }
+            else
+            {
+                imageUrl = _selectedImagePath;
+            }
+
 
             var sku = GenerateSku(category.Name, hallmark.Value);
             var product = new Product
