@@ -15,6 +15,8 @@ builder.Services.AddDbContext<GleamVaultContext>(options =>
 
 builder.Services.AddSingleton<CategoryRepository, CategoryRepository>();
 builder.Services.AddSingleton<ItemRepository, ItemRepository>();
+builder.Services.AddSingleton<CustomerRepository, CustomerRepository>();
+
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using GleamVault.Services;
+using GleamVault.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
@@ -27,6 +28,7 @@ namespace GleamVault
             builder.Logging.AddDebug();
 #endif
             builder.Services.RegisterDependencies();
+            builder.Services.AddSingleton<IAdvanceHttpService>();
             return builder.Build();
         }
     }
