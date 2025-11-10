@@ -24,9 +24,9 @@ namespace GleamVault.MVVM.ViewModels
     public partial class ProductVM : INotifyPropertyChanged
     {
 
-        public ProductVM(IImageService imageService)
+        public ProductVM()
         {
-            _imageService = imageService;
+           
         }
 
         #region Fields
@@ -41,7 +41,6 @@ namespace GleamVault.MVVM.ViewModels
         private bool shimmerLoading = true;
         private bool shimmerNotLoading = false;
         private readonly ObservableCollection<object> _shimmerItems = new();
-        private readonly IImageService? _imageService;
         private string? _selectedImagePath;
         #endregion
 
@@ -249,11 +248,11 @@ namespace GleamVault.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("⚠️ Validation Error", "Hallmark is required.", "OK");
                 return;
             }
-
+            //anwaryoooo
             string imageUrl = "default_product.gif";
             if (!string.IsNullOrWhiteSpace(_selectedImagePath))
             {
-                if (_imageService != null)
+                if (!string.IsNullOrWhiteSpace(_selectedImagePath))
                 {
                     var imagesPath = @"C:\Users\Bhbored\Documents\C#\Maui\GleamVault\GleamVault\Resources\Images";
                     if (!Directory.Exists(imagesPath))
