@@ -28,7 +28,7 @@ namespace GleamVault
             builder.Logging.AddDebug();
 #endif
             builder.Services.RegisterDependencies();
-            builder.Services.AddSingleton<IAdvanceHttpService>();
+            builder.Services.AddSingleton<IAdvanceHttpService, HttpService>();
             return builder.Build();
         }
     }

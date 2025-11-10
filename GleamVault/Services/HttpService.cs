@@ -14,14 +14,14 @@ namespace GleamVault.Services
     public class HttpService: IAdvanceHttpService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _appName;
+      
 
-        public HttpService(string appName)
+        public HttpService()
         {
             _httpClient = new HttpClient();
-            _appName = appName;
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-               new MediaTypeWithQualityHeaderValue("application/json"));
+           
+            //_httpClient.DefaultRequestHeaders.Accept.Add(
+            //   new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public async Task<bool> Delete(string baseUrl, Guid id)
