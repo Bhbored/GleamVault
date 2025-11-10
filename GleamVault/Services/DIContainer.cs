@@ -15,6 +15,12 @@ namespace GleamVault.Services
             services.AddSingleton<CleanupService>();
             return services;
         }
+
+        public static IServiceCollection RegisterGoldPriceService(this IServiceCollection services)
+        {
+            services.AddSingleton<IGoldPriceService, GoldPriceService>();
+            return services;
+        }
         public static IServiceCollection RegisterAuthServices(this IServiceCollection services)
         {
 
@@ -26,6 +32,7 @@ namespace GleamVault.Services
             services.AddTransient<HomeVM>();
             services.AddTransient<TransactionVM>();
             services.AddTransient<ProductVM>();
+            services.AddTransient<ReportsVM>();
             return services;
         }
 
@@ -45,6 +52,7 @@ namespace GleamVault.Services
         {
             return services
                     .RegisterImageServices()
+                    .RegisterGoldPriceService()
                     .RegisterViews()
                     .RegisterViewModels();
         }

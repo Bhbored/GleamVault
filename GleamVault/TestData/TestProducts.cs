@@ -179,6 +179,172 @@ namespace GleamVault.TestData
             Hallmark = HallmarkType.Gold18K,
             WeightUnit = WeightUnit.Grams,
             Weight = 62.5f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "RG003",
+            Name = "Platinum Wedding Ring Set",
+            Description = "Matching platinum wedding bands with diamond accents",
+            CategoryId = categories[0].Id,
+            Category = categories[0],
+            UnitCost = 1800f,
+            UnitPrice = 3500f,
+            CurrentStock = 6,
+            Hallmark = HallmarkType.Sterling925,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 8.5f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "NK003",
+            Name = "Diamond Tennis Necklace",
+            Description = "Stunning 3-carat diamond tennis necklace in white gold",
+            CategoryId = categories[1].Id,
+            Category = categories[1],
+            UnitCost = 2500f,
+            UnitPrice = 5000f,
+            CurrentStock = 3,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Carats,
+            Weight = 3.0f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "ER003",
+            Name = "Pearl Drop Earrings",
+            Description = "Elegant pearl drop earrings with gold settings",
+            CategoryId = categories[2].Id,
+            Category = categories[2],
+            UnitCost = 250f,
+            UnitPrice = 499f,
+            CurrentStock = 15,
+            Hallmark = HallmarkType.Gold14K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 5.2f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "BR003",
+            Name = "Gold Chain Bracelet",
+            Description = "Classic 21K gold chain bracelet, adjustable length",
+            CategoryId = categories[3].Id,
+            Category = categories[3],
+            UnitCost = 350f,
+            UnitPrice = 699f,
+            CurrentStock = 12,
+            Hallmark = HallmarkType.Gold21K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 12.8f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "RG004",
+            Name = "Vintage Art Deco Ring",
+            Description = "Antique-style art deco ring with emerald and diamonds",
+            CategoryId = categories[0].Id,
+            Category = categories[0],
+            UnitCost = 1100f,
+            UnitPrice = 2200f,
+            CurrentStock = 2,
+            Hallmark = HallmarkType.LuxuryBrands,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 6.3f,
+            IsUniquePiece = true
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "NK004",
+            Name = "Gold Locket Necklace",
+            Description = "Vintage-inspired gold locket with photo frame",
+            CategoryId = categories[1].Id,
+            Category = categories[1],
+            UnitCost = 200f,
+            UnitPrice = 399f,
+            CurrentStock = 18,
+            Hallmark = HallmarkType.Gold14K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 7.1f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "ER004",
+            Name = "Chandelier Earrings",
+            Description = "Dramatic chandelier earrings with multiple gemstones",
+            CategoryId = categories[2].Id,
+            Category = categories[2],
+            UnitCost = 450f,
+            UnitPrice = 899f,
+            CurrentStock = 7,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 9.4f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "BR004",
+            Name = "Diamond Bangle",
+            Description = "Elegant diamond-studded bangle in rose gold",
+            CategoryId = categories[3].Id,
+            Category = categories[3],
+            UnitCost = 1200f,
+            UnitPrice = 2400f,
+            CurrentStock = 4,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 18.5f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "WT003",
+            Name = "Rose Gold Smart Watch",
+            Description = "Modern smartwatch with rose gold finish",
+            CategoryId = categories[4].Id,
+            Category = categories[4],
+            UnitCost = 600f,
+            UnitPrice = 1200f,
+            CurrentStock = 10,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 45.0f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "RG005",
+            Name = "Eternity Band",
+            Description = "Classic eternity band with channel-set diamonds",
+            CategoryId = categories[0].Id,
+            Category = categories[0],
+            UnitCost = 800f,
+            UnitPrice = 1600f,
+            CurrentStock = 9,
+            Hallmark = HallmarkType.Gold18K,
+            WeightUnit = WeightUnit.Carats,
+            Weight = 1.5f
+        },
+        new Product
+        {
+            Id = Guid.NewGuid(),
+            Sku = "NK005",
+            Name = "Gold Choker Necklace",
+            Description = "Bold gold choker with geometric patterns",
+            CategoryId = categories[1].Id,
+            Category = categories[1],
+            UnitCost = 320f,
+            UnitPrice = 649f,
+            CurrentStock = 11,
+            Hallmark = HallmarkType.Gold21K,
+            WeightUnit = WeightUnit.Grams,
+            Weight = 15.2f
         }
     };
 
