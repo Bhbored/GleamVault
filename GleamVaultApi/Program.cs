@@ -2,11 +2,15 @@ using GleamVaultApi.DAL.Services;
 using GleamVaultApi.DB;
 using GleamVaultApi.Extension;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}); 
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -16,6 +20,7 @@ builder.Services.AddDbContext<GleamVaultContext>(options =>
 builder.Services.AddSingleton<CategoryRepository, CategoryRepository>();
 builder.Services.AddSingleton<ItemRepository, ItemRepository>();
 builder.Services.AddSingleton<CustomerRepository, CustomerRepository>();
+builder.Services.AddSingleton<TransactionRepository, TransactionRepository>();
 
 
 

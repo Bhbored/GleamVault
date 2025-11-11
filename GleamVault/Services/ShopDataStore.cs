@@ -35,5 +35,11 @@ namespace GleamVault.Services
             var result = await client.Get<List<Product>>(url);
             return result;
         }
+
+        public async Task<List<Transaction>> GetTransactions()
+        {
+            var result = await client.Get<List<Transaction>>(Constants.API_GET_TRANSACTION);
+            return result;
+        }
     }
 }

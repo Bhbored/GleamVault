@@ -17,6 +17,7 @@ namespace GleamVaultApi.DB
         public DateTime? DateOfBirth { get; set; }
         public string? Notes { get; set; }
         public int LoyaltyPoints { get; set; } = 0;
+        public string? ImageUrl { get; set; }
        
         public ICollection<Transaction> Transaction { get; set; } 
     }

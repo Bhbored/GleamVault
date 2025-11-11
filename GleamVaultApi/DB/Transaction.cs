@@ -25,7 +25,9 @@ namespace GleamVaultApi.DB
         [Required]
         public Guid CreatedByUserId { get; set; }
         public Guid? CustomerID { get; set; }
-        
+        public string? Description { get; set; }
+        public float SubTotalAmount { get; set; }
+
 
         public virtual User CreatedByUser { get; set; }
         public virtual Customer? Customer { get; set; }

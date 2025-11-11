@@ -36,6 +36,9 @@ namespace GleamVaultApi.DB
                 entity.Property(e => e.Description)
                     .HasMaxLength(500);
 
+                entity.Property(e => e.Icon)  
+                    .HasMaxLength(50);   
+
                 entity.Property(e => e.CreatedBy)                   
                     .HasMaxLength(100);
 
@@ -72,6 +75,21 @@ namespace GleamVaultApi.DB
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100);
+
+                entity.Property(e => e.OfferPrice)
+                      .IsRequired(false);
+                      
+
+                entity.Property(e => e.ImageUrl)
+                   .IsRequired(false)
+                   .HasMaxLength(50);
+
+                entity.Property(e => e.Weight)
+                  .HasColumnType("real")
+                  .IsRequired(false);
+
+                entity.Property(e => e.IsUniquePiece)
+                     .HasDefaultValue(false);
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Product)
@@ -131,8 +149,17 @@ namespace GleamVaultApi.DB
                     .HasConversion<string>()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Description)
+                   .HasConversion<string>()
+                   .HasMaxLength(50)
+                   .IsRequired(false);
+
                 entity.Property(e => e.TotalAmount)
-                    .IsRequired(); 
+                    .IsRequired();
+
+                entity.Property(e => e.SubTotalAmount)
+                     .HasColumnType("real")
+                     .IsRequired();
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100);
@@ -160,6 +187,32 @@ namespace GleamVaultApi.DB
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.Sku)
+                  .HasConversion<string>()
+                  .HasMaxLength(50);
+
+                entity.Property(e => e.Description)
+                  .HasConversion<string>()
+                  .IsRequired(false)
+                  .HasMaxLength(50);
+
+
+                entity.Property(e => e.Name)
+                  .HasConversion<string>()
+                  .IsRequired(false)
+                  .HasMaxLength(50);
+
+                entity.Property(e => e.ImageUrl)
+                  .HasConversion<string>()
+                  .HasMaxLength(50);
+
+                entity.Property(e => e.Hallmark)
+                    .HasConversion<string>()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.WeightUnit)
+                    .HasConversion<string>()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UnitPriceAtSale)                  
                     .IsRequired();
@@ -167,7 +220,22 @@ namespace GleamVaultApi.DB
                 entity.Property(e => e.UnitCostAtSale)                   
                     .IsRequired();
 
-               
+                entity.Property(e => e.Weight)
+                  .HasColumnType("real")
+                  .IsRequired(false);
+
+                entity.Property(e => e.IsUniquePiece)
+                    .HasDefaultValue(0)
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.Quantity)
+                 .HasColumnType("real")
+                 .HasDefaultValue(0);
+
+                entity.Property(e => e.OfferPrice)
+                     .IsRequired(false);
+                    
+
                 entity.HasOne(d => d.Transaction)
                     .WithMany(p => p.TransactionItem)
                     .HasForeignKey(d => d.TransactionId)
@@ -177,6 +245,12 @@ namespace GleamVaultApi.DB
                     .WithMany(p => p.TransactionItem)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Category)
+                    .WithMany()
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.SetNull) 
+                    .IsRequired(false);
             });
 
             //Customer
@@ -215,7 +289,11 @@ namespace GleamVaultApi.DB
                     .IsUnique()
                     .HasFilter("[PhoneNumber] IS NOT NULL");
 
-               
+                entity.Property(e => e.ImageUrl)
+                   .IsRequired(false)
+                   .HasMaxLength(50);
+
+
                 entity.HasMany(d => d.Transaction)
                     .WithOne(p => p.Customer)
                     .HasForeignKey(d => d.CustomerID)

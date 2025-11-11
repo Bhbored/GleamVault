@@ -17,7 +17,9 @@ namespace GleamVaultApi.DB
         public string Name { get; set; } = string.Empty;
 
         [MaxLength(500)]
-        public string? Description { get; set; }      
+        public string? Description { get; set; }  
+        
+        public string? Icon {  get; set; }
     
        
 

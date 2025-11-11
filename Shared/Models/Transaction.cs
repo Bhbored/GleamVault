@@ -13,12 +13,15 @@ namespace Shared.Models
         public TransactionType Type { get; set; }
         public float TotalAmount { get; set; }
         public string? Description { get; set; } = string.Empty;
-        public float SubTotalAmount { get; set; }//added this anwaryooo
+        public float SubTotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
         public Guid? CustomerId { get; set; }
+        public Guid CreatedByUserId { get; set; }
+        public DateTime CreatedDate { get; set; }
         public float? DiscountValue { get; set; } = 0;
         public Customer? Customer { get; set; }
+
         public ICollection<TransactionItem>? Items { get; set; } = new List<TransactionItem>();
     }
 }

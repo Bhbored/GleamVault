@@ -31,7 +31,7 @@ namespace GleamVaultApi.DB
         public WeightUnit? WeightUnit { get; set; }
 
         
-        public float Weight { get; set; }
+        public float? Weight { get; set; }
 
         [Required]
         public float UnitPrice { get; set; }
@@ -40,6 +40,8 @@ namespace GleamVaultApi.DB
         public int CurrentStock { get; set; } = 0;
 
         public bool IsUniquePiece { get; set; } = false;
+        public float? OfferPrice { get; set; } = 0;
+        public string? ImageUrl { get; set; }
 
      
 

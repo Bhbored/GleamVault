@@ -49,7 +49,7 @@ namespace GleamVaultApi.DAL.Services
                 Name=entity.Name,
                 Description=entity.Description,
                 HallMark=entity.Hallmark.ToString(),
-                weight=entity.Weight,
+                weight=entity.Weight ?? 0f,
                 UnitPrice=entity.UnitPrice,
                 weightUnit=entity.WeightUnit.ToString(),
                 CurrentStock=entity.CurrentStock

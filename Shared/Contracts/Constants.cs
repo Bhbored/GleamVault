@@ -19,5 +19,8 @@ namespace Shared.Contracts
         //customers
         public const string API_GET_CUSTOMERS = WEB_API_URL + "api/customer/GetCustomer";
 
+        //transaction
+        public const string API_GET_TRANSACTION = WEB_API_URL + "api/transaction/GetTransaction";
+
     }
 }
