@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Models;
+using System.Security.Claims;
 
 namespace GleamVaultApi.Controllers
 {
@@ -12,10 +13,10 @@ namespace GleamVaultApi.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        public CategoryRepository CategoryRepository { get;}
-        public ItemRepository ItemRepository { get;}
+        public CategoryRepository CategoryRepository { get; }
+        public ItemRepository ItemRepository { get; }
 
-        public ItemController(CategoryRepository categoryRepository,ItemRepository itemRepository)
+        public ItemController(CategoryRepository categoryRepository, ItemRepository itemRepository)
         {
             CategoryRepository = categoryRepository;
             ItemRepository = itemRepository;
@@ -45,12 +46,62 @@ namespace GleamVaultApi.Controllers
 
         [HttpGet("GetItems")]
         [ApiKeyAuthorize]
-        public async Task<ActionResult<IEnumerable<ItemInfo>>>GetItems(Guid CategoryID)
+        public async Task<ActionResult<IEnumerable<ItemInfo>>> GetItems(Guid CategoryID)
         {
-                     
-            var result= await ItemRepository.GetByCategoryAsViewModel(CategoryID);
+
+            var result = await ItemRepository.GetByCategoryAsViewModel(CategoryID);
             return Ok(result);
 
         }
-    }
-}
+
+        [HttpPost("SaveCategory")]
+        [ApiKeyAuthorize]
+        public async Task<ActionResult<CategoryInfo>> SaveCategory([FromBody] Shared.Models.Category category)
+        {
+            try
+            {
+                var user = HttpContext.Items["User"] as User;
+                if (user == null)
+                {
+                    return Unauthorized(new { error = "User not found" });
+                }
+
+                var userIdentity = new UserIdentity(user);
+                var result = await CategoryRepository.SaveAsync(category, userIdentity);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while saving category", details = ex.Message });
+            }
+        }
+
+        [HttpPost("SaveProduct")]
+        [ApiKeyAuthorize]
+        public async Task<ActionResult<Shared.Models.Product>> SaveProduct([FromBody] Shared.Models.Product product)
+        {
+            try
+            {
+                var user = HttpContext.Items["User"] as User;
+                if (user == null)
+                {
+                    return Unauthorized(new { error = "User not found" });
+                }
+
+               
+                var userIdentity = new UserIdentity(user);
+                var result = await ItemRepository.SaveAsync(product, userIdentity);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An error occurred while saving product",
+                    details = ex.Message,
+                    innerException = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace  
+                });
+            }
+        }
+    }  }

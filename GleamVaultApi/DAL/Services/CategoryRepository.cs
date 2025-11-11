@@ -1,6 +1,7 @@
 ﻿using GleamVaultApi.DAL.Contracts;
 using GleamVaultApi.DB;
 using Shared.Models;
+using System.Security.Principal;
 using Category = GleamVaultApi.DB.Category;
 
 namespace GleamVaultApi.DAL.Services
@@ -17,9 +18,17 @@ namespace GleamVaultApi.DAL.Services
         {
             throw new NotImplementedException();
         }
-        protected override Category Map(Category entity, Category sourceEnity)
+        protected override Category Map(Category original, Category sourceEntity)
         {
-            return null;
+            if (original == null || sourceEntity == null)
+                return original;
+
+            original.Name = sourceEntity.Name;
+            original.Description = sourceEntity.Description;
+            original.Icon = sourceEntity.Icon;
+         
+
+            return original;
         }
         public CategoryInfo MapViewModel(Category entity)
         {
@@ -31,6 +40,23 @@ namespace GleamVaultApi.DAL.Services
                 Name = entity.Name,
                 Description = entity.Description
             };
+        }
+
+        public async Task<CategoryInfo> SaveAsync(Shared.Models.Category categoryInfo, IIdentity user) 
+        {
+            if (categoryInfo == null)
+                throw new ArgumentNullException(nameof(categoryInfo), "Category data is required");
+
+            var entity = new DB.Category() 
+            {
+                Id = categoryInfo.Id,
+                Name = categoryInfo.Name,
+                Icon = categoryInfo.Icon,
+                Description = categoryInfo.Description
+            };
+
+            var result = await Update(entity, user);
+            return MapViewModel(result);
         }
     }
 }

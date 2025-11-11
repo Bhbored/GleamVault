@@ -62,32 +62,31 @@ namespace GleamVaultApi.DAL.Contracts
             {
                 using (var db = DatabaseService.GetDB())
                 {
-                    var original = await Get(entity.Id);
+                  
+                    var original = db.Set<T>().Find(entity.Id);
 
-                    if (original == null || entity.Id == Guid.Empty)
+                    if (entity.Id == Guid.Empty || original == null)
                     {
+                        // CREATE
                         entity.Id = Guid.NewGuid();
                         entity.CreatedBy = user?.Name ?? "System";
                         entity.CreatedDate = DateTime.Now;
                         entity.ModifiedBy = user?.Name ?? "System";
                         entity.ModifiedDate = DateTime.Now;
-
                         db.Set<T>().Add(entity);
-                        await db.SaveChangesAsync();
-                        return entity;
                     }
                     else
                     {
-                        db.Entry(original).State = EntityState.Detached;
+                       
                         original = Map(original, entity);
                         original.ModifiedBy = user?.Name ?? "System";
                         original.ModifiedDate = DateTime.Now;
-
-                        db.Set<T>().Attach(original);
+                     
                         db.Entry(original).State = EntityState.Modified;
-                        await db.SaveChangesAsync();
-                        return original;
                     }
+
+                    await db.SaveChangesAsync();
+                    return original ?? entity;
                 }
             });
         }
