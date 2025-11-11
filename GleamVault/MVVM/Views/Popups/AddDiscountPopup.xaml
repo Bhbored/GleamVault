@@ -18,20 +18,22 @@
     VerticalOptions="Center"
     WidthRequest="750">
     <toolkit:Popup.Resources>
-        <conv:PriceConverter x:Key="PriceConverter" />
-        <conv:EffectivePriceConverter x:Key="EffectivePriceConverter" />
-        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
-        <conv:CategoryColorConverter x:Key="CategoryColorConverter" />
+        <conv:PriceConverter x:Key="PriceConverter"/>
+        <conv:EffectivePriceConverter x:Key="EffectivePriceConverter"/>
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter"/>
+        <conv:CategoryColorConverter x:Key="CategoryColorConverter"/>
     </toolkit:Popup.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="0">
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          RowSpacing="0">
         <Border
             Grid.Row="0"
             Padding="24,20"
             Background="{StaticResource Brush.HeaderGradient}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="16">
                 <Border
                     Grid.Column="0"
                     HeightRequest="48"
@@ -40,17 +42,18 @@
                     <Image
                         HeightRequest="28"
                         Source="discount.png"
-                        WidthRequest="28" />
+                        WidthRequest="28"/>
                 </Border>
                 <VerticalStackLayout
                     Grid.Column="1"
                     Spacing="4"
                     VerticalOptions="Center">
-                    <Label StyleClass="h3" Text="Add Discount" />
+                    <Label StyleClass="h3"
+                           Text="Add Discount"/>
                     <Label
                         FontSize="12"
                         Text="Select products to apply discount"
-                        TextColor="{StaticResource TextLight}" />
+                        TextColor="{StaticResource TextLight}"/>
                 </VerticalStackLayout>
             </Grid>
         </Border>
@@ -63,13 +66,14 @@
             Shadow="{StaticResource Sh.CyanSm}"
             StrokeShape="RoundRectangle 16"
             StrokeThickness="0">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+            <Grid ColumnDefinitions="Auto,*"
+                  ColumnSpacing="10">
                 <Image
                     Grid.Column="0"
                     HeightRequest="25"
                     Source="search.png"
                     VerticalOptions="Center"
-                    WidthRequest="25" />
+                    WidthRequest="25"/>
                 <editors:SfAutocomplete
                     x:Name="SearchBox"
                     Grid.Column="1"
@@ -106,7 +110,8 @@
                                     StrokeThickness="0"
                                     VerticalOptions="Center"
                                     WidthRequest="40">
-                                    <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                    <Image Aspect="AspectFill"
+                                           Source="{Binding ImageUrl}"/>
                                 </Border>
 
                                 <Grid
@@ -120,7 +125,7 @@
                                         LineBreakMode="TailTruncation"
                                         MaxLines="1"
                                         Text="{Binding Name}"
-                                        TextColor="{StaticResource TextDark}" />
+                                        TextColor="{StaticResource TextDark}"/>
 
                                     <Border
                                         Grid.Row="1"
@@ -135,7 +140,7 @@
                                             LineBreakMode="TailTruncation"
                                             MaxLines="1"
                                             Text="{Binding Category.Name}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Border>
                                 </Grid>
 
@@ -149,7 +154,7 @@
                                         FontSize="13"
                                         HorizontalTextAlignment="End"
                                         Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
-                                        TextColor="{StaticResource Primary}" />
+                                        TextColor="{StaticResource Primary}"/>
                                 </VerticalStackLayout>
                             </Grid>
                         </DataTemplate>
@@ -163,7 +168,8 @@
             ItemsSource="{Binding FilteredProducts}"
             SelectionMode="None">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
+                <LinearItemsLayout ItemSpacing="5"
+                                   Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Product">
@@ -174,7 +180,8 @@
                         Shadow="{StaticResource Sh.CyanSm}"
                         StrokeShape="RoundRectangle 18"
                         StrokeThickness="0">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="20">
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                              ColumnSpacing="20">
                             <Border
                                 Grid.Column="0"
                                 Background="{StaticResource Secondary}"
@@ -184,7 +191,8 @@
                                 StrokeThickness="0"
                                 VerticalOptions="Center"
                                 WidthRequest="95">
-                                <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                <Image Aspect="AspectFill"
+                                       Source="{Binding ImageUrl}"/>
                             </Border>
                             <VerticalStackLayout
                                 Grid.Column="1"
@@ -196,14 +204,15 @@
                                     LineBreakMode="TailTruncation"
                                     MaxLines="2"
                                     Text="{Binding Name}"
-                                    TextColor="{StaticResource TextDark}" />
-                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    TextColor="{StaticResource TextDark}"/>
+                                <HorizontalStackLayout Spacing="10"
+                                                       VerticalOptions="Center">
                                     <Label
                                         FontFamily="NexaHeavy"
                                         FontSize="20"
                                         Text="{Binding ., Converter={StaticResource EffectivePriceConverter}}"
                                         TextColor="{StaticResource Primary}"
-                                        VerticalOptions="Center" />
+                                        VerticalOptions="Center"/>
                                     <Border
                                         Padding="8,4"
                                         BackgroundColor="#1AFF0000"
@@ -216,27 +225,53 @@
                                             FontSize="12"
                                             Text="OFFER"
                                             TextColor="Red"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                     </Border>
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
-                            <Border
+                            <HorizontalStackLayout
                                 Grid.Column="2"
-                                Padding="0"
-                                Background="{StaticResource Brush.ButtonGradient}"
-                                HeightRequest="50"
-                                StrokeShape="RoundRectangle 25"
-                                StrokeThickness="0"
-                                VerticalOptions="Center"
-                                WidthRequest="50">
-                                <Image
-                                    Aspect="AspectFit"
-                                    Source="pen.png"
-                                    VerticalOptions="Center" />
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:AddDiscountPopup}}, Path=BindingContext.ShowDiscountPromptCommand}" CommandParameter="{Binding .}" />
-                                </Border.GestureRecognizers>
-                            </Border>
+                                Spacing="10"
+                                VerticalOptions="Center">
+                                <Border
+                                    Padding="0"
+                                    Background="{StaticResource Brush.ButtonGradient}"
+                                    HeightRequest="50"
+                                    StrokeShape="RoundRectangle 25"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50">
+                                    <Image
+                                        Aspect="AspectFit"
+                                        Source="pen.png"
+                                        VerticalOptions="Center"/>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:AddDiscountPopup}}, Path=BindingContext.ShowDiscountPromptCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                                <Border
+                                    IsVisible="{Binding OfferPrice, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                    Padding="0"
+                                    BackgroundColor="#FF4444"
+                                    HeightRequest="50"
+                                    StrokeShape="RoundRectangle 25"
+                                    StrokeThickness="0"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50">
+                                    <Label
+                                        FontFamily="NexaHeavy"
+                                        FontSize="20"
+                                        HorizontalOptions="Center"
+                                        Text="×"
+                                        TextColor="White"
+                                        VerticalOptions="Center"/>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:AddDiscountPopup}}, Path=BindingContext.RemoveDiscountCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </HorizontalStackLayout>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -258,7 +293,7 @@
                 HorizontalOptions="Fill"
                 Shadow="{StaticResource Sh.CyanMd}"
                 Text="Close"
-                TextColor="White" />
+                TextColor="White"/>
         </Border>
     </Grid>
 </toolkit:Popup>

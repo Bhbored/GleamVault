@@ -57,6 +57,12 @@ namespace GleamVault.MVVM.ViewModels
             await ShowDiscountPromptForProductAsync(product);
         });
 
+        public ICommand RemoveDiscountCommand => new Command<Product>(async (product) =>
+        {
+            if (product == null) return;
+            await RemoveProductDiscountAsync(product);
+        });
+
         public ICommand ShowAddDiscountPopupCommand => new Command(async () => await ShowAddDiscountPopupAsync());
 
         public ICommand ShowAddProductPopupCommand => new Command(async () => await ShowAddProductPopupAsync());
@@ -384,6 +390,17 @@ namespace GleamVault.MVVM.ViewModels
             if (targetProduct != null && discountPrice > 0)
             {
                 targetProduct.OfferPrice = discountPrice;
+                await LoadDataAsync();
+            }
+        }
+
+        public async Task RemoveProductDiscountAsync(Product product)
+        {
+            if (product == null) return;
+            var targetProduct = AllProducts.FirstOrDefault(p => p.Id == product.Id);
+            if (targetProduct != null)
+            {
+                targetProduct.OfferPrice = 0;
                 await LoadDataAsync();
             }
         }

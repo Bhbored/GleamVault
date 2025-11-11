@@ -12,7 +12,6 @@ namespace Shared.Contracts
         Task<List<Category>> GetCategories();
         Task<List<Product>> GetItems(Guid CategoryID);
         Task<List<Customer>> GetCustomers();
-
         Task<List<Transaction>> GetTransactions();
     }
 }
