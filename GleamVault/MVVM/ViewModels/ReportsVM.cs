@@ -22,6 +22,13 @@ namespace GleamVault.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     public partial class ReportsVM : INotifyPropertyChanged
     {
+
+        public ReportsVM(IGoldPriceService goldPriceService)
+        {
+            _goldPriceService = goldPriceService;
+           
+        }
+
         #region Fields
         private readonly IGoldPriceService _goldPriceService;
         private ObservableCollection<Transaction> _allTransactions = new();
@@ -33,7 +40,21 @@ namespace GleamVault.MVVM.ViewModels
         private Random _priceRandom = new Random();
         #endregion
 
-        #region Properties - All Transactions
+        #region Properties 
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set { _isLoading = value; OnPropertyChanged(); }
+        }
+        public ObservableCollection<Customer> AllCustomers
+        {
+            get => _allCustomers;
+            set
+            {
+                _allCustomers = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<Transaction> AllTransactions
         {
             get => _allTransactions;
@@ -43,9 +64,6 @@ namespace GleamVault.MVVM.ViewModels
                 OnPropertyChanged();
             }
         }
-        #endregion
-
-        #region Properties - Gold Price
         public GoldPriceData CurrentGoldPrice
         {
             get => _currentGoldPrice;
@@ -72,22 +90,12 @@ namespace GleamVault.MVVM.ViewModels
                 }
             }
         }
-
         public List<string> Timeframes { get; } = new List<string> { "1m", "5m", "15m", "30m", "1H", "4H", "1D", "1W", "1M" };
-        #endregion
-
-        #region Properties - Total Gold Weight Sold
         public float TotalGoldWeightSold { get; set; }
         public float TotalGoldWeightValue { get; set; }
         public ObservableCollection<SaleTypeData> GoldWeightBySaleType { get; set; } = new();
-        #endregion
-
-        #region Properties - Total Sales Revenue
         public float TotalSalesRevenue { get; set; }
         public ObservableCollection<SaleTypeData> RevenueBySaleType { get; set; } = new();
-        #endregion
-
-        #region Properties - Customer Metrics
         public int NewCustomers { get; set; }
         public int ReturningCustomers { get; set; }
         public int TotalCustomers { get; set; }
@@ -96,27 +104,12 @@ namespace GleamVault.MVVM.ViewModels
         public float ReturningCustomersChangePercent { get; set; }
         public float TotalCustomersChangePercent { get; set; }
         public float ConversionRateChangePercent { get; set; }
-        #endregion
-
-        #region Properties - Customer Count by Sale Type
         public ObservableCollection<SaleTypeCountData> CustomerCountBySaleType { get; set; } = new();
         public int TotalCustomerCount { get; set; }
-        #endregion
-
-        #region Properties - E-Commerce Sales
         public float ECommerceRevenue { get; set; }
         public ObservableCollection<SaleTypeData> ECommerceRevenueByMaterial { get; set; } = new();
         #endregion
-
-        #region Constructor
-        public ReportsVM(IGoldPriceService goldPriceService)
-        {
-            _goldPriceService = goldPriceService;
-            InitializeCommands();
-            InitializePriceTimer();
-        }
-        #endregion
-
+   
         #region Commands
         public ICommand SelectTimeframeCommand { get; private set; }
 
@@ -130,40 +123,8 @@ namespace GleamVault.MVVM.ViewModels
         }
         #endregion
 
-        #region Methods - Data Loading
-        public async Task LoadDataAsync()
-        {
-            _isLoading = true;
-            OnPropertyChanged(nameof(IsLoading));
-
-            ClearAll();
-
-            var products = TestProducts.GetProducts();
-            var customers = TestProducts.GetCustomers();
-            TestTransactions.GenerateTestTransactions(products, customers);
-
-            _allTransactions = TestTransactions.Transactions;
-            AllTransactions = new ObservableCollection<Transaction>(TestTransactions.Transactions);
-            _allCustomers = new ObservableCollection<Customer>(customers);
-
-            await LoadGoldPriceDataAsync();
-            CalculateGoldWeightMetrics();
-            CalculateRevenueMetrics();
-            CalculateCustomerMetrics();
-            CalculateCustomerCountBySaleType();
-            CalculateECommerceMetrics();
-
-            _isLoading = false;
-            OnPropertyChanged(nameof(IsLoading));
-        }
-
-        private void ClearAll()
-        {
-            GoldWeightBySaleType.Clear();
-            RevenueBySaleType.Clear();
-            CustomerCountBySaleType.Clear();
-            ECommerceRevenueByMaterial.Clear();
-        }
+        #region Methods 
+       
 
         private async Task LoadGoldPriceDataAsync()
         {
@@ -249,7 +210,7 @@ namespace GleamVault.MVVM.ViewModels
         }
         #endregion
 
-        #region Methods - Calculations
+        #region Tasks
         private bool IsGoldHallmark(HallmarkType? hallmark)
         {
             if (!hallmark.HasValue) return false;
@@ -636,16 +597,48 @@ namespace GleamVault.MVVM.ViewModels
         }
         #endregion
 
+
+        public async Task LoadDataAsync()
+        {
+            _isLoading = true;
+            OnPropertyChanged(nameof(IsLoading));
+
+            ClearAll();
+
+            var products = TestProducts.GetProducts();
+            var customers = TestProducts.GetCustomers();
+            TestTransactions.GenerateTestTransactions(products, customers);
+            AllTransactions = new ObservableCollection<Transaction>(TestTransactions.Transactions);
+            AllCustomers = new ObservableCollection<Customer>(customers);
+
+            await LoadGoldPriceDataAsync();
+            CalculateGoldWeightMetrics();
+            CalculateRevenueMetrics();
+            CalculateCustomerMetrics();
+            CalculateCustomerCountBySaleType();
+            CalculateECommerceMetrics();
+
+            InitializeCommands();
+            InitializePriceTimer();
+            _isLoading = false;
+            OnPropertyChanged(nameof(IsLoading));
+        }
+
+        private void ClearAll()
+        {
+            AllCustomers.Clear();
+            AllTransactions.Clear();
+            GoldWeightBySaleType.Clear();
+            RevenueBySaleType.Clear();
+            CustomerCountBySaleType.Clear();
+            ECommerceRevenueByMaterial.Clear();
+        }
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set { _isLoading = value; OnPropertyChanged(); }
-        }
+      
         #endregion
     }
 }
