@@ -18,7 +18,7 @@ namespace Shared.Models
         public string? Description { get; set; }
         public string? Name { get; set; }
         public Guid CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
+        public Category? Category { get; set; } = null!;
         public string ImageUrl { get; set; } = "default_product.gif";
         public HallmarkType? Hallmark { get; set; } = HallmarkType.LuxuryBrands; 
         public WeightUnit? WeightUnit { get; set; }

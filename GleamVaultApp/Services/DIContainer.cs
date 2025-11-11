@@ -26,6 +26,7 @@ namespace GleamVault.Services
             services.AddTransient<TransactionVM>();
             services.AddTransient<ProductVM>();
             services.AddTransient<ReportsVM>();
+            services.AddTransient<InventoryVM>();
             return services;
         }
 
