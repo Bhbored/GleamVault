@@ -12,14 +12,16 @@
     x:DataType="vm:ReportsVM"
     Background="{StaticResource Brush.BackgroundGradient}">
     <ContentPage.Resources>
-        <conv:NumberFormatConverter x:Key="NumberFormatConverter" />
-        <conv:TrendColorConverter x:Key="TrendColorConverter" />
-        <conv:TimeframeSelectedConverter x:Key="TimeframeSelectedConverter" />
+        <conv:NumberFormatConverter x:Key="NumberFormatConverter"/>
+        <conv:TrendColorConverter x:Key="TrendColorConverter"/>
+        <conv:TimeframeSelectedConverter x:Key="TimeframeSelectedConverter"/>
     </ContentPage.Resources>
 
     <ScrollView>
-        <Grid RowDefinitions="Auto,*" RowSpacing="0">
-            <Grid Grid.Row="0" HeightRequest="200">
+        <Grid RowDefinitions="Auto,*"
+                RowSpacing="0">
+            <Grid Grid.Row="0"
+                    HeightRequest="200">
                 <shapes:Path
                     Aspect="Fill"
                     Data="M0,0 L0,160 Q180,210 360,160 T720,160 L720,0 Z"
@@ -27,7 +29,7 @@
                     HorizontalOptions="Fill"
                     InputTransparent="True"
                     Opacity="1"
-                    VerticalOptions="Fill" />
+                    VerticalOptions="Fill"/>
                 <shapes:Path
                     Aspect="Fill"
                     Data="M0,0 L0,175 Q180,225 360,175 T720,175 L720,0 Z"
@@ -35,14 +37,16 @@
                     HorizontalOptions="Fill"
                     InputTransparent="True"
                     Opacity="0.12"
-                    VerticalOptions="Fill" />
-                <Grid Padding="20,20,20,0" VerticalOptions="Start">
+                    VerticalOptions="Fill"/>
+                <Grid Padding="20,20,20,0"
+                        VerticalOptions="Start">
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="30"
                             Source="diamond.png"
-                            WidthRequest="30" />
-                        <Label StyleClass="h2" Text="Dashboard" />
+                            WidthRequest="30"/>
+                        <Label StyleClass="h2"
+                                Text="Dashboard"/>
                     </HorizontalStackLayout>
                 </Grid>
             </Grid>
@@ -61,17 +65,19 @@
                     StrokeShape="RoundRectangle 20"
                     StrokeThickness="0">
                     <Grid RowDefinitions="Auto,Auto,*">
-                        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
-                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                        <Grid Grid.Row="0"
+                                ColumnDefinitions="Auto,*,Auto">
+                            <VerticalStackLayout Grid.Column="0"
+                                    Spacing="4">
                                 <Label
                                     FontFamily="NexaHeavy"
                                     FontSize="20"
                                     Text="XAU/USD"
-                                    TextColor="White" />
+                                    TextColor="White"/>
                                 <Label
                                     FontSize="14"
                                     Text="{Binding CurrentGoldPrice.Price, StringFormat='${0:F2}'}"
-                                    TextColor="White" />
+                                    TextColor="White"/>
                             </VerticalStackLayout>
                             <VerticalStackLayout
                                 Grid.Column="1"
@@ -81,12 +87,12 @@
                                     FontSize="12"
                                     HorizontalTextAlignment="End"
                                     Text="{Binding CurrentGoldPrice.ChangePercent, StringFormat='{0:+0.00;-0.00}%'}"
-                                    TextColor="White" />
+                                    TextColor="White"/>
                                 <Label
                                     FontSize="11"
                                     HorizontalTextAlignment="End"
                                     Text="{Binding CurrentGoldPrice.Timestamp, StringFormat='Updated: {0:MMM dd, HH:mm}'}"
-                                    TextColor="White" />
+                                    TextColor="White"/>
                             </VerticalStackLayout>
                             <Border
                                 Grid.Column="2"
@@ -112,13 +118,14 @@
                                     WidthRequest="100">
                                     <editors:SfComboBox.ItemTemplate>
                                         <DataTemplate x:DataType="x:String">
-                                            <Grid Padding="12,8" BackgroundColor="Transparent">
+                                            <Grid Padding="12,8"
+                                                    BackgroundColor="Transparent">
                                                 <Label
                                                     FontFamily="NexaLight"
                                                     FontSize="12"
                                                     Text="{Binding}"
                                                     TextColor="White"
-                                                    VerticalOptions="Center" />
+                                                    VerticalOptions="Center"/>
                                             </Grid>
                                         </DataTemplate>
                                     </editors:SfComboBox.ItemTemplate>
@@ -129,23 +136,26 @@
                             Grid.Row="1"
                             Margin="0,10"
                             BackgroundColor="#333333"
-                            HeightRequest="1" />
-                        <Grid Grid.Row="2" Margin="0,10,0,0">
+                            HeightRequest="1"/>
+                        <Grid Grid.Row="2"
+                                Margin="0,10,0,0">
                             <charts:SfCartesianChart BackgroundColor="#1E1E1E">
                                 <charts:SfCartesianChart.XAxes>
                                     <charts:DateTimeAxis>
                                         <charts:DateTimeAxis.LabelStyle>
-                                            <charts:ChartAxisLabelStyle LabelFormat="MMM dd" TextColor="White" />
+                                            <charts:ChartAxisLabelStyle LabelFormat="MMM dd"
+                                                    TextColor="White"/>
                                         </charts:DateTimeAxis.LabelStyle>
                                         <charts:DateTimeAxis.AxisLineStyle>
-                                            <charts:ChartLineStyle Stroke="White" />
+                                            <charts:ChartLineStyle Stroke="White"/>
                                         </charts:DateTimeAxis.AxisLineStyle>
                                     </charts:DateTimeAxis>
                                 </charts:SfCartesianChart.XAxes>
                                 <charts:SfCartesianChart.YAxes>
                                     <charts:NumericalAxis>
                                         <charts:NumericalAxis.LabelStyle>
-                                            <charts:ChartAxisLabelStyle LabelFormat="$0.00" TextColor="White" />
+                                            <charts:ChartAxisLabelStyle LabelFormat="$0.00"
+                                                    TextColor="White"/>
                                         </charts:NumericalAxis.LabelStyle>
                                     </charts:NumericalAxis>
                                 </charts:SfCartesianChart.YAxes>
@@ -155,7 +165,7 @@
                                         ItemsSource="{Binding GoldPriceHistory}"
                                         ShowDataLabels="False"
                                         XBindingPath="Date"
-                                        YBindingPath="Close" />
+                                        YBindingPath="Close"/>
                                 </charts:SfCartesianChart.Series>
                             </charts:SfCartesianChart>
                         </Grid>
@@ -174,18 +184,20 @@
                         StrokeShape="RoundRectangle 20"
                         StrokeThickness="0">
                         <Grid RowDefinitions="Auto,*,Auto">
-                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <Grid Grid.Row="0"
+                                    ColumnDefinitions="*,Auto">
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="h3"
-                                    Text="Total Gold Weight Sold" />
+                                    Text="Total Gold Weight Sold"/>
                                 <Image
                                     Grid.Column="1"
                                     HeightRequest="20"
                                     Source="info.png"
-                                    WidthRequest="20" />
+                                    WidthRequest="20"/>
                             </Grid>
-                            <Grid Grid.Row="1" VerticalOptions="Center">
+                            <Grid Grid.Row="1"
+                                    VerticalOptions="Center">
                                 <charts:SfCircularChart>
                                     <charts:SfCircularChart.Series>
                                         <charts:PieSeries
@@ -193,7 +205,7 @@
                                             ItemsSource="{Binding GoldWeightBySaleType}"
                                             ShowDataLabels="True"
                                             XBindingPath="Name"
-                                            YBindingPath="Value" />
+                                            YBindingPath="Value"/>
                                     </charts:SfCircularChart.Series>
                                 </charts:SfCircularChart>
                                 <VerticalStackLayout
@@ -205,28 +217,30 @@
                                         FontSize="16"
                                         HorizontalTextAlignment="Center"
                                         Text="{Binding TotalGoldWeightValue, StringFormat='${0:N0}'}"
-                                        TextColor="{StaticResource TextDark}" />
+                                        TextColor="{StaticResource TextDark}"/>
                                     <Label
                                         FontSize="14"
                                         HorizontalTextAlignment="Center"
                                         Text="Total Value"
-                                        TextColor="{StaticResource TextLight}" />
+                                        TextColor="{StaticResource TextLight}"/>
                                 </VerticalStackLayout>
                             </Grid>
-                            <VerticalStackLayout Grid.Row="2" Spacing="8">
+                            <VerticalStackLayout Grid.Row="2"
+                                    Spacing="8">
                                 <Border
                                     Padding="10,6"
                                     Background="#26A69A"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#26A69A"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -234,7 +248,7 @@
                                             FontSize="13"
                                             Text="Direct Sale"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -242,14 +256,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding GoldWeightBySaleType[0].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding GoldWeightBySaleType[0].Value, StringFormat='{0} grams'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -257,14 +271,15 @@
                                     Background="#5D6D7E"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#5D6D7E"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -272,7 +287,7 @@
                                             FontSize="13"
                                             Text="Online"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -280,14 +295,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding GoldWeightBySaleType[1].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding GoldWeightBySaleType[1].Value, StringFormat='{0} grams'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -295,14 +310,15 @@
                                     Background="#4A90E2"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#4A90E2"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -310,7 +326,7 @@
                                             FontSize="13"
                                             Text="Custom Order"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -318,14 +334,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding GoldWeightBySaleType[2].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding GoldWeightBySaleType[2].Value, StringFormat='{0} grams'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>
@@ -340,18 +356,20 @@
                         StrokeShape="RoundRectangle 20"
                         StrokeThickness="0">
                         <Grid RowDefinitions="Auto,*,Auto">
-                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <Grid Grid.Row="0"
+                                    ColumnDefinitions="*,Auto">
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="h3"
-                                    Text="Total Sales Revenue" />
+                                    Text="Total Sales Revenue"/>
                                 <Image
                                     Grid.Column="1"
                                     HeightRequest="20"
                                     Source="info.png"
-                                    WidthRequest="20" />
+                                    WidthRequest="20"/>
                             </Grid>
-                            <Grid Grid.Row="1" VerticalOptions="Center">
+                            <Grid Grid.Row="1"
+                                    VerticalOptions="Center">
                                 <charts:SfCircularChart>
                                     <charts:SfCircularChart.Series>
                                         <charts:PieSeries
@@ -359,7 +377,7 @@
                                             ItemsSource="{Binding RevenueBySaleType}"
                                             ShowDataLabels="True"
                                             XBindingPath="Name"
-                                            YBindingPath="Value" />
+                                            YBindingPath="Value"/>
                                     </charts:SfCircularChart.Series>
                                 </charts:SfCircularChart>
                                 <VerticalStackLayout
@@ -371,28 +389,30 @@
                                         FontSize="16"
                                         HorizontalTextAlignment="Center"
                                         Text="{Binding TotalSalesRevenue, StringFormat='${0:N0}'}"
-                                        TextColor="{StaticResource TextDark}" />
+                                        TextColor="{StaticResource TextDark}"/>
                                     <Label
                                         FontSize="14"
                                         HorizontalTextAlignment="Center"
                                         Text="Total Value"
-                                        TextColor="{StaticResource TextLight}" />
+                                        TextColor="{StaticResource TextLight}"/>
                                 </VerticalStackLayout>
                             </Grid>
-                            <VerticalStackLayout Grid.Row="2" Spacing="8">
+                            <VerticalStackLayout Grid.Row="2"
+                                    Spacing="8">
                                 <Border
                                     Padding="10,6"
                                     Background="#26A69A"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#26A69A"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -400,7 +420,7 @@
                                             FontSize="13"
                                             Text="Direct Sale"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -408,14 +428,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding RevenueBySaleType[0].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding RevenueBySaleType[0].Value, StringFormat='${0:#,##0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -423,14 +443,15 @@
                                     Background="#5D6D7E"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#5D6D7E"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -438,7 +459,7 @@
                                             FontSize="13"
                                             Text="Online"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -446,14 +467,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding RevenueBySaleType[1].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding RevenueBySaleType[1].Value, StringFormat='${0:#,##0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -461,14 +482,15 @@
                                     Background="#4A90E2"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#4A90E2"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -476,7 +498,7 @@
                                             FontSize="13"
                                             Text="Custom Order"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -484,14 +506,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding RevenueBySaleType[2].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding RevenueBySaleType[2].Value, StringFormat='${0:#,##0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -499,14 +521,15 @@
                                     Background="#EC407A"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#EC407A"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -514,7 +537,7 @@
                                             FontSize="13"
                                             Text="Repairement"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -522,14 +545,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding RevenueBySaleType[3].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding RevenueBySaleType[3].Value, StringFormat='${0:#,##0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>
@@ -552,25 +575,25 @@
                             <Image
                                 HeightRequest="30"
                                 Source="diamond.png"
-                                WidthRequest="30" />
+                                WidthRequest="30"/>
                             <Label
                                 FontFamily="NexaHeavy"
                                 FontSize="28"
                                 Text="{Binding NewCustomers}"
-                                TextColor="{StaticResource TextDark}" />
+                                TextColor="{StaticResource TextDark}"/>
                             <Label
                                 FontSize="14"
                                 Text="New Customers"
-                                TextColor="{StaticResource TextLight}" />
+                                TextColor="{StaticResource TextLight}"/>
                             <HorizontalStackLayout Spacing="5">
                                 <Label
                                     FontSize="12"
                                     Text="{Binding NewCustomersChangePercent, StringFormat='{0:+0.00;-0.00}%'}"
-                                    TextColor="{Binding NewCustomersChangePercent, Converter={StaticResource TrendColorConverter}}" />
+                                    TextColor="{Binding NewCustomersChangePercent, Converter={StaticResource TrendColorConverter}}"/>
                                 <Label
                                     FontSize="12"
                                     Text="vs last 30 days"
-                                    TextColor="{StaticResource TextLight}" />
+                                    TextColor="{StaticResource TextLight}"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -586,25 +609,25 @@
                             <Image
                                 HeightRequest="30"
                                 Source="diamond.png"
-                                WidthRequest="30" />
+                                WidthRequest="30"/>
                             <Label
                                 FontFamily="NexaHeavy"
                                 FontSize="28"
                                 Text="{Binding ReturningCustomers}"
-                                TextColor="{StaticResource TextDark}" />
+                                TextColor="{StaticResource TextDark}"/>
                             <Label
                                 FontSize="14"
                                 Text="Returning Customers"
-                                TextColor="{StaticResource TextLight}" />
+                                TextColor="{StaticResource TextLight}"/>
                             <HorizontalStackLayout Spacing="5">
                                 <Label
                                     FontSize="12"
                                     Text="{Binding ReturningCustomersChangePercent, StringFormat='{0:+0.00;-0.00}%'}"
-                                    TextColor="{Binding ReturningCustomersChangePercent, Converter={StaticResource TrendColorConverter}}" />
+                                    TextColor="{Binding ReturningCustomersChangePercent, Converter={StaticResource TrendColorConverter}}"/>
                                 <Label
                                     FontSize="12"
                                     Text="vs last 30 days"
-                                    TextColor="{StaticResource TextLight}" />
+                                    TextColor="{StaticResource TextLight}"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -620,25 +643,25 @@
                             <Image
                                 HeightRequest="30"
                                 Source="diamond.png"
-                                WidthRequest="30" />
+                                WidthRequest="30"/>
                             <Label
                                 FontFamily="NexaHeavy"
                                 FontSize="28"
                                 Text="{Binding TotalCustomers}"
-                                TextColor="{StaticResource TextDark}" />
+                                TextColor="{StaticResource TextDark}"/>
                             <Label
                                 FontSize="14"
                                 Text="Total Customers"
-                                TextColor="{StaticResource TextLight}" />
+                                TextColor="{StaticResource TextLight}"/>
                             <HorizontalStackLayout Spacing="5">
                                 <Label
                                     FontSize="12"
                                     Text="{Binding TotalCustomersChangePercent, StringFormat='{0:+0.00;-0.00}%'}"
-                                    TextColor="{Binding TotalCustomersChangePercent, Converter={StaticResource TrendColorConverter}}" />
+                                    TextColor="{Binding TotalCustomersChangePercent, Converter={StaticResource TrendColorConverter}}"/>
                                 <Label
                                     FontSize="12"
                                     Text="vs last 30 days"
-                                    TextColor="{StaticResource TextLight}" />
+                                    TextColor="{StaticResource TextLight}"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -654,25 +677,25 @@
                             <Image
                                 HeightRequest="30"
                                 Source="diamond.png"
-                                WidthRequest="30" />
+                                WidthRequest="30"/>
                             <Label
                                 FontFamily="NexaHeavy"
                                 FontSize="28"
                                 Text="{Binding OverallConversionRate, StringFormat='{0:F0}%'}"
-                                TextColor="{StaticResource TextDark}" />
+                                TextColor="{StaticResource TextDark}"/>
                             <Label
                                 FontSize="14"
                                 Text="Overall Conversion Rate"
-                                TextColor="{StaticResource TextLight}" />
+                                TextColor="{StaticResource TextLight}"/>
                             <HorizontalStackLayout Spacing="5">
                                 <Label
                                     FontSize="12"
                                     Text="{Binding ConversionRateChangePercent, StringFormat='{0:+0.00;-0.00}%'}"
-                                    TextColor="{Binding ConversionRateChangePercent, Converter={StaticResource TrendColorConverter}}" />
+                                    TextColor="{Binding ConversionRateChangePercent, Converter={StaticResource TrendColorConverter}}"/>
                                 <Label
                                     FontSize="12"
                                     Text="vs last 30 days"
-                                    TextColor="{StaticResource TextLight}" />
+                                    TextColor="{StaticResource TextLight}"/>
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -690,37 +713,39 @@
                         StrokeShape="RoundRectangle 20"
                         StrokeThickness="0">
                         <Grid RowDefinitions="Auto,*,Auto">
-                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <Grid Grid.Row="0"
+                                    ColumnDefinitions="*,Auto">
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="h3"
-                                    Text="Customer Count by Sale Type" />
+                                    Text="Customer Count by Sale Type"/>
                                 <Image
                                     Grid.Column="1"
                                     HeightRequest="20"
                                     Source="info.png"
-                                    WidthRequest="20" />
+                                    WidthRequest="20"/>
                             </Grid>
-                            <Grid Grid.Row="1" RowDefinitions="Auto,*">
+                            <Grid Grid.Row="1"
+                                    RowDefinitions="Auto,*">
                                 <Label
                                     Grid.Row="0"
                                     Margin="0,0,0,10"
                                     FontSize="16"
                                     Text="{Binding TotalCustomerCount, StringFormat='Total Customers {0}'}"
                                     TextColor="{StaticResource TextLight}"
-                                    VerticalOptions="Start" />
+                                    VerticalOptions="Start"/>
                                 <charts:SfCartesianChart Grid.Row="1">
                                     <charts:SfCartesianChart.XAxes>
                                         <charts:CategoryAxis>
                                             <charts:CategoryAxis.LabelStyle>
-                                                <charts:ChartAxisLabelStyle TextColor="{StaticResource TextDark}" />
+                                                <charts:ChartAxisLabelStyle TextColor="{StaticResource TextDark}"/>
                                             </charts:CategoryAxis.LabelStyle>
                                         </charts:CategoryAxis>
                                     </charts:SfCartesianChart.XAxes>
                                     <charts:SfCartesianChart.YAxes>
                                         <charts:NumericalAxis>
                                             <charts:NumericalAxis.LabelStyle>
-                                                <charts:ChartAxisLabelStyle TextColor="{StaticResource TextDark}" />
+                                                <charts:ChartAxisLabelStyle TextColor="{StaticResource TextDark}"/>
                                             </charts:NumericalAxis.LabelStyle>
                                         </charts:NumericalAxis>
                                     </charts:SfCartesianChart.YAxes>
@@ -730,7 +755,7 @@
                                             ItemsSource="{Binding CustomerCountBySaleType}"
                                             ShowDataLabels="True"
                                             XBindingPath="Name"
-                                            YBindingPath="Count" />
+                                            YBindingPath="Count"/>
                                     </charts:SfCartesianChart.Series>
                                 </charts:SfCartesianChart>
                             </Grid>
@@ -745,18 +770,20 @@
                         StrokeShape="RoundRectangle 20"
                         StrokeThickness="0">
                         <Grid RowDefinitions="Auto,*,Auto">
-                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <Grid Grid.Row="0"
+                                    ColumnDefinitions="*,Auto">
                                 <Label
                                     Grid.Column="0"
                                     StyleClass="h3"
-                                    Text="E-Commerce Sales" />
+                                    Text="E-Commerce Sales"/>
                                 <Image
                                     Grid.Column="1"
                                     HeightRequest="20"
                                     Source="info.png"
-                                    WidthRequest="20" />
+                                    WidthRequest="20"/>
                             </Grid>
-                            <Grid Grid.Row="1">
+                            <Grid Grid.Row="1"
+                                    VerticalOptions="Center">
                                 <charts:SfCircularChart>
                                     <charts:SfCircularChart.Series>
                                         <charts:PieSeries
@@ -764,46 +791,42 @@
                                             ItemsSource="{Binding ECommerceRevenueByMaterial}"
                                             ShowDataLabels="True"
                                             XBindingPath="Name"
-                                            YBindingPath="Value" />
+                                            YBindingPath="Value"/>
                                     </charts:SfCircularChart.Series>
                                 </charts:SfCircularChart>
                                 <VerticalStackLayout
-                                    HorizontalOptions="Center"
-                                    Spacing="5"
+                                    HorizontalOptions="End"
+                                    Spacing="10"
                                     VerticalOptions="Center">
                                     <Label
                                         FontFamily="NexaHeavy"
-                                        FontSize="14"
+                                        FontSize="16"
                                         HorizontalTextAlignment="Center"
                                         Text="{Binding ECommerceRevenue, StringFormat='${0:N0}'}"
-                                        TextColor="{StaticResource TextDark}" />
+                                        TextColor="{StaticResource TextDark}"/>
                                     <Label
-                                        FontSize="12"
+                                        FontSize="14"
                                         HorizontalTextAlignment="Center"
-                                        Text="Total Sales"
-                                        TextColor="{StaticResource TextLight}" />
+                                        Text="Total Value"
+                                        TextColor="{StaticResource TextLight}"/>
                                 </VerticalStackLayout>
-                                <Label
-                                    FontSize="14"
-                                    HorizontalOptions="Start"
-                                    Text="Revenue"
-                                    TextColor="{StaticResource TextDark}"
-                                    VerticalOptions="Start" />
                             </Grid>
-                            <VerticalStackLayout Grid.Row="2" Spacing="8">
+                            <VerticalStackLayout Grid.Row="2"
+                                    Spacing="8">
                                 <Border
                                     Padding="10,6"
                                     Background="#4ECDC4"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#4ECDC4"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -811,7 +834,7 @@
                                             FontSize="13"
                                             Text="{Binding ECommerceRevenueByMaterial[0].Name}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -819,14 +842,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding ECommerceRevenueByMaterial[0].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding ECommerceRevenueByMaterial[0].Value, StringFormat='${0:N0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -834,14 +857,15 @@
                                     Background="#404040"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#404040"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -849,7 +873,7 @@
                                             FontSize="13"
                                             Text="{Binding ECommerceRevenueByMaterial[1].Name}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -857,14 +881,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding ECommerceRevenueByMaterial[1].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding ECommerceRevenueByMaterial[1].Value, StringFormat='${0:N0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                                 <Border
@@ -872,14 +896,15 @@
                                     Background="#45B7D1"
                                     StrokeShape="RoundRectangle 8"
                                     StrokeThickness="0">
-                                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                            RowDefinitions="Auto,Auto">
                                         <BoxView
                                             Grid.Row="0"
                                             Grid.Column="0"
                                             BackgroundColor="#45B7D1"
                                             HeightRequest="12"
                                             VerticalOptions="Center"
-                                            WidthRequest="12" />
+                                            WidthRequest="12"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="1"
@@ -887,7 +912,7 @@
                                             FontSize="13"
                                             Text="{Binding ECommerceRevenueByMaterial[2].Name}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="0"
                                             Grid.Column="2"
@@ -895,14 +920,14 @@
                                             HorizontalTextAlignment="End"
                                             Text="{Binding ECommerceRevenueByMaterial[2].Percentage, StringFormat='{0:F0}%'}"
                                             TextColor="White"
-                                            VerticalOptions="Center" />
+                                            VerticalOptions="Center"/>
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="20,4,0,0"
                                             FontSize="12"
                                             Text="{Binding ECommerceRevenueByMaterial[2].Value, StringFormat='${0:N0}'}"
-                                            TextColor="White" />
+                                            TextColor="White"/>
                                     </Grid>
                                 </Border>
                             </VerticalStackLayout>

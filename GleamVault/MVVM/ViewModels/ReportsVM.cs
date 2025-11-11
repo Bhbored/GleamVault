@@ -26,7 +26,7 @@ namespace GleamVault.MVVM.ViewModels
         public ReportsVM(IGoldPriceService goldPriceService)
         {
             _goldPriceService = goldPriceService;
-           
+
         }
 
         #region Fields
@@ -109,7 +109,7 @@ namespace GleamVault.MVVM.ViewModels
         public float ECommerceRevenue { get; set; }
         public ObservableCollection<SaleTypeData> ECommerceRevenueByMaterial { get; set; } = new();
         #endregion
-   
+
         #region Commands
         public ICommand SelectTimeframeCommand { get; private set; }
 
@@ -124,7 +124,7 @@ namespace GleamVault.MVVM.ViewModels
         #endregion
 
         #region Methods 
-       
+
 
         private async Task LoadGoldPriceDataAsync()
         {
@@ -511,7 +511,7 @@ namespace GleamVault.MVVM.ViewModels
                 .Sum(i =>
                 {
                     var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
-                    return (price - i.UnitCost) * i.Quantity;
+                    return price * i.Quantity;
                 });
 
             var silverRevenue = onlineItems
@@ -519,7 +519,7 @@ namespace GleamVault.MVVM.ViewModels
                 .Sum(i =>
                 {
                     var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
-                    return (price - i.UnitCost) * i.Quantity;
+                    return price * i.Quantity;
                 });
 
             var luxuryRevenue = onlineItems
@@ -527,7 +527,7 @@ namespace GleamVault.MVVM.ViewModels
                 .Sum(i =>
                 {
                     var price = i.OfferPrice > 0 ? i.OfferPrice : i.UnitPrice;
-                    return (price - i.UnitCost) * i.Quantity;
+                    return price * i.Quantity;
                 });
 
             ECommerceRevenue = goldRevenue + silverRevenue + luxuryRevenue;
@@ -638,7 +638,7 @@ namespace GleamVault.MVVM.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-      
+
         #endregion
     }
 }

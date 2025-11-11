@@ -7,7 +7,7 @@ namespace GleamVault.Services
 {
     public static class DIContainer
     {
-        
+
 
         public static IServiceCollection RegisterGoldPriceService(this IServiceCollection services)
         {
@@ -16,7 +16,7 @@ namespace GleamVault.Services
         }
         public static IServiceCollection RegisterAuthServices(this IServiceCollection services)
         {
-
+            services.AddSingleton<IAdvanceHttpService, HttpService>();
             return services;
         }
 
@@ -44,6 +44,7 @@ namespace GleamVault.Services
         public static IServiceCollection RegisterDependencies(this IServiceCollection services)
         {
             return services
+                    .RegisterAuthServices()
                     .RegisterGoldPriceService()
                     .RegisterViews()
                     .RegisterViewModels();
