@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="GleamVaultApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
+    FlyoutBehavior="Flyout"
+    Shell.NavBarIsVisible="False">
+    <!--  Flyout Header (Optional)  -->
+    <Shell.FlyoutHeader>
+        <Grid Background="{StaticResource Brush.BackgroundGradient}" HeightRequest="150">
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="15"
+                VerticalOptions="Center">
+                <Image
+                    HeightRequest="30"
+                    Source="diamond.png"
+                    WidthRequest="30" />
+                <Label
+                    FontFamily="NexaHeavy"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Gleam &amp; Co."
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!--  Flyout Items  -->
+    <FlyoutItem Title="POS" Icon="home.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:HomePage}" Route="HomePage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Products" Icon="product.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:ProductPage}" Route="ProductPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Sales History" Icon="transaction.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:TransactionPage}" Route="TransactionPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Inventory" Icon="inventory.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:InventoryPage}" Route="InventoryPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Discount" Icon="discount.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:DiscountPage}" Route="DiscountPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Customers" Icon="customer.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:CustomerPage}" Route="CustomerPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Reports" Icon="reports.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:ReportPage}" Route="ReportPage" />
+    </FlyoutItem>
+
+
+</Shell>

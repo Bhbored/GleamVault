@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GleamVault", "GleamVault\GleamVault.csproj", "{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{FC65D734-AF4C-440A-B53F-D16AD4C1F819}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GleamVaultApi", "GleamVaultApi\GleamVaultApi.csproj", "{9D4D3FF5-EC96-496A-8C7B-C6F9C5C14775}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GleamVaultApp", "GleamVaultApp\GleamVaultApp.csproj", "{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5D4D57C-6022-4EFF-B195-82D07E54C7FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC65D734-AF4C-440A-B53F-D16AD4C1F819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC65D734-AF4C-440A-B53F-D16AD4C1F819}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC65D734-AF4C-440A-B53F-D16AD4C1F819}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -28,6 +23,11 @@ Global
 		{9D4D3FF5-EC96-496A-8C7B-C6F9C5C14775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D4D3FF5-EC96-496A-8C7B-C6F9C5C14775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D4D3FF5-EC96-496A-8C7B-C6F9C5C14775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C35F29-1876-4CE3-8F6C-53DBF2A6F8F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
