@@ -28,6 +28,10 @@
         <conv:HallmarkColorConverter x:Key="HallmarkColorConverter" />
         <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
         <conv:EffectivePriceConverter x:Key="EffectivePriceConverter" />
+        <conv:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <conv:ZeroToEmptyStringConverter x:Key="ZeroToEmptyStringConverter" />
+
+        <Color x:Key="LightCyan">#E0FFFF</Color>
     </ContentPage.Resources>
 
     <Grid ColumnDefinitions="75*,25*" RowDefinitions="Auto,*">
@@ -69,7 +73,7 @@
                 <HorizontalStackLayout Spacing="8">
                     <Image
                         HeightRequest="30"
-                        Source="diamond.png"
+                        Source="order.png"
                         WidthRequest="30" />
                     <Label StyleClass="h2" Text="Inventory Management" />
                 </HorizontalStackLayout>
@@ -503,6 +507,8 @@
                         IsVisible="{Binding ShimmerNotLoading}"
                         ItemSpacing="5"
                         ItemsSource="{Binding FilteredProducts}"
+                        LoadMoreCommand="{Binding LoadMoreCommand}"
+                        LoadMoreOption="AutoOnScroll"
                         SelectionBackground="Transparent"
                         SelectionMode="None">
                         <syncfusion:SfListView.ItemsLayout>
@@ -518,6 +524,9 @@
                                     Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
                                     StrokeShape="RoundRectangle 10"
                                     StrokeThickness="2">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:InventoryPage}}, Path=BindingContext.SelectProductCommand}" CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="120,*,Auto" ColumnSpacing="15">
                                         <!--  Product Image  -->
                                         <Border
@@ -704,35 +713,371 @@
             </Border>
         </Grid>
 
-        <!--  Right Panel (Placeholder for future functionality)  -->
+        <!--  Right Panel - Product Details  -->
         <Border
             Grid.Row="0"
             Grid.RowSpan="2"
             Grid.Column="1"
             Margin="0,20,10,20"
-            Padding="20"
+            Padding="0"
             Background="White"
             Shadow="{StaticResource Sh.CyanMd}"
             StrokeShape="RoundRectangle 20"
             StrokeThickness="0">
-            <VerticalStackLayout
-                HorizontalOptions="Center"
-                Spacing="15"
-                VerticalOptions="Center">
-                <Image
-                    HeightRequest="80"
-                    Source="diamond.png"
-                    WidthRequest="80" />
-                <Label
-                    HorizontalTextAlignment="Center"
-                    StyleClass="h3"
-                    Text="Actions Panel" />
-                <Label
-                    HorizontalTextAlignment="Center"
-                    StyleClass="body"
-                    Text="Coming Soon"
-                    TextColor="{StaticResource TextLight}" />
-            </VerticalStackLayout>
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!--  Header  -->
+                <Border
+                    Grid.Row="0"
+                    Padding="20"
+                    Background="{StaticResource Brush.HeaderGradient}"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Border
+                            HeightRequest="40"
+                            StyleClass="icon-circle"
+                            WidthRequest="40">
+                            <Image
+                                HeightRequest="24"
+                                Source="order.png"
+                                WidthRequest="24" />
+                        </Border>
+                        <Label
+                            StyleClass="h3"
+                            Text="Product Details"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!--  No Product Selected  -->
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsProductSelected, Converter={StaticResource InvertedBoolConverter}}"
+                    Spacing="20"
+                    VerticalOptions="Center">
+                    <!--  Placeholder for animation  -->
+                    <Border
+                        HeightRequest="120"
+                        StrokeShape="RoundRectangle 60"
+                        StrokeThickness="0"
+                        WidthRequest="120">
+                        <Image
+                            Aspect="AspectFit"
+                            IsAnimationPlaying="True"
+                            Source="registration.gif" />
+                    </Border>
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="16"
+                        HorizontalTextAlignment="Center"
+                        Text="Select a Product"
+                        TextColor="{StaticResource TextDark}" />
+                    <Label
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        Text="Tap on any product to view | edit its details"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+
+                <!--  Product Details Form  -->
+                <ScrollView
+                    Grid.Row="1"
+                    Padding="20"
+                    IsVisible="{Binding IsProductSelected}">
+                    <VerticalStackLayout Spacing="16" VerticalOptions="Start">
+                        <!--  Product Name  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Product Name *"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Placeholder="Enter product name"
+                                    Text="{Binding SelectedProduct.Name}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  SKU (Read-only)  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="SKU"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="{StaticResource Secondary}"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    IsReadOnly="True"
+                                    Placeholder="Auto-generated"
+                                    Text="{Binding SelectedProduct.Sku}"
+                                    TextColor="{StaticResource TextLight}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Description  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Description"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Editor
+                                    FontFamily="NexaLight"
+                                    HeightRequest="60"
+                                    Placeholder="Enter description"
+                                    Text="{Binding SelectedProduct.Description}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Category  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Category *"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <editors:SfComboBox
+                                    Background="Transparent"
+                                    ClearButtonIconColor="Cyan"
+                                    DisplayMemberPath="Name"
+                                    DropDownBackground="White"
+                                    DropDownIconColor="{StaticResource Primary}"
+                                    EnableAutoSize="True"
+                                    FontFamily="NexaLight"
+                                    IsEditable="False"
+                                    ItemsSource="{Binding AllCategories}"
+                                    MaxDropDownHeight="200"
+                                    Placeholder="Select category"
+                                    SelectedItem="{Binding SelectedProduct.Category}"
+                                    SelectionMode="Single"
+                                    Stroke="Transparent"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Hallmark  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Hallmark *"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Picker
+                                    FontFamily="NexaLight"
+                                    ItemDisplayBinding="{Binding ., Converter={StaticResource HallmarkTypeConverter}}"
+                                    ItemsSource="{Binding AllHallmarks}"
+                                    SelectedItem="{Binding SelectedProduct.Hallmark}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Unit Cost & Price  -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="13"
+                                    Text="Unit Cost *"
+                                    TextColor="{StaticResource TextDark}" />
+                                <Border
+                                    BackgroundColor="Transparent"
+                                    Stroke="{StaticResource LightCyan}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1">
+                                    <Entry
+                                        FontFamily="NexaLight"
+                                        Keyboard="Numeric"
+                                        Placeholder="Cost"
+                                        Text="{Binding SelectedProduct.UnitCost, Converter={StaticResource ZeroToEmptyStringConverter}}"
+                                        TextColor="{StaticResource TextDark}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="13"
+                                    Text="Unit Price *"
+                                    TextColor="{StaticResource TextDark}" />
+                                <Border
+                                    BackgroundColor="Transparent"
+                                    Stroke="{StaticResource LightCyan}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1">
+                                    <Entry
+                                        FontFamily="NexaLight"
+                                        Keyboard="Numeric"
+                                        Placeholder="Price"
+                                        Text="{Binding SelectedProduct.UnitPrice, Converter={StaticResource ZeroToEmptyStringConverter}}"
+                                        TextColor="{StaticResource TextDark}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!--  Offer Price (Read-only)  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Offer Price"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="{StaticResource Secondary}"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    IsReadOnly="True"
+                                    Keyboard="Numeric"
+                                    Placeholder="Not set"
+                                    Text="{Binding SelectedProduct.OfferPrice, Converter={StaticResource ZeroToEmptyStringConverter}}"
+                                    TextColor="{StaticResource TextLight}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Weight Unit & Weight  -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="13"
+                                    Text="Weight Unit *"
+                                    TextColor="{StaticResource TextDark}" />
+                                <Border
+                                    BackgroundColor="Transparent"
+                                    Stroke="{StaticResource LightCyan}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1">
+                                    <Picker
+                                        FontFamily="NexaLight"
+                                        ItemDisplayBinding="{Binding ., Converter={StaticResource WeightUnitConverter}}"
+                                        ItemsSource="{Binding AllWeightUnits}"
+                                        SelectedItem="{Binding SelectedProduct.WeightUnit}"
+                                        TextColor="{StaticResource TextDark}" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="13"
+                                    Text="Weight *"
+                                    TextColor="{StaticResource TextDark}" />
+                                <Border
+                                    BackgroundColor="Transparent"
+                                    Stroke="{StaticResource LightCyan}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1">
+                                    <Entry
+                                        FontFamily="NexaLight"
+                                        Keyboard="Numeric"
+                                        Placeholder="Weight"
+                                        Text="{Binding SelectedProduct.Weight}"
+                                        TextColor="{StaticResource TextDark}" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!--  Current Stock  -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Current Stock"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Keyboard="Numeric"
+                                    Placeholder="Stock quantity"
+                                    Text="{Binding SelectedProduct.CurrentStock}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!--  Is Unique Piece  -->
+                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                            <Switch
+                                IsToggled="{Binding SelectedProduct.IsUniquePiece}"
+                                OnColor="{StaticResource Primary}"
+                                ThumbColor="{StaticResource Secondary}" />
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Is Unique Piece"
+                                TextColor="{StaticResource TextDark}"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!--  Footer Buttons  -->
+                <Border
+                    Grid.Row="2"
+                    Padding="20,16"
+                    Background="White"
+                    IsVisible="{Binding IsProductSelected}"
+                    StrokeShape="RoundRectangle 0,0,20,20"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Grid.Column="0"
+                            Background="{StaticResource Brush.CardBgGradient}"
+                            Command="{Binding CancelEditCommand}"
+                            CornerRadius="10"
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            HeightRequest="44"
+                            Text="Cancel"
+                            TextColor="{StaticResource TextDark}" />
+                        <Button
+                            Grid.Column="1"
+                            Background="{StaticResource Brush.ButtonGradient}"
+                            Command="{Binding SaveProductCommand}"
+                            CornerRadius="10"
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            HeightRequest="44"
+                            Shadow="{StaticResource Sh.CyanSm}"
+                            Text="Save"
+                            TextColor="White" />
+                    </Grid>
+                </Border>
+            </Grid>
         </Border>
     </Grid>
 </ContentPage>

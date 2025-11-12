@@ -28,6 +28,11 @@ namespace GleamVault.MVVM.ViewModels
         private bool shimmerLoading = true;
         private bool shimmerNotLoading = false;
         private readonly ObservableCollection<object> _shimmerItems = new();
+        private Product _selectedProduct = new();
+        private bool _isProductSelected;
+        private ObservableCollection<WeightUnit> _allWeightUnits = new();
+        private int _currentIndex = 0;
+
         #endregion
 
 
@@ -56,7 +61,7 @@ namespace GleamVault.MVVM.ViewModels
 
             }
         }
-       
+
         public IList<object> SelectedProducts { get; set; } = [];
         public int SortIndex
         {
@@ -69,7 +74,7 @@ namespace GleamVault.MVVM.ViewModels
                 SortNow();
             }
         }
-      
+
         public ObservableCollection<HallmarkType> AllHallmarks
         {
             get => allHallmarks;
@@ -113,30 +118,232 @@ namespace GleamVault.MVVM.ViewModels
             set { if (_filteredProducts == value) return; _filteredProducts = value; OnPropertyChanged(); }
         }
 
-       
+
         public ObservableCollection<Category> AllCategories
         {
             get => _allCategories;
             set { if (_allCategories == value) return; _allCategories = value; OnPropertyChanged(); }
         }
 
+        public ObservableCollection<WeightUnit> AllWeightUnits
+        {
+            get => _allWeightUnits;
+            set { if (_allWeightUnits == value) return; _allWeightUnits = value; OnPropertyChanged(); }
+        }
+
+        public Product SelectedProduct
+        {
+            get => _selectedProduct;
+            set
+            {
+                if (_selectedProduct == value) return;
+                _selectedProduct = value;
+                IsProductSelected = value != null;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsProductSelected
+        {
+            get => _isProductSelected;
+            set
+            {
+                if (_isProductSelected == value) return;
+                _isProductSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Commands
-      
-
+        public ICommand SelectProductCommand => new Command<Product>(p => SelectProduct(p));
+        public ICommand SaveProductCommand => new Command(async () => await SaveProductAsync());
+        public ICommand CancelEditCommand => new Command(() => CancelEdit());
+        public ICommand LoadMoreCommand=> new Command(() => LoadMore());
         #endregion
 
         #region Tasks
-       
+        public async Task SaveProductAsync()
+        {
+            if (SelectedProduct == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "No product selected for editing.", "OK");
+                return;
+            }
 
+            // Validate Product Name
+            if (string.IsNullOrWhiteSpace(SelectedProduct.Name))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Product name is required.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.Name.Length < 3)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Product name must be at least 3 characters long.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.Name.Length > 200)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Product name cannot exceed 200 characters.", "OK");
+                return;
+            }
+
+            // Validate Category
+            if (SelectedProduct.Category == null)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a category.", "OK");
+                return;
+            }
+
+            // Validate Hallmark
+            if (SelectedProduct.Hallmark == null || !Enum.IsDefined(typeof(HallmarkType), SelectedProduct.Hallmark))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a valid hallmark type.", "OK");
+                return;
+            }
+
+            // Validate Unit Cost
+            if (SelectedProduct.UnitCost <= 0)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Unit cost must be greater than zero.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.UnitCost > 999999999)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Unit cost is too high. Please enter a valid amount.", "OK");
+                return;
+            }
+
+            // Validate Unit Price
+            if (SelectedProduct.UnitPrice <= 0)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Unit price must be greater than zero.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.UnitPrice > 999999999)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Unit price is too high. Please enter a valid amount.", "OK");
+                return;
+            }
+
+            // Validate Unit Price is greater than Unit Cost
+            if (SelectedProduct.UnitPrice < SelectedProduct.UnitCost)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Unit price should be greater than or equal to unit cost to avoid losses.", "OK");
+                return;
+            }
+
+            // Validate Weight Unit
+            if (!Enum.IsDefined(typeof(WeightUnit), SelectedProduct.WeightUnit))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a valid weight unit.", "OK");
+                return;
+            }
+
+            // Validate Weight
+            if (SelectedProduct.Weight <= 0)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Weight must be greater than zero.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.Weight > 999999)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Weight value is too high. Please enter a valid weight.", "OK");
+                return;
+            }
+
+            // Validate Current Stock
+            if (SelectedProduct.CurrentStock < 0)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Current stock cannot be negative.", "OK");
+                return;
+            }
+
+            if (SelectedProduct.CurrentStock > 999999)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Stock quantity is too high. Please enter a valid quantity.", "OK");
+                return;
+            }
+
+            // Validate Description (optional but length check)
+            if (!string.IsNullOrWhiteSpace(SelectedProduct.Description) && SelectedProduct.Description.Length > 1000)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Description cannot exceed 1000 characters.", "OK");
+                return;
+            }
+
+            var productToUpdate = AllProducts.FirstOrDefault(p => p.Id == SelectedProduct.Id);
+            if (productToUpdate == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Product not found in the inventory.", "OK");
+                return;
+            }
+
+            try
+            {
+                productToUpdate.Name = SelectedProduct.Name.Trim();
+                productToUpdate.Description = SelectedProduct.Description?.Trim();
+                productToUpdate.CategoryId = SelectedProduct.CategoryId;
+                productToUpdate.Category = SelectedProduct.Category;
+                productToUpdate.Hallmark = SelectedProduct.Hallmark;
+                productToUpdate.UnitCost = SelectedProduct.UnitCost;
+                productToUpdate.UnitPrice = SelectedProduct.UnitPrice;
+                productToUpdate.Weight = SelectedProduct.Weight;
+                productToUpdate.CurrentStock = SelectedProduct.CurrentStock;
+                productToUpdate.IsUniquePiece = SelectedProduct.IsUniquePiece;
+                productToUpdate.ImageUrl = SelectedProduct.ImageUrl;
+
+                FilterProducts();
+
+                SelectedProduct = null;
+
+                await Shell.Current.DisplayAlert("Success", "Product updated successfully!", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to save product: {ex.Message}", "OK");
+            }
+        }
+
+        public void CancelEdit()
+        {
+            SelectedProduct = null;
+        }
         #endregion
 
         #region methods
+        public void SelectProduct(Product product)
+        {
+            if (product == null) return;
+            SelectedProduct = new Product
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Sku = product.Sku,
+                CategoryId = product.CategoryId,
+                Category = product.Category,
+                ImageUrl = product.ImageUrl,
+                Hallmark = product.Hallmark,
+                WeightUnit = product.WeightUnit,
+                Weight = product.Weight,
+                UnitCost = product.UnitCost,
+                UnitPrice = product.UnitPrice,
+                OfferPrice = product.OfferPrice,
+                CurrentStock = product.CurrentStock,
+                IsUniquePiece = product.IsUniquePiece
+            };
+        }
 
-     
 
-      
+
+
         public void FilterProducts()
         {
             if (SelectedProducts.Count == 0)
@@ -229,7 +436,13 @@ namespace GleamVault.MVVM.ViewModels
             AllHallmarks.Clear();
             foreach (var v in Enum.GetValues<HallmarkType>())
                 AllHallmarks.Add(v);
+        }
 
+        public void GetWeightUnits()
+        {
+            AllWeightUnits.Clear();
+            foreach (var v in Enum.GetValues<WeightUnit>())
+                AllWeightUnits.Add(v);
         }
         public void SortNow()
         {
@@ -247,15 +460,34 @@ namespace GleamVault.MVVM.ViewModels
 
         #endregion
 
+        public async Task LoadData()
+        {
+            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            await Task.Delay(500);
+            LoadMore();
+        }
+
+        public void LoadMore()
+        {
+            var nextItems = AllProducts.Skip(_currentIndex).Take(10);
+
+            foreach (var item in nextItems)
+            {
+                FilteredProducts.Add(item);
+            }
+            _currentIndex += 10;
+        }
+
         public void ClearALL()
         {
             AllProducts.Clear();
             AllCategories.Clear();
             FilteredProducts.Clear();
-         
             AllHallmarks.Clear();
+            AllWeightUnits.Clear();
+            SelectedProducts.Clear();
             SelectedCategory = new Category();
-          
+            SelectedProduct = null;
             ShimmerLoading = true;
             ShimmerNotLoading = false;
             _shimmerItems.Clear();
@@ -264,19 +496,17 @@ namespace GleamVault.MVVM.ViewModels
                 _shimmerItems.Add(new object());
             }
             OnPropertyChanged(nameof(ShimmerItems));
-
         }
         public async Task LoadDataAsync()
         {
             ClearALL();
             GetHallmarks();
-            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            GetWeightUnits();
+            await LoadData();
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
-            FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await Task.Delay(3000);
             ShimmerLoading = false;
             ShimmerNotLoading = true;
-
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

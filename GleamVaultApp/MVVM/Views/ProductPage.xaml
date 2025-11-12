@@ -68,9 +68,23 @@
                     VerticalOptions="Center">
                     <Image
                         HeightRequest="30"
-                        Source="diamond.png"
+                        Source="product_2.png"
                         WidthRequest="30" />
-                    <Label StyleClass="h2" Text="Gleam &amp; Co." />
+                    <VerticalStackLayout Spacing="5">
+                        <Label StyleClass="h2" Text="Products" />
+                        <HorizontalStackLayout>
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="14"
+                                Text="Total Products: " />
+                            <Label
+                                Margin="10,0,0,0"
+                                FontFamily="NexaLight"
+                                FontSize="14"
+                                Text="{Binding ProductCount}" />
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
                 </HorizontalStackLayout>
                 <HorizontalStackLayout
                     Grid.Column="1"
@@ -614,7 +628,7 @@
                                         <Border
                                             Grid.Row="1"
                                             Padding="10"
-                                            Background="#dbe1e3"
+                                            Background="Gray"
                                             HeightRequest="80"
                                             StrokeThickness="0">
                                             <Grid

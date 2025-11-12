@@ -73,6 +73,7 @@ namespace GleamVault.MVVM.ViewModels
         #endregion
 
         #region Properties
+        public int ProductCount => FilteredProducts?.Count ?? 0;
         public ObservableCollection<object> ShimmerItems
         {
             get => _shimmerItems;
