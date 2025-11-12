@@ -527,7 +527,7 @@
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:InventoryPage}}, Path=BindingContext.SelectProductCommand}" CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
-                                    <Grid ColumnDefinitions="120,*,Auto" ColumnSpacing="15">
+                                    <Grid ColumnDefinitions="120,*,Auto,Auto" ColumnSpacing="15">
                                         <!--  Product Image  -->
                                         <Border
                                             Grid.Column="0"
@@ -704,6 +704,27 @@
                                                     TextColor="{StaticResource TextDark}" />
                                             </HorizontalStackLayout>
                                         </VerticalStackLayout>
+
+                                        <!--  Delete Button  -->
+                                        <Border
+                                            Grid.Column="3"
+                                            Padding="12"
+                                            Background="Red"
+                                            HeightRequest="44"
+                                            HorizontalOptions="Center"
+                                            StrokeShape="RoundRectangle 10"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Center"
+                                            WidthRequest="44">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:InventoryPage}}, Path=BindingContext.DeleteProductCommand}" CommandParameter="{Binding .}" />
+                                            </Border.GestureRecognizers>
+                                            <Image
+                                                HeightRequest="20"
+                                                Source="trash.png"
+                                                VerticalOptions="Center"
+                                                WidthRequest="20" />
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

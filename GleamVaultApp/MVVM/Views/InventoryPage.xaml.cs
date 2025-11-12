@@ -1,15 +1,21 @@
 using GleamVault.MVVM.ViewModels;
+using GleamVault.Utility;
 using System.ComponentModel;
 
 namespace GleamVault.MVVM.Views;
 
 public partial class InventoryPage : ContentPage
 {
-	public InventoryPage(InventoryVM vm)
-	{
-		InitializeComponent();
+    public InventoryPage Current { get; private set; }
+
+    public InventoryPage(InventoryVM vm)
+    {
+        InitializeComponent();
         BindingContext = vm;
         vm.PropertyChanged += ViewModel_PropertyChanged;
+        vm.ShowDeleteSnackbar = ShowDeleteSnackbarAsync;
+        vm.ShowSuccessSnackbar = ShowSuccessSnackbarAsync;
+        Current = this;
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -65,6 +71,21 @@ public partial class InventoryPage : ContentPage
         {
             vm.SortNow();
         }
+    }
 
+    private async Task ShowDeleteSnackbarAsync(string productName, Func<Task> undoAction)
+    {
+        await SnackbarHelper.ShowErrorAsync(
+            $"'{productName}' deleted",
+            Current,
+            "UNDO",
+            undoAction);
+    }
+
+    private async Task ShowSuccessSnackbarAsync(string message)
+    {
+        await SnackbarHelper.ShowSuccessAsync(
+            message,
+            Current);
     }
 }

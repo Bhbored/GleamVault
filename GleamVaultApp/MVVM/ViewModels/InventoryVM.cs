@@ -32,6 +32,10 @@ namespace GleamVault.MVVM.ViewModels
         private bool _isProductSelected;
         private ObservableCollection<WeightUnit> _allWeightUnits = new();
         private int _currentIndex = 0;
+        private Product? _deletedProduct;
+        private int _deletedProductIndex;
+        public Func<string, Func<Task>, Task>? ShowDeleteSnackbar;
+        public Func<string, Task>? ShowSuccessSnackbar;
 
         #endregion
 
@@ -161,6 +165,7 @@ namespace GleamVault.MVVM.ViewModels
         public ICommand SaveProductCommand => new Command(async () => await SaveProductAsync());
         public ICommand CancelEditCommand => new Command(() => CancelEdit());
         public ICommand LoadMoreCommand=> new Command(() => LoadMore());
+        public ICommand DeleteProductCommand => new Command<Product>(async (p) => await DeleteProductAsync(p));
         #endregion
 
         #region Tasks
@@ -314,6 +319,84 @@ namespace GleamVault.MVVM.ViewModels
         public void CancelEdit()
         {
             SelectedProduct = null;
+        }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            if (product == null) return;
+
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Delete Product",
+                $"Are you sure you want to delete '{product.Name}'?",
+                "Delete",
+                "Cancel");
+
+            if (!confirm) return;
+
+            var productName = product.Name;
+
+            _deletedProduct = new Product
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Sku = product.Sku,
+                CategoryId = product.CategoryId,
+                Category = product.Category,
+                ImageUrl = product.ImageUrl,
+                Hallmark = product.Hallmark,
+                WeightUnit = product.WeightUnit,
+                Weight = product.Weight,
+                UnitCost = product.UnitCost,
+                UnitPrice = product.UnitPrice,
+                OfferPrice = product.OfferPrice,
+                CurrentStock = product.CurrentStock,
+                IsUniquePiece = product.IsUniquePiece
+            };
+
+            _deletedProductIndex = AllProducts.IndexOf(product);
+
+            AllProducts.Remove(product);
+            FilteredProducts.Remove(product);
+
+            if (SelectedProduct?.Id == product.Id)
+            {
+                SelectedProduct = null;
+            }
+
+            if (ShowDeleteSnackbar != null)
+            {
+                await ShowDeleteSnackbar(productName, async () => await UndoDeleteAsync(productName));
+            }
+        }
+
+        public async Task UndoDeleteAsync(string productName)
+        {
+            UndoDeleteProduct();
+            
+            if (ShowSuccessSnackbar != null)
+            {
+                await ShowSuccessSnackbar($"'{productName}' restored");
+            }
+        }
+
+        public void UndoDeleteProduct()
+        {
+            if (_deletedProduct == null) return;
+
+            if (_deletedProductIndex >= 0 && _deletedProductIndex <= AllProducts.Count)
+            {
+                AllProducts.Insert(_deletedProductIndex, _deletedProduct);
+            }
+            else
+            {
+                AllProducts.Add(_deletedProduct);
+            }
+
+            FilterProducts();
+
+            _deletedProduct = null;
+            _deletedProductIndex = -1;
         }
         #endregion
 
