@@ -529,6 +529,8 @@
                         IsVisible="{Binding ShimmerNotLoading}"
                         ItemSpacing="10"
                         ItemsSource="{Binding FilteredProducts}"
+                        LoadMoreCommand="{Binding LoadMoreCommand}"
+                        LoadMoreOption="AutoOnScroll"
                         SelectionMode="None">
                         <syncfusion:SfListView.ItemsLayout>
                             <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="4" />

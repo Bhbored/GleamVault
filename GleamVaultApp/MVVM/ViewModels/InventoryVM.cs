@@ -573,8 +573,9 @@ namespace GleamVault.MVVM.ViewModels
             SelectedProduct = null;
             ShimmerLoading = true;
             ShimmerNotLoading = false;
+            _currentIndex = 0;
             _shimmerItems.Clear();
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 4; i++)
             {
                 _shimmerItems.Add(new object());
             }
