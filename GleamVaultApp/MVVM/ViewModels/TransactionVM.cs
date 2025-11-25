@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GleamVault.MVVM.ViewModels
 {
-    public partial class TransactionVM :ObservableObject
+    public partial class TransactionVM
     {
     }
 }

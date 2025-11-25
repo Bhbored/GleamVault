@@ -86,56 +86,29 @@
 
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
-                <HorizontalStackLayout
+                <Border
                     Grid.Column="1"
-                    Spacing="20"
-                    VerticalOptions="Center">
-                    <Border
-                        Padding="12,10"
-                        Background="{StaticResource Brush.ButtonGradient}"
-                        Shadow="{StaticResource Sh.CyanSm}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
-
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Image
-                                HeightRequest="25"
-                                Source="discount.png"
-                                WidthRequest="25" />
-                            <Label
-                                Margin="0"
-                                FontAttributes="Bold"
-                                StyleClass="body"
-                                Text="Add Discount"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ShowAddDiscountPopupCommand}" />
-                        </Border.GestureRecognizers>
-                    </Border>
-                    <Border
-                        Padding="12,10"
-                        Background="{StaticResource Brush.CardBgGradient}"
-                        Shadow="{StaticResource Sh.CyanSm}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Image
-                                HeightRequest="25"
-                                Source="add.png"
-                                WidthRequest="25" />
-                            <Label
-                                Margin="0"
-                                FontAttributes="Bold"
-                                StyleClass="body"
-                                Text="Add Product"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ShowAddProductPopupCommand}" />
-                        </Border.GestureRecognizers>
-                    </Border>
-                </HorizontalStackLayout>
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Image
+                            HeightRequest="25"
+                            Source="add.png"
+                            WidthRequest="25" />
+                        <Label
+                            Margin="0"
+                            FontAttributes="Bold"
+                            StyleClass="body"
+                            Text="Add Product"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowAddProductPopupCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
             </Grid>
 
             <!--  Search  -->

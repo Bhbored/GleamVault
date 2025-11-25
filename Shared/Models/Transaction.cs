@@ -17,7 +17,7 @@ namespace Shared.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
         public Guid? CustomerId { get; set; }
-        public Guid CreatedByUserId { get; set; }
+        public Guid CreatedByUserId { get; set; }//cursor ignor for now 
         public DateTime CreatedDate { get; set; }
         public float? DiscountValue { get; set; } = 0;
         public Customer? Customer { get; set; }
