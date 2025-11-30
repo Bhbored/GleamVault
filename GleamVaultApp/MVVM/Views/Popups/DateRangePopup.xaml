@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.DateRangePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:TransactionVM"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    MaximumHeightRequest="500"
+    WidthRequest="400">
+
+    <Grid
+        Background="{StaticResource Brush.CardBgGradient}"
+        RowDefinitions="Auto,*,Auto"
+        RowSpacing="15">
+        <!--  Header  -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="12">
+            <HorizontalStackLayout
+                Grid.Column="0"
+                Spacing="8"
+                VerticalOptions="Center">
+                <shapes:Path
+                    Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    Fill="{StaticResource Primary}"
+                    HeightRequest="24"
+                    WidthRequest="24" />
+                <Label
+                    FontFamily="NexaHeavy"
+                    FontSize="20"
+                    Text="Select Date Range"
+                    TextColor="{StaticResource TextDark}"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <Button
+                x:Name="CloseButton"
+                Grid.Column="1"
+                Background="Transparent"
+                Clicked="CloseButton_Clicked"
+                FontFamily="NexaHeavy"
+                FontSize="18"
+                Text="✕"
+                TextColor="{StaticResource TextDark}" />
+        </Grid>
+
+        <!--  Calendar  -->
+        <Border
+            Grid.Row="1"
+            Padding="10"
+            Background="{StaticResource Brush.CardBgGradient}"
+            StrokeShape="RoundRectangle 15"
+            StrokeThickness="0">
+            <calendar:SfCalendar SelectedDateRange="{Binding TempDateRange, Mode=TwoWay}" SelectionMode="Range" />
+        </Border>
+
+        <!--  Action Buttons  -->
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="12">
+            <Button
+                x:Name="ResetButton"
+                Grid.Column="0"
+                Background="{StaticResource Primary}"
+                Clicked="ResetButton_Clicked"
+                FontFamily="NexaHeavy"
+                FontSize="16"
+                Text="Reset"
+                TextColor="White" />
+            <Button
+                x:Name="ApplyButton"
+                Grid.Column="1"
+                Background="{StaticResource Primary}"
+                Clicked="ApplyButton_Clicked"
+                FontFamily="NexaHeavy"
+                FontSize="16"
+                Text="Apply"
+                TextColor="White" />
+        </Grid>
+    </Grid>
+</toolkit:Popup>
+

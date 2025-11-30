@@ -2,11 +2,834 @@
 <ContentPage
     x:Class="GleamVault.MVVM.Views.TransactionPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:calendar="clr-namespace:Syncfusion.Maui.Calendar;assembly=Syncfusion.Maui.Calendar"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+    xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:TransactionVM"
+    Background="{StaticResource Brush.BackgroundGradient}">
+
+    <ContentPage.Resources>
+        <conv:PriceConverter x:Key="PriceConverter" />
+        <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        <conv:FirstCharConverter x:Key="FirstCharConverter" />
+        <conv:ChannelConverter x:Key="ChannelConverter" />
+        <conv:DateConverter x:Key="DateConverter" />
+        <conv:DiscountTextConverter x:Key="DiscountTextConverter" />
+        <conv:SubtotalTextConverter x:Key="SubtotalTextConverter" />
+        <conv:SkuTextConverter x:Key="SkuTextConverter" />
+        <conv:QuantityTextConverter x:Key="QuantityTextConverter" />
+        <conv:TransactionTypeConverter x:Key="TransactionTypeConverter" />
+        <conv:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter" />
+        <conv:SaleChannelConverter x:Key="SaleChannelConverter" />
+
+        <!--  Compact Transaction Card Template  -->
+        <DataTemplate x:Key="CompactTransactionCardTemplate" x:DataType="models:Transaction">
+            <Border
+                Margin="0,0,0,10"
+                Padding="12,10"
+                Background="{StaticResource Brush.CardBgGradient}"
+                Shadow="{StaticResource Sh.CyanSm}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Transaction_Tapped" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                    <!--  Customer Avatar  -->
+                    <Border
+                        Grid.Column="0"
+                        Background="{StaticResource Secondary}"
+                        HeightRequest="40"
+                        StrokeShape="RoundRectangle 20"
+                        StrokeThickness="0"
+                        WidthRequest="40">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="{Binding Customer.FullName, Converter={StaticResource FirstCharConverter}}"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <!--  Transaction Info  -->
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="4"
+                        VerticalOptions="Center">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="{Binding Description}"
+                            TextColor="{StaticResource TextDark}" />
+                        <HorizontalStackLayout Spacing="8">
+                            <shapes:Path
+                                Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                                Fill="{StaticResource TextLight}"
+                                HeightRequest="12"
+                                WidthRequest="12" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="11"
+                                Text="{Binding CreatedAt, Converter={StaticResource DateConverter}}"
+                                TextColor="{StaticResource TextLight}" />
+                            <shapes:Path
+                                Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                                Fill="{StaticResource TextLight}"
+                                HeightRequest="12"
+                                WidthRequest="12" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="11"
+                                Text="{Binding Channel}"
+                                TextColor="{StaticResource TextLight}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!--  Amount  -->
+                    <Border
+                        Grid.Column="2"
+                        Padding="10,6"
+                        Background="{StaticResource Primary}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
+                            TextColor="White" />
+                    </Border>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!--  Transaction Card Template  -->
+        <DataTemplate x:Key="TransactionCardTemplate" x:DataType="models:Transaction">
+            <Border
+                Margin="0,0,0,15"
+                Padding="20"
+                Background="{StaticResource Brush.CardBgGradient}"
+                Shadow="{StaticResource Sh.CyanSm}"
+                StrokeShape="RoundRectangle 15"
+                StrokeThickness="0">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+                    <!--  Header  -->
+                    <Grid
+                        Grid.Row="0"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="18"
+                                Text="{Binding Description}"
+                                TextColor="{StaticResource TextDark}" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="13"
+                                Text="{Binding CreatedAt, Converter={StaticResource DateConverter}}"
+                                TextColor="{StaticResource TextLight}" />
+                        </VerticalStackLayout>
+                        <Border
+                            Grid.Column="1"
+                            Padding="10,6"
+                            Background="{StaticResource Primary}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="0">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="16"
+                                Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
+                                TextColor="White" />
+                        </Border>
+                    </Grid>
+
+                    <!--  Customer Info  -->
+                    <Grid
+                        Grid.Row="1"
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="12">
+                        <Border
+                            Grid.Column="0"
+                            Background="{StaticResource Secondary}"
+                            HeightRequest="50"
+                            StrokeShape="RoundRectangle 25"
+                            StrokeThickness="0"
+                            WidthRequest="50">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="20"
+                                HorizontalOptions="Center"
+                                Text="{Binding Customer.FullName, Converter={StaticResource FirstCharConverter}}"
+                                TextColor="White"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="4"
+                            VerticalOptions="Center">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="15"
+                                Text="{Binding Customer.FullName}"
+                                TextColor="{StaticResource TextDark}" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="12"
+                                Text="{Binding Channel, Converter={StaticResource ChannelConverter}}"
+                                TextColor="{StaticResource TextLight}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!--  Items  -->
+                    <Border
+                        Grid.Row="2"
+                        Padding="12"
+                        Background="{StaticResource Secondary}"
+                        Opacity="0.1"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="14"
+                                Text="Items:"
+                                TextColor="{StaticResource TextDark}" />
+                            <CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:TransactionItem">
+                                        <Grid
+                                            Padding="8,4"
+                                            ColumnDefinitions="Auto,*,Auto"
+                                            ColumnSpacing="12">
+                                            <Border
+                                                Grid.Column="0"
+                                                Background="{StaticResource Secondary}"
+                                                HeightRequest="40"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                WidthRequest="40">
+                                                <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                            </Border>
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="13"
+                                                    Text="{Binding Name}"
+                                                    TextColor="{StaticResource TextDark}" />
+                                                <Label
+                                                    FontFamily="NexaLight"
+                                                    FontSize="11"
+                                                    Text="{Binding Sku, Converter={StaticResource SkuTextConverter}}"
+                                                    TextColor="{StaticResource TextLight}" />
+                                            </VerticalStackLayout>
+                                            <VerticalStackLayout
+                                                Grid.Column="2"
+                                                HorizontalOptions="End"
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="13"
+                                                    HorizontalTextAlignment="End"
+                                                    Text="{Binding Quantity, Converter={StaticResource QuantityTextConverter}}"
+                                                    TextColor="{StaticResource TextDark}" />
+                                                <Label
+                                                    FontFamily="NexaLight"
+                                                    FontSize="12"
+                                                    HorizontalTextAlignment="End"
+                                                    Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
+                                                    TextColor="{StaticResource TextLight}" />
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!--  Summary  -->
+                    <Grid
+                        Grid.Row="3"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="13"
+                                Text="{Binding SubTotalAmount, Converter={StaticResource SubtotalTextConverter}}"
+                                TextColor="{StaticResource TextLight}" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="13"
+                                IsVisible="{Binding DiscountValue, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                Text="{Binding DiscountValue, Converter={StaticResource DiscountTextConverter}}"
+                                TextColor="Red" />
+                        </VerticalStackLayout>
+                        <Border
+                            Grid.Column="1"
+                            Padding="12,8"
+                            Background="{StaticResource Primary}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="18"
+                                Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
+                                TextColor="White" />
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!--  Header Wave Background  -->
+        <Grid
+            Grid.Row="0"
+            HeightRequest="200"
+            VerticalOptions="Start">
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,160 Q180,210 360,160 T720,160 L720,0 Z"
+                Fill="{StaticResource Brush.HeaderGradient}"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="1"
+                VerticalOptions="Fill" />
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,175 Q180,225 360,175 T720,175 L720,0 Z"
+                Fill="White"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="0.12"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  Header Content  -->
+        <Grid
+            Grid.Row="0"
+            Padding="20,20,20,0"
+            RowDefinitions="Auto,Auto"
+            RowSpacing="15"
+            VerticalOptions="Start">
+
+            <!--  Title and Export  -->
+            <Grid
+                Grid.Row="0"
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="12">
+                <HorizontalStackLayout
+                    Grid.Column="0"
+                    Spacing="8"
+                    VerticalOptions="Center">
+                    <shapes:Path
+                        Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                        Fill="{StaticResource Primary}"
+                        HeightRequest="30"
+                        WidthRequest="30" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label StyleClass="h2" Text="Sales History" />
+                        <Label
+                            FontFamily="NexaLight"
+                            FontSize="14"
+                            Text="{Binding FilteredTransactions.Count, StringFormat='{0} Transactions'}" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+                <Border
+                    Grid.Column="1"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    HeightRequest="50"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ExportToPdfCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <shapes:Path
+                            Data="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+                            Fill="White"
+                            HeightRequest="18"
+                            WidthRequest="18" />
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Export PDF"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+
+            <!--  Filters Row  -->
+            <Grid
+                Grid.Row="1"
+                ColumnDefinitions="Auto,*,*,Auto"
+                ColumnSpacing="12">
+                <!--  Date Filter Button  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowDateRangePopupCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                        <shapes:Path
+                            Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                            Fill="{StaticResource Primary}"
+                            HeightRequest="20"
+                            WidthRequest="20" />
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="12"
+                                Text="Date"
+                                TextColor="{StaticResource TextDark}" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="10"
+                                Text="{Binding DateRangeText}"
+                                TextColor="{StaticResource TextLight}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!--  Transaction Type Filter  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <shapes:Path
+                            Grid.Column="0"
+                            Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                            Fill="{StaticResource Primary}"
+                            HeightRequest="20"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <editors:SfComboBox
+                            Grid.Column="1"
+                            Background="Transparent"
+                            ClearButtonIconColor="Cyan"
+                            DropDownBackground="White"
+                            DropDownIconColor="{StaticResource Primary}"
+                            FontFamily="NexaLight"
+                            HorizontalOptions="Fill"
+                            IsEditable="False"
+                            ItemsSource="{Binding AllTransactionTypes}"
+                            Placeholder="All Types"
+                            SelectedItem="{Binding SelectedTransactionType, Mode=TwoWay}"
+                            VerticalOptions="Center">
+                            <editors:SfComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="enums:TransactionType">
+                                    <Grid
+                                        Padding="8"
+                                        ColumnDefinitions="Auto,*"
+                                        ColumnSpacing="10">
+                                        <Border
+                                            Grid.Column="0"
+                                            Background="{Binding ., Converter={StaticResource TransactionTypeColorConverter}}"
+                                            HeightRequest="12"
+                                            StrokeShape="RoundRectangle 999"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Center"
+                                            WidthRequest="12" />
+                                        <Label
+                                            Grid.Column="1"
+                                            FontFamily="NexaLight"
+                                            FontSize="13"
+                                            Text="{Binding ., Converter={StaticResource TransactionTypeConverter}}"
+                                            TextColor="{StaticResource TextDark}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </editors:SfComboBox.ItemTemplate>
+                        </editors:SfComboBox>
+                    </Grid>
+                </Border>
+
+                <!--  Channel Filter  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <shapes:Path
+                            Grid.Column="0"
+                            Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                            Fill="{StaticResource Primary}"
+                            HeightRequest="20"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="20" />
+                        <editors:SfComboBox
+                            Grid.Column="1"
+                            Background="Transparent"
+                            ClearButtonIconColor="Cyan"
+                            DropDownBackground="White"
+                            DropDownIconColor="{StaticResource Primary}"
+                            FontFamily="NexaLight"
+                            HorizontalOptions="Fill"
+                            IsEditable="False"
+                            ItemsSource="{Binding AllChannels}"
+                            Placeholder="All Channels"
+                            SelectedItem="{Binding SelectedChannel, Mode=TwoWay}"
+                            VerticalOptions="Center">
+                            <editors:SfComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="enums:SaleChannel">
+                                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                        <Label Text="❗ " />
+                                        <Label
+                                            FontFamily="NexaLight"
+                                            FontSize="13"
+                                            Text="{Binding ., Converter={StaticResource SaleChannelConverter}}"
+                                            TextColor="{StaticResource TextDark}" />
+                                    </HorizontalStackLayout>
+
+                                </DataTemplate>
+                            </editors:SfComboBox.ItemTemplate>
+                        </editors:SfComboBox>
+                    </Grid>
+                </Border>
+
+                <!--  Clear Button  -->
+                <Border
+                    Grid.Column="3"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearDateFilterCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                        <shapes:Path
+                            Grid.Column="0"
+                            Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                            Fill="{StaticResource TextDark}"
+                            HeightRequest="16"
+                            VerticalOptions="Center"
+                            WidthRequest="16" />
+                        <Label
+                            Grid.Column="1"
+                            FontFamily="NexaHeavy"
+                            FontSize="11"
+                            Text="Clear"
+                            TextColor="{StaticResource TextDark}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!--  Transactions List  -->
+        <Grid
+            Grid.Row="2"
+            Margin="20,0,20,20"
+            RowDefinitions="*,Auto">
+            <!--  Shimmer ListView  -->
+            <syncfusion:SfListView
+                x:Name="ShimmerList"
+                Grid.Row="0"
+                AutoFitMode="Height"
+                IsVisible="{Binding ShimmerLoading}"
+                ItemSpacing="0"
+                ItemsSource="{Binding ShimmerItems}"
+                SelectionMode="None">
+                <syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:LinearLayout />
+                </syncfusion:SfListView.ItemsLayout>
+                <syncfusion:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Border
+                                Padding="18,18"
+                                Background="{StaticResource Brush.CardBgGradient}"
+                                HeightRequest="110"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        Spacing="6"
+                                        VerticalOptions="Center">
+                                        <shimmer:SfShimmer
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView BackgroundColor="#E0E0E0" HeightRequest="16" />
+                                        </shimmer:SfShimmer>
+                                        <HorizontalStackLayout Spacing="10">
+                                            <shimmer:SfShimmer
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="12"
+                                                    WidthRequest="80" />
+                                            </shimmer:SfShimmer>
+                                            <shimmer:SfShimmer
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="12"
+                                                    WidthRequest="60" />
+                                            </shimmer:SfShimmer>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="14,10"
+                                        Background="Transparent"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center">
+                                        <shimmer:SfShimmer
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="16"
+                                                WidthRequest="70" />
+                                        </shimmer:SfShimmer>
+                                    </Border>
+                                    <Border
+                                        Grid.Column="2"
+                                        Background="Transparent"
+                                        HeightRequest="44"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center"
+                                        WidthRequest="44">
+                                        <shimmer:SfShimmer
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="50">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="44"
+                                                WidthRequest="44" />
+                                        </shimmer:SfShimmer>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <BoxView
+                                Margin="20,0"
+                                HeightRequest="1"
+                                Opacity="0.2"
+                                VerticalOptions="End"
+                                Color="{StaticResource TextLight}" />
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfListView.ItemTemplate>
+            </syncfusion:SfListView>
+
+            <!--  Transactions ListView  -->
+            <syncfusion:SfListView
+                x:Name="TransactionsList"
+                Grid.Row="0"
+                AutoFitMode="Height"
+                IsVisible="{Binding ShimmerNotLoading}"
+                ItemSpacing="0"
+                ItemsSource="{Binding PaginatedTransactions}"
+                SelectionBackground="Transparent"
+                SelectionMode="None">
+                <syncfusion:SfListView.ItemsLayout>
+                    <syncfusion:LinearLayout />
+                </syncfusion:SfListView.ItemsLayout>
+                <syncfusion:SfListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        <Grid>
+                            <Border
+                                Padding="18,18"
+                                Background="{StaticResource Brush.CardBgGradient}"
+                                HeightRequest="110"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Transaction_Tapped" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        Spacing="6"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontFamily="NexaHeavy"
+                                            FontSize="16"
+                                            Text="{Binding Description}"
+                                            TextColor="{StaticResource TextDark}" />
+                                        <HorizontalStackLayout Spacing="10">
+                                            <shapes:Path
+                                                Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                                                Fill="{StaticResource TextLight}"
+                                                HeightRequest="14"
+                                                WidthRequest="14" />
+                                            <Label
+                                                FontFamily="NexaLight"
+                                                FontSize="12"
+                                                Text="{Binding CreatedAt, Converter={StaticResource DateConverter}}"
+                                                TextColor="{StaticResource TextLight}" />
+                                            <shapes:Path
+                                                Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                                                Fill="{StaticResource TextLight}"
+                                                HeightRequest="14"
+                                                WidthRequest="14" />
+                                            <Label
+                                                FontFamily="NexaLight"
+                                                FontSize="12"
+                                                Text="{Binding Channel}"
+                                                TextColor="{StaticResource TextLight}" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="14,10"
+                                        Background="{StaticResource Primary}"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            FontFamily="NexaHeavy"
+                                            FontSize="16"
+                                            Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
+                                            TextColor="White" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="2"
+                                        Background="{StaticResource Secondary}"
+                                        HeightRequest="44"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center"
+                                        WidthRequest="44">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="Transaction_Tapped" />
+                                        </Border.GestureRecognizers>
+                                        <shapes:Path
+                                            Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
+                                            Fill="{StaticResource Primary}"
+                                            HeightRequest="20"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            WidthRequest="20" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <BoxView
+                                Margin="20,0"
+                                HeightRequest="1"
+                                Opacity="0.2"
+                                VerticalOptions="End"
+                                Color="{StaticResource TextLight}" />
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfListView.ItemTemplate>
+            </syncfusion:SfListView>
+
+            <!--  Pagination Controls  -->
+            <Grid
+                Grid.Row="1"
+                Margin="20,10,20,20"
+                ColumnDefinitions="Auto,*,Auto"
+                ColumnSpacing="12"
+                IsVisible="{Binding ShimmerNotLoading}"
+                VerticalOptions="End">
+                <Button
+                    Grid.Column="0"
+                    Padding="12,0"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Command="{Binding PreviousPageCommand}"
+                    CornerRadius="8"
+                    FontFamily="NexaHeavy"
+                    FontSize="12"
+                    HeightRequest="36"
+                    IsEnabled="{Binding CanGoToPreviousPage}"
+                    Text="← Prev"
+                    TextColor="{StaticResource TextDark}" />
+                <Label
+                    Grid.Column="1"
+                    FontFamily="NexaLight"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{StaticResource TextDark}"
+                    VerticalOptions="Center">
+                    <Label.Text>
+                        <MultiBinding StringFormat="Page {0} of {1}">
+                            <Binding Path="CurrentPage" />
+                            <Binding Path="TotalPages" />
+                        </MultiBinding>
+                    </Label.Text>
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding TotalPages}"
+                            TargetType="Label"
+                            Value="0">
+                            <Setter Property="Text" Value="No transactions" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Button
+                    Grid.Column="2"
+                    Padding="12,0"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Command="{Binding NextPageCommand}"
+                    CornerRadius="8"
+                    FontFamily="NexaHeavy"
+                    FontSize="12"
+                    HeightRequest="36"
+                    IsEnabled="{Binding CanGoToNextPage}"
+                    Text="Next →"
+                    TextColor="{StaticResource TextDark}" />
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

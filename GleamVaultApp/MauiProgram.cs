@@ -15,7 +15,7 @@ namespace GleamVaultApp
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
+                .UseMauiCommunityToolkit(options => options.SetShouldEnableSnackbarOnWindows(true))
                 .ConfigureSyncfusionToolkit()
                 .ConfigureSyncfusionCore()
                 .ConfigureFonts(fonts =>

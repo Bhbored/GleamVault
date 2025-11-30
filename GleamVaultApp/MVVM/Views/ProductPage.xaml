@@ -68,60 +68,47 @@
                     VerticalOptions="Center">
                     <Image
                         HeightRequest="30"
-                        Source="diamond.png"
+                        Source="product_2.png"
                         WidthRequest="30" />
-                    <Label StyleClass="h2" Text="Gleam &amp; Co." />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout
-                    Grid.Column="1"
-                    Spacing="20"
-                    VerticalOptions="Center">
-                    <Border
-                        Padding="12,10"
-                        Background="{StaticResource Brush.ButtonGradient}"
-                        Shadow="{StaticResource Sh.CyanSm}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
+                    <VerticalStackLayout Spacing="5">
+                        <Label StyleClass="h2" Text="Products" />
+                        <HorizontalStackLayout>
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="14"
+                                Text="Total Products: " />
+                            <Label
+                                Margin="10,0,0,0"
+                                FontFamily="NexaLight"
+                                FontSize="14"
+                                Text="{Binding ProductCount}" />
+                        </HorizontalStackLayout>
 
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Image
-                                HeightRequest="25"
-                                Source="discount.png"
-                                WidthRequest="25" />
-                            <Label
-                                Margin="0"
-                                FontAttributes="Bold"
-                                StyleClass="body"
-                                Text="Add Discount"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ShowAddDiscountPopupCommand}" />
-                        </Border.GestureRecognizers>
-                    </Border>
-                    <Border
-                        Padding="12,10"
-                        Background="{StaticResource Brush.CardBgGradient}"
-                        Shadow="{StaticResource Sh.CyanSm}"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="0">
-                        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                            <Image
-                                HeightRequest="25"
-                                Source="add.png"
-                                WidthRequest="25" />
-                            <Label
-                                Margin="0"
-                                FontAttributes="Bold"
-                                StyleClass="body"
-                                Text="Add Product"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ShowAddProductPopupCommand}" />
-                        </Border.GestureRecognizers>
-                    </Border>
+                    </VerticalStackLayout>
                 </HorizontalStackLayout>
+                <Border
+                    Grid.Column="1"
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Image
+                            HeightRequest="25"
+                            Source="add.png"
+                            WidthRequest="25" />
+                        <Label
+                            Margin="0"
+                            FontAttributes="Bold"
+                            StyleClass="body"
+                            Text="Add Product"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowAddProductPopupCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
             </Grid>
 
             <!--  Search  -->
@@ -614,7 +601,7 @@
                                         <Border
                                             Grid.Row="1"
                                             Padding="10"
-                                            Background="#dbe1e3"
+                                            Background="Gray"
                                             HeightRequest="80"
                                             StrokeThickness="0">
                                             <Grid

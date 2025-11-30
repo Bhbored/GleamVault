@@ -1,4 +1,5 @@
-﻿using Shared.Models.Enums;
+﻿using PropertyChanged;
+using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Models
 {
+    [AddINotifyPropertyChangedInterface]
     public class Transaction
     {
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -17,10 +19,10 @@ namespace Shared.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public SaleChannel? Channel { get; set; }
         public Guid? CustomerId { get; set; }
-        public Guid CreatedByUserId { get; set; }
+        public Guid CreatedByUserId { get; set; }//cursor ignor for now 
         public DateTime CreatedDate { get; set; }
         public float? DiscountValue { get; set; } = 0;
-        public Customer? Customer { get; set; }
+        public Customer? Customer { get; set; }//cursor ignor for now 
 
         public ICollection<TransactionItem>? Items { get; set; } = new List<TransactionItem>();
     }

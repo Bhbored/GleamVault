@@ -28,93 +28,237 @@ namespace GleamVault.TestData
         {
             if (transactions.Count > 0) return;
 
-            var random = new Random();
             var now = DateTime.Now;
+            var baseDate = now.AddDays(-45);
 
-            for (int i = 0; i < 150; i++)
+            if (products == null || products.Count == 0 || customers == null || customers.Count == 0)
+                return;
+
+            var productIndex = 0;
+            var customerIndex = 0;
+
+            for (int i = 0; i < 20; i++)
             {
-                var daysAgo = random.Next(0, 90);
-                var createdAt = now.AddDays(-daysAgo);
-                var customer = customers[random.Next(customers.Count)];
-                var product = products[random.Next(products.Count)];
-                var quantity = random.Next(1, 4);
-                var channel = random.Next(2) == 0 ? SaleChannel.InStore : SaleChannel.Online;
+                var createdAt = baseDate.AddDays(i * 2);
+                var customer = customers[customerIndex % customers.Count];
+                var product = products[productIndex % products.Count];
+                var channel = i % 2 == 0 ? SaleChannel.InStore : SaleChannel.Online;
                 
-                TransactionType type;
-                string description;
-                
-                var saleType = random.Next(100);
-                if (saleType < 50)
-                {
-                    type = TransactionType.Sell;
-                    description = "Direct Sale";
-                }
-                else if (saleType < 70)
-                {
-                    type = TransactionType.CustomeOrder;
-                    description = "Bespoke";
-                }
-                else if (saleType < 80)
-                {
-                    type = TransactionType.Sell;
-                    description = "Gold Booking";
-                }
-                else if (saleType < 90)
-                {
-                    type = TransactionType.Repairement;
-                    description = "Repair";
-                }
-                else if (saleType < 95)
-                {
-                    type = TransactionType.Sell;
-                    description = "Gift Card";
-                }
-                else
-                {
-                    type = TransactionType.Buy;
-                    description = "Appraisal";
-                }
-
                 var unitPrice = product.OfferPrice > 0 ? product.OfferPrice : product.UnitPrice;
+                var quantity = (i % 3) + 1;
                 var subtotal = unitPrice * quantity;
-                var discount = random.Next(0, 50);
+                var discount = i % 5 == 0 ? subtotal * 0.1f : 0;
                 var total = subtotal - discount;
 
                 var transaction = new Transaction
                 {
+                    Id = Guid.NewGuid(),
                     CreatedAt = createdAt,
-                    Type = type,
+                    CreatedDate = createdAt,
+                    Type = TransactionType.Sell,
                     Channel = channel,
                     CustomerId = customer.Id,
                     Customer = customer,
                     SubTotalAmount = subtotal,
                     DiscountValue = discount,
                     TotalAmount = total,
-                    Description = description
+                    Description = $"Sell Transaction #{i + 1}",
+                    CreatedByUserId = Guid.NewGuid(),
+                    Items = new List<TransactionItem>
+                    {
+                        new TransactionItem
+                        {
+                            TransactionId = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            Name = product.Name,
+                            Quantity = quantity,
+                            UnitPrice = unitPrice,
+                            Sku = product.Sku,
+                            Description = product.Description,
+                            CategoryId = product.CategoryId,
+                            Category = product.Category,
+                            ImageUrl = product.ImageUrl,
+                            Hallmark = product.Hallmark,
+                            WeightUnit = product.WeightUnit,
+                            Weight = product.Weight,
+                            OfferPrice = product.OfferPrice,
+                            IsUniquePiece = product.IsUniquePiece,
+                            UnitCost = product.UnitCost,
+                            CreatedDate = createdAt
+                        }
+                    }
                 };
-
-                var item = new TransactionItem
-                {
-                    TransactionId = transaction.Id,
-                    ProductId = product.Id,
-                    Name = product.Name,
-                    Quantity = quantity,
-                    UnitPrice = unitPrice,
-                    Sku = product.Sku,
-                    Description = product.Description,
-                    CategoryId = product.CategoryId,
-                    Category = product.Category,
-                    ImageUrl = product.ImageUrl,
-                    Hallmark = product.Hallmark,
-                    WeightUnit = product.WeightUnit,
-                    Weight = product.Weight,
-                    OfferPrice = product.OfferPrice,
-                    IsUniquePiece = product.IsUniquePiece,
-                    UnitCost = product.UnitCost
-                };
-
-                transaction.Items = new List<TransactionItem> { item };
                 transactions.Add(transaction);
+                productIndex++;
+                customerIndex++;
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                var createdAt = baseDate.AddDays(i * 2 + 1);
+                var customer = customers[customerIndex % customers.Count];
+                var product = products[productIndex % products.Count];
+                var channel = i % 2 == 0 ? SaleChannel.InStore : SaleChannel.Online;
+                
+                var unitPrice = product.UnitPrice * 1.5f;
+                var quantity = 1;
+                var subtotal = unitPrice * quantity;
+                var discount = i % 10 == 0 ? subtotal * 0.05f : 0;
+                var total = subtotal - discount;
+
+                var transaction = new Transaction
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = createdAt,
+                    CreatedDate = createdAt,
+                    Type = TransactionType.CustomeOrder,
+                    Channel = channel,
+                    CustomerId = customer.Id,
+                    Customer = customer,
+                    SubTotalAmount = subtotal,
+                    DiscountValue = discount,
+                    TotalAmount = total,
+                    Description = $"Custom Order #{i + 1}",
+                    CreatedByUserId = Guid.NewGuid(),
+                    Items = new List<TransactionItem>
+                    {
+                        new TransactionItem
+                        {
+                            TransactionId = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            Name = product.Name,
+                            Quantity = quantity,
+                            UnitPrice = unitPrice,
+                            Sku = product.Sku,
+                            Description = product.Description,
+                            CategoryId = product.CategoryId,
+                            Category = product.Category,
+                            ImageUrl = product.ImageUrl,
+                            Hallmark = product.Hallmark,
+                            WeightUnit = product.WeightUnit,
+                            Weight = product.Weight,
+                            OfferPrice = product.OfferPrice,
+                            IsUniquePiece = product.IsUniquePiece,
+                            UnitCost = product.UnitCost,
+                            CreatedDate = createdAt
+                        }
+                    }
+                };
+                transactions.Add(transaction);
+                productIndex++;
+                customerIndex++;
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                var createdAt = baseDate.AddDays(i * 2 + 0.5);
+                var customer = customers[customerIndex % customers.Count];
+                var product = products[productIndex % products.Count];
+                var channel = SaleChannel.InStore;
+                
+                var unitPrice = 100f + (i * 20f);
+                var quantity = 1;
+                var subtotal = unitPrice;
+                var discount = 0f;
+                var total = subtotal;
+
+                var transaction = new Transaction
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = createdAt,
+                    CreatedDate = createdAt,
+                    Type = TransactionType.Repairement,
+                    Channel = channel,
+                    CustomerId = customer.Id,
+                    Customer = customer,
+                    SubTotalAmount = subtotal,
+                    DiscountValue = discount,
+                    TotalAmount = total,
+                    Description = $"Repair Service #{i + 1}",
+                    CreatedByUserId = Guid.NewGuid(),
+                    Items = new List<TransactionItem>
+                    {
+                        new TransactionItem
+                        {
+                            TransactionId = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            Name = product.Name,
+                            Quantity = quantity,
+                            UnitPrice = unitPrice,
+                            Sku = product.Sku,
+                            Description = product.Description,
+                            CategoryId = product.CategoryId,
+                            Category = product.Category,
+                            ImageUrl = product.ImageUrl,
+                            Hallmark = product.Hallmark,
+                            WeightUnit = product.WeightUnit,
+                            Weight = product.Weight,
+                            OfferPrice = product.OfferPrice,
+                            IsUniquePiece = product.IsUniquePiece,
+                            UnitCost = product.UnitCost,
+                            CreatedDate = createdAt
+                        }
+                    }
+                };
+                transactions.Add(transaction);
+                productIndex++;
+                customerIndex++;
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                var createdAt = baseDate.AddDays(i * 2 + 1.5);
+                var customer = customers[customerIndex % customers.Count];
+                var product = products[productIndex % products.Count];
+                var channel = SaleChannel.InStore;
+                
+                var unitPrice = product.UnitPrice * 0.6f;
+                var quantity = 1;
+                var subtotal = unitPrice * quantity;
+                var discount = 0f;
+                var total = subtotal;
+
+                var transaction = new Transaction
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = createdAt,
+                    CreatedDate = createdAt,
+                    Type = TransactionType.Buy,
+                    Channel = channel,
+                    CustomerId = customer.Id,
+                    Customer = customer,
+                    SubTotalAmount = subtotal,
+                    DiscountValue = discount,
+                    TotalAmount = total,
+                    Description = $"Buy Transaction #{i + 1}",
+                    CreatedByUserId = Guid.NewGuid(),
+                    Items = new List<TransactionItem>
+                    {
+                        new TransactionItem
+                        {
+                            TransactionId = Guid.NewGuid(),
+                            ProductId = product.Id,
+                            Name = product.Name,
+                            Quantity = quantity,
+                            UnitPrice = unitPrice,
+                            Sku = product.Sku,
+                            Description = product.Description,
+                            CategoryId = product.CategoryId,
+                            Category = product.Category,
+                            ImageUrl = product.ImageUrl,
+                            Hallmark = product.Hallmark,
+                            WeightUnit = product.WeightUnit,
+                            Weight = product.Weight,
+                            OfferPrice = product.OfferPrice,
+                            IsUniquePiece = product.IsUniquePiece,
+                            UnitCost = product.UnitCost,
+                            CreatedDate = createdAt
+                        }
+                    }
+                };
+                transactions.Add(transaction);
+                productIndex++;
+                customerIndex++;
             }
         }
     }

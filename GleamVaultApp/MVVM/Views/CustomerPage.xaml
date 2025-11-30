@@ -1,12 +1,689 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GleamVault.MVVM.Views.CustomerPage"
-             Title="CustomerPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    x:Class="GleamVault.MVVM.Views.CustomerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
+    xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+    xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:CustomerVM"
+    Background="{StaticResource Brush.BackgroundGradient}">
+
+    <ContentPage.Resources>
+        <conv:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <Color x:Key="LightCyan">#E0FFFF</Color>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="75*,25*" RowDefinitions="Auto,*">
+
+        <!--  Header Wave Background  -->
+        <Grid
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            HeightRequest="200">
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,160 Q180,210 360,160 T720,160 L720,0 Z"
+                Fill="{StaticResource Brush.HeaderGradient}"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="1"
+                VerticalOptions="Fill" />
+            <shapes:Path
+                Aspect="Fill"
+                Data="M0,0 L0,175 Q180,225 360,175 T720,175 L720,0 Z"
+                Fill="White"
+                HorizontalOptions="Fill"
+                InputTransparent="True"
+                Opacity="0.12"
+                VerticalOptions="Fill" />
+        </Grid>
+
+        <!--  Header Content  -->
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Padding="20,20,20,0"
+            RowDefinitions="Auto,Auto,Auto"
+            RowSpacing="15"
+            VerticalOptions="Start">
+
+            <!--  Title  -->
+            <HorizontalStackLayout Grid.Row="0" Spacing="10">
+                <Image
+                    HeightRequest="30"
+                    Source="customers.png"
+                    WidthRequest="30" />
+                <Label StyleClass="h2" Text="Customer Management" />
+            </HorizontalStackLayout>
+
+            <!--  Search  -->
+            <Grid Grid.Row="1">
+                <Border
+                    Padding="12,10"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    StrokeShape="RoundRectangle 14"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Image
+                            Grid.Column="0"
+                            HeightRequest="25"
+                            Source="search.png"
+                            VerticalOptions="Center"
+                            WidthRequest="25" />
+                        <editors:SfAutocomplete
+                            x:Name="SearchBox"
+                            Grid.Column="1"
+                            Background="Transparent"
+                            ClearButtonIconColor="Cyan"
+                            DisplayMemberPath="FullName"
+                            DropDownBackground="White"
+                            DropDownItemHeight="72"
+                            EnableAutoSize="True"
+                            FontFamily="NexaLight"
+                            HorizontalOptions="Fill"
+                            ItemsSource="{Binding AllCustomers}"
+                            Placeholder="Search Customer by Name..."
+                            PlaceholderColor="Black"
+                            SelectedItems="{Binding SelectedCustomers, Mode=TwoWay}"
+                            SelectionChanged="autocomplete_SelectionChanged"
+                            SelectionMode="Multiple"
+                            SelectionTextHighlightColor="LightGray"
+                            Stroke="Transparent"
+                            TokensWrapMode="Wrap"
+                            VerticalOptions="Fill">
+
+                            <editors:SfAutocomplete.ItemTemplate>
+                                <DataTemplate x:DataType="models:Customer">
+                                    <Grid
+                                        Padding="10"
+                                        ColumnDefinitions="Auto,*,Auto"
+                                        ColumnSpacing="12">
+                                        <Border
+                                            Background="{StaticResource Secondary}"
+                                            HeightRequest="40"
+                                            HorizontalOptions="Center"
+                                            StrokeShape="RoundRectangle 999"
+                                            StrokeThickness="0"
+                                            VerticalOptions="Center"
+                                            WidthRequest="40">
+                                            <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
+                                        </Border>
+
+                                        <Grid
+                                            Grid.Column="1"
+                                            RowDefinitions="Auto,Auto"
+                                            VerticalOptions="Center">
+                                            <Label
+                                                Grid.Row="0"
+                                                FontFamily="NexaHeavy"
+                                                FontSize="14"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding FullName}"
+                                                TextColor="{StaticResource TextDark}" />
+
+                                            <Label
+                                                Grid.Row="1"
+                                                FontSize="12"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                Text="{Binding PhoneNumber}"
+                                                TextColor="{StaticResource TextLight}" />
+                                        </Grid>
+
+                                        <Label
+                                            Grid.Column="2"
+                                            FontFamily="NexaHeavy"
+                                            FontSize="13"
+                                            HorizontalTextAlignment="End"
+                                            Text="{Binding LoyaltyPoints, StringFormat='{0} pts'}"
+                                            TextColor="{StaticResource Primary}"
+                                            VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </editors:SfAutocomplete.ItemTemplate>
+                        </editors:SfAutocomplete>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!--  Sort and Add Button  -->
+            <HorizontalStackLayout
+                Grid.Row="2"
+                HorizontalOptions="End"
+                Spacing="10"
+                VerticalOptions="Center">
+                <Border
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0">
+                    <buttons:SfSegmentedControl
+                        AutoScrollToSelectedSegment="False"
+                        CornerRadius="10"
+                        HorizontalOptions="End"
+                        MinimumWidthRequest="200"
+                        SelectedIndex="{Binding SortIndex, Mode=TwoWay}"
+                        SelectionChanged="SortSeg_SelectionChanged"
+                        SelectionMode="Single"
+                        ShowSeparator="False"
+                        Stroke="Transparent"
+                        VerticalOptions="Center"
+                        VisibleSegmentsCount="3">
+                        <buttons:SfSegmentedControl.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>A–Z</x:String>
+                                <x:String>Z–A</x:String>
+                                <x:String>None</x:String>
+                            </x:Array>
+                        </buttons:SfSegmentedControl.ItemsSource>
+                        <buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                            <buttons:SelectionIndicatorSettings Background="{StaticResource Primary}" SelectionIndicatorPlacement="Fill" />
+                        </buttons:SfSegmentedControl.SelectionIndicatorSettings>
+                    </buttons:SfSegmentedControl>
+                </Border>
+
+                <Button
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    Command="{Binding AddCustomerCommand}"
+                    CornerRadius="10"
+                    FontFamily="NexaHeavy"
+                    FontSize="14"
+                    HeightRequest="44"
+                    Shadow="{StaticResource Sh.CyanSm}"
+                    Text="+ Add Customer"
+                    TextColor="White" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!--  Customer List  -->
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Border
+                Margin="10"
+                Background="{StaticResource Brush.BackgroundGradient}"
+                HorizontalOptions="Fill"
+                Shadow="{StaticResource Sh.CyanLg}"
+                StrokeShape="RoundRectangle 25"
+                StrokeThickness="0"
+                VerticalOptions="Fill">
+                <Grid>
+                    <!--  Shimmer View  -->
+                    <syncfusion:SfListView
+                        x:Name="ShimmerList"
+                        Margin="5"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerLoading}"
+                        ItemSpacing="15"
+                        ItemsSource="{Binding ShimmerItems}"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout SpanCount="3" />
+                        </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="10"
+                                    Padding="0"
+                                    Background="{StaticResource Brush.CardBgGradient}"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanLg}"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="1">
+                                    <Grid
+                                        Padding="12"
+                                        RowDefinitions="240,Auto,Auto,Auto"
+                                        RowSpacing="4">
+                                        <!--  Image shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="0"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="50">
+                                            <BoxView BackgroundColor="#E0E0E0" HeightRequest="240" />
+                                        </shimmer:SfShimmer>
+                                        <!--  Name shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="1"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                Margin="0,2,0,0"
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="20" />
+                                        </shimmer:SfShimmer>
+                                        <!--  Contact info shimmer  -->
+                                        <Grid
+                                            Grid.Row="2"
+                                            Margin="0,1,0,0"
+                                            ColumnDefinitions="*,*"
+                                            ColumnSpacing="8">
+                                            <shimmer:SfShimmer
+                                                Grid.Column="0"
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView BackgroundColor="#E0E0E0" HeightRequest="16" />
+                                            </shimmer:SfShimmer>
+                                            <shimmer:SfShimmer
+                                                Grid.Column="1"
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                HorizontalOptions="End"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="16"
+                                                    HorizontalOptions="End"
+                                                    WidthRequest="80" />
+                                            </shimmer:SfShimmer>
+                                        </Grid>
+                                        <!--  Button shimmer  -->
+                                        <shimmer:SfShimmer
+                                            Grid.Row="3"
+                                            Margin="0,2,0,0"
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="36"
+                                                WidthRequest="100" />
+                                        </shimmer:SfShimmer>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+
+                    <!--  Customers View  -->
+                    <syncfusion:SfListView
+                        x:Name="CustomersList"
+                        Margin="10"
+                        AutoFitMode="Height"
+                        IsVisible="{Binding ShimmerNotLoading}"
+                        ItemsSource="{Binding FilteredCustomers}"
+                        LoadMoreCommand="{Binding LoadMoreCommand}"
+                        LoadMoreOption="AutoOnScroll"
+                        SelectionBackground="Transparent"
+                        SelectionMode="None">
+                        <syncfusion:SfListView.ItemsLayout>
+                            <syncfusion:GridLayout SpanCount="3" />
+                        </syncfusion:SfListView.ItemsLayout>
+                        <syncfusion:SfListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Customer">
+                                <Border
+                                    Margin="10"
+                                    Padding="0"
+                                    Background="{StaticResource Brush.CardBgGradient}"
+                                    MinimumHeightRequest="340"
+                                    Shadow="{StaticResource Sh.CyanLg}"
+                                    Stroke="{StaticResource Primary}"
+                                    StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="1">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:CustomerPage}}, Path=BindingContext.SelectCustomerCommand}" CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Grid
+                                        Padding="12"
+                                        RowDefinitions="240,Auto,Auto,Auto"
+                                        RowSpacing="4">
+                                        <!--  Image + Badges  -->
+                                        <Grid Grid.Row="0">
+                                            <Border HeightRequest="240" StyleClass="image-holder">
+                                                <Image Aspect="AspectFit" Source="{Binding ImageUrl}" />
+                                            </Border>
+                                            <Grid Margin="8">
+                                                <Border
+                                                    Padding="5"
+                                                    Background="{StaticResource Primary}"
+                                                    HorizontalOptions="End"
+                                                    StrokeShape="RoundRectangle 5"
+                                                    StrokeThickness="0"
+                                                    VerticalOptions="Start">
+                                                    <Label
+                                                        FontFamily="NexaHeavy"
+                                                        FontSize="12"
+                                                        HorizontalOptions="Center"
+                                                        Text="{Binding LoyaltyPoints, StringFormat='{0} pts'}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
+                                                </Border>
+                                            </Grid>
+                                        </Grid>
+
+                                        <!--  Name  -->
+                                        <Label
+                                            Grid.Row="1"
+                                            Margin="0,2,0,0"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="2"
+                                            StyleClass="h4"
+                                            Text="{Binding FullName}" />
+
+                                        <!--  Contact Info  -->
+                                        <Grid
+                                            Grid.Row="2"
+                                            Margin="0,1,0,0"
+                                            ColumnDefinitions="*,*"
+                                            ColumnSpacing="8">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Image
+                                                        HeightRequest="12"
+                                                        Source="phone.png"
+                                                        WidthRequest="12" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        LineBreakMode="TailTruncation"
+                                                        MaxLines="1"
+                                                        StyleClass="body"
+                                                        Text="{Binding PhoneNumber}"
+                                                        TextColor="{StaticResource TextLight}" />
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Image
+                                                        HeightRequest="12"
+                                                        Source="email.png"
+                                                        WidthRequest="12" />
+                                                    <Label
+                                                        FontSize="12"
+                                                        LineBreakMode="TailTruncation"
+                                                        MaxLines="1"
+                                                        StyleClass="body"
+                                                        Text="{Binding Email}"
+                                                        TextColor="{StaticResource TextLight}" />
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Grid>
+
+                                        <!--  Delete Button  -->
+                                        <Grid
+                                            Grid.Row="3"
+                                            Margin="0,2,0,0"
+                                            ColumnDefinitions="*,Auto"
+                                            ColumnSpacing="8">
+                                            <Button
+                                                Grid.Column="0"
+                                                Background="Red"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:CustomerPage}}, Path=BindingContext.DeleteCustomerCommand}"
+                                                CommandParameter="{Binding .}"
+                                                CornerRadius="8"
+                                                FontFamily="NexaHeavy"
+                                                FontSize="12"
+                                                HeightRequest="36"
+                                                Text="Delete"
+                                                TextColor="White" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </syncfusion:SfListView.ItemTemplate>
+                    </syncfusion:SfListView>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!--  Right Panel - Customer Details  -->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,20,10,20"
+            Padding="0"
+            Background="White"
+            Shadow="{StaticResource Sh.CyanMd}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <Border
+                    Grid.Row="0"
+                    Padding="20"
+                    Background="{StaticResource Brush.HeaderGradient}"
+                    StrokeShape="RoundRectangle 20,20,0,0"
+                    StrokeThickness="0">
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Border
+                            HeightRequest="40"
+                            StyleClass="icon-circle"
+                            WidthRequest="40">
+                            <Image
+                                HeightRequest="24"
+                                Source="customers.png"
+                                WidthRequest="24" />
+                        </Border>
+                        <Label
+                            StyleClass="h3"
+                            Text="Customer Details"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding IsCustomerSelected, Converter={StaticResource InvertedBoolConverter}}"
+                    Spacing="20"
+                    VerticalOptions="Center">
+                    <Border
+                        HeightRequest="120"
+                        StrokeShape="RoundRectangle 60"
+                        StrokeThickness="0"
+                        WidthRequest="120">
+                        <Image
+                            Aspect="AspectFit"
+                            IsAnimationPlaying="True"
+                            Source="registration.gif" />
+                    </Border>
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="16"
+                        HorizontalTextAlignment="Center"
+                        Text="Select a Customer"
+                        TextColor="{StaticResource TextDark}" />
+                    <Label
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        Text="Tap on any customer to view | edit details"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+
+                <ScrollView
+                    Grid.Row="1"
+                    Padding="20"
+                    IsVisible="{Binding IsCustomerSelected}">
+                    <VerticalStackLayout Spacing="16" VerticalOptions="Start">
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Full Name *"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Placeholder="Enter full name"
+                                    Text="{Binding SelectedCustomer.FullName}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Phone Number"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Keyboard="Telephone"
+                                    Placeholder="Enter phone number"
+                                    Text="{Binding SelectedCustomer.PhoneNumber}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Email"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Keyboard="Email"
+                                    Placeholder="Enter email address"
+                                    Text="{Binding SelectedCustomer.Email}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Address"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Editor
+                                    FontFamily="NexaLight"
+                                    HeightRequest="60"
+                                    Placeholder="Enter address"
+                                    Text="{Binding SelectedCustomer.Address}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Date of Birth"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <DatePicker
+                                    Date="{Binding SelectedCustomer.DateOfBirth}"
+                                    FontFamily="NexaLight"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Loyalty Points"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Entry
+                                    FontFamily="NexaLight"
+                                    Keyboard="Numeric"
+                                    Placeholder="0"
+                                    Text="{Binding SelectedCustomer.LoyaltyPoints}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label
+                                FontFamily="NexaHeavy"
+                                FontSize="13"
+                                Text="Notes"
+                                TextColor="{StaticResource TextDark}" />
+                            <Border
+                                BackgroundColor="Transparent"
+                                Stroke="{StaticResource LightCyan}"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="1">
+                                <Editor
+                                    FontFamily="NexaLight"
+                                    HeightRequest="80"
+                                    Placeholder="Enter notes"
+                                    Text="{Binding SelectedCustomer.Notes}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Border
+                    Grid.Row="2"
+                    Padding="20,16"
+                    Background="White"
+                    IsVisible="{Binding IsCustomerSelected}"
+                    StrokeShape="RoundRectangle 0,0,20,20"
+                    StrokeThickness="0">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Grid.Column="0"
+                            Background="{StaticResource Brush.CardBgGradient}"
+                            Command="{Binding CancelEditCommand}"
+                            CornerRadius="10"
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            HeightRequest="44"
+                            Text="Cancel"
+                            TextColor="{StaticResource TextDark}" />
+                        <Button
+                            Grid.Column="1"
+                            Background="{StaticResource Brush.ButtonGradient}"
+                            Command="{Binding SaveCustomerCommand}"
+                            CornerRadius="10"
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            HeightRequest="44"
+                            Shadow="{StaticResource Sh.CyanSm}"
+                            Text="Save"
+                            TextColor="White" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
 </ContentPage>

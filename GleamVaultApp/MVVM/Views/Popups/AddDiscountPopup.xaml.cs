@@ -5,7 +5,7 @@ namespace GleamVault.MVVM.Views.Popups;
 
 public partial class AddDiscountPopup : Popup
 {
-    public AddDiscountPopup(ProductVM viewModel)
+    public AddDiscountPopup(DiscountVM viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
@@ -18,9 +18,9 @@ public partial class AddDiscountPopup : Popup
 
     private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
     {
-        if (BindingContext is ProductVM vm)
+        if (BindingContext is DiscountVM vm)
         {
-            vm.FilterProducts();
+            vm.FilterPopupProducts();
         }
     }
 }

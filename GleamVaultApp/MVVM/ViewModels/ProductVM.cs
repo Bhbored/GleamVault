@@ -51,19 +51,6 @@ namespace GleamVault.MVVM.ViewModels
             await Shell.Current.ShowPopupAsync(new ProductDetailsPopup(product));
         });
 
-        public ICommand ShowDiscountPromptCommand => new Command<Product>(async (product) =>
-        {
-            if (product == null) return;
-            await ShowDiscountPromptForProductAsync(product);
-        });
-
-        public ICommand RemoveDiscountCommand => new Command<Product>(async (product) =>
-        {
-            if (product == null) return;
-            await RemoveProductDiscountAsync(product);
-        });
-
-        public ICommand ShowAddDiscountPopupCommand => new Command(async () => await ShowAddDiscountPopupAsync());
 
         public ICommand ShowAddProductPopupCommand => new Command(async () => await ShowAddProductPopupAsync());
 
@@ -73,6 +60,7 @@ namespace GleamVault.MVVM.ViewModels
         #endregion
 
         #region Properties
+        public int ProductCount => FilteredProducts?.Count ?? 0;
         public ObservableCollection<object> ShimmerItems
         {
             get => _shimmerItems;
@@ -209,11 +197,6 @@ namespace GleamVault.MVVM.ViewModels
 
         #region Tasks
 
-        public async Task ShowAddDiscountPopupAsync()
-        {
-            await Shell.Current.ShowPopupAsync(new AddDiscountPopup(this));
-        }
-
         public async Task ShowAddProductPopupAsync()
         {
             NewProduct = new Product();
@@ -342,67 +325,6 @@ namespace GleamVault.MVVM.ViewModels
         public void ClearSelectedImage()
         {
             SelectedImagePath = null;
-        }
-
-        public async Task ShowDiscountPromptForProductAsync(Product product)
-        {
-            if (product == null) return;
-            var initialValue = product.OfferPrice > 0 ? product.OfferPrice.ToString("F2") : "";
-            var result = await Shell.Current.DisplayPromptAsync(
-                "Enter Discount Price",
-                $"Enter the discount price for {product.Name} (must be >= 50% of unit price ${product.UnitPrice:F2}):",
-                "OK",
-                "Cancel",
-                initialValue,
-                -1,
-                Keyboard.Numeric);
-
-            if (string.IsNullOrWhiteSpace(result))
-            {
-                return;
-            }
-
-            if (!float.TryParse(result, out float discountPrice))
-            {
-                await Shell.Current.DisplayAlert("⚠️ Invalid Input", "Please enter a valid number.", "OK");
-                return;
-            }
-
-            if (discountPrice <= 0)
-            {
-                await Shell.Current.DisplayAlert("⚠️ Invalid Price", "Discount price must be greater than 0.", "OK");
-                return;
-            }
-
-            var minPrice = product.UnitPrice * 0.5f;
-            if (discountPrice < minPrice)
-            {
-                await Shell.Current.DisplayAlert("⚠️ Invalid Price", $"Discount price must be at least 50% of unit price (${minPrice:F2}).", "OK");
-                return;
-            }
-
-            await UpdateProductDiscount(product, discountPrice);
-        }
-        public async Task UpdateProductDiscount(Product product, float discountPrice)
-        {
-            if (product == null) return;
-            var targetProduct = AllProducts.FirstOrDefault(p => p.Id == product.Id);
-            if (targetProduct != null && discountPrice > 0)
-            {
-                targetProduct.OfferPrice = discountPrice;
-                await LoadDataAsync();
-            }
-        }
-
-        public async Task RemoveProductDiscountAsync(Product product)
-        {
-            if (product == null) return;
-            var targetProduct = AllProducts.FirstOrDefault(p => p.Id == product.Id);
-            if (targetProduct != null)
-            {
-                targetProduct.OfferPrice = 0;
-                await LoadDataAsync();
-            }
         }
 
         #endregion

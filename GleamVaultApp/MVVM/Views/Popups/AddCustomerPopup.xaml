@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.AddCustomerPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
+    x:DataType="vm:CustomerVM"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    MaximumHeightRequest="900"
+    WidthRequest="700">
+    <toolkit:Popup.Resources>
+        <conv:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <conv:ZeroToEmptyStringConverter x:Key="ZeroToEmptyStringConverter" />
+
+        <Color x:Key="LightCyan">#E0FFFF</Color>
+
+        <Style TargetType="Entry">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource TextLight}" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Focused">
+                            <VisualState.Setters>
+                                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Editor">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            <Setter Property="PlaceholderColor" Value="{StaticResource TextLight}" />
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+        </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+        </Style>
+    </toolkit:Popup.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
+        <Border
+            Grid.Row="0"
+            Padding="24,20"
+            Background="{StaticResource Brush.HeaderGradient}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <Border
+                    Grid.Column="0"
+                    HeightRequest="48"
+                    StyleClass="icon-circle"
+                    WidthRequest="48">
+                    <Image
+                        HeightRequest="28"
+                        Source="add.png"
+                        WidthRequest="28" />
+                </Border>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="4"
+                    VerticalOptions="Center">
+                    <Label StyleClass="h3" Text="Add New Customer" />
+                    <Label
+                        FontSize="12"
+                        Text="Fill in the customer details below"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1" Padding="24,20">
+            <VerticalStackLayout Spacing="20">
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Full Name *"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="FullNameEntry"
+                            Placeholder="Enter full name"
+                            Text="{Binding NewCustomer.FullName}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Phone Number"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="PhoneNumberEntry"
+                            Keyboard="Telephone"
+                            Placeholder="Enter phone number (optional)"
+                            Text="{Binding NewCustomer.PhoneNumber}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Email"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="EmailEntry"
+                            Keyboard="Email"
+                            Placeholder="Enter email address (optional)"
+                            Text="{Binding NewCustomer.Email}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Address"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Editor
+                            x:Name="AddressEditor"
+                            HeightRequest="80"
+                            Placeholder="Enter address (optional)"
+                            Text="{Binding NewCustomer.Address}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Date of Birth"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <DatePicker
+                            x:Name="DateOfBirthPicker"
+                            Date="{Binding NewCustomer.DateOfBirth}"
+                            FontFamily="NexaLight"
+                            TextColor="{StaticResource TextDark}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Loyalty Points"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="LoyaltyPointsEntry"
+                            Keyboard="Numeric"
+                            Placeholder="0"
+                            Text="{Binding NewCustomer.LoyaltyPoints, Converter={StaticResource ZeroToEmptyStringConverter}}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontFamily="NexaHeavy"
+                        FontSize="14"
+                        Text="Notes"
+                        TextColor="{StaticResource TextDark}" />
+                    <Border
+                        BackgroundColor="Transparent"
+                        Stroke="{StaticResource LightCyan}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
+                        <Editor
+                            x:Name="NotesEditor"
+                            HeightRequest="100"
+                            Placeholder="Enter notes (optional)"
+                            Text="{Binding NewCustomer.Notes}" />
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border
+            Grid.Row="2"
+            Padding="24,20"
+            Background="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button
+                    Grid.Column="0"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Clicked="CancelButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    Text="Cancel"
+                    TextColor="{StaticResource TextDark}" />
+                <Button
+                    Grid.Column="1"
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    Clicked="SaveButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    Shadow="{StaticResource Sh.CyanMd}"
+                    Text="Save Customer"
+                    TextColor="White" />
+            </Grid>
+        </Border>
+    </Grid>
+</toolkit:Popup>

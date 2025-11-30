@@ -24,6 +24,7 @@ namespace GleamVault.MVVM.ViewModels
     {
 
         #region Fields
+        private int _currentIndex = 0;
         private ObservableCollection<Product> _allProducts = new();
         private ObservableCollection<Product> _filteredProducts = new();
         private ObservableCollection<Product> _cartItems = new();
@@ -228,6 +229,8 @@ namespace GleamVault.MVVM.ViewModels
         public ICommand DecreaseQuantityCommand => new Command<Product>(async p => await DecreaseQuantityAsync(p));
         public ICommand ClearCartCommand => new Command(async () => await ClearCartAsync());
         public ICommand CompleteSaleCommand => new Command(async () => await CompleteSaleAsync());
+        public ICommand LoadMoreCommand => new Command(() =>  LoadMore());
+
         #endregion
 
         #region Tasks
@@ -574,7 +577,7 @@ namespace GleamVault.MVVM.ViewModels
                 return;
             }
 
-            IEnumerable<Product> query = AllProducts;      
+            IEnumerable<Product> query = AllProducts;
             if (SelectedHallmark is HallmarkType hm)
             {
                 query = query.Where(p => p != null && p.Hallmark == hm);
@@ -637,6 +640,7 @@ namespace GleamVault.MVVM.ViewModels
             TransactionTypeIndex = 0;
             ShimmerLoading = true;
             ShimmerNotLoading = false;
+            _currentIndex = 0;
             _shimmerItems.Clear();
             for (int i = 0; i < 8; i++)
             {
@@ -645,15 +649,31 @@ namespace GleamVault.MVVM.ViewModels
             OnPropertyChanged(nameof(ShimmerItems));
 
         }
+        public async Task LoadData()
+        {
+            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            await Task.Delay(500);
+            LoadMore();
+        }
+
+        public void LoadMore()
+        {
+            var nextItems = AllProducts.Skip(_currentIndex).Take(12);
+
+            foreach (var item in nextItems)
+            {
+                FilteredProducts.Add(item);
+            }
+            _currentIndex += 12;
+        }
         public async Task LoadDataAsync()
         {
             ClearALL();
             RefreshCart();
             GetHallmarks();
-            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            await LoadData();
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
             TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
-            FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await Task.Delay(3000);
             ShimmerLoading = false;
             ShimmerNotLoading = true;

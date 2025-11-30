@@ -11,7 +11,7 @@
     xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
-    x:DataType="vm:ProductVM"
+    x:DataType="vm:DiscountVM"
     Background="{StaticResource Brush.CardBgGradient}"
     CanBeDismissedByTappingOutsideOfPopup="True"
     MaximumHeightRequest="850"
@@ -84,7 +84,7 @@
                     ItemsSource="{Binding AllProducts}"
                     Placeholder="Search Product by Name..."
                     PlaceholderColor="Black"
-                    SelectedItems="{Binding SelectedProducts, Mode=TwoWay}"
+                    SelectedItems="{Binding PopupSelectedProducts, Mode=TwoWay}"
                     SelectionChanged="autocomplete_SelectionChanged"
                     SelectionMode="Multiple"
                     SelectionTextHighlightColor="LightGray"
@@ -160,7 +160,7 @@
         <CollectionView
             Grid.Row="2"
             Margin="10,20,24,10"
-            ItemsSource="{Binding FilteredProducts}"
+            ItemsSource="{Binding FilteredProductsForPopup}"
             SelectionMode="None">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
