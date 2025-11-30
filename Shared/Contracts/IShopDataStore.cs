@@ -10,8 +10,17 @@ namespace Shared.Contracts
     public interface IShopDataStore
     {
         Task<List<Category>> GetCategories();
+        Task<Category> SaveCategory(Category category);
+        Task<bool> DeleteCategory(Guid Id);
         Task<List<Product>> GetItems(Guid CategoryID);
+        Task<Product> SaveProducts(Product product);
+        Task<bool> DeleteProduct(Guid ProductID);
         Task<List<Customer>> GetCustomers();
+        Task<Customer> SaveCustomers(Customer customer);
+        Task<bool> DeleteCustomer(Guid CustomerID);
         Task<List<Transaction>> GetTransactions();
+        Task<List<TransactionItem>> GetTransactionItems(Guid TransactionID);
+        Task<Transaction> SaveTransactions(Transaction transaction);
+
     }
 }
