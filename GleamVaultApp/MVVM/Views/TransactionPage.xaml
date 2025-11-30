@@ -355,6 +355,7 @@
                     Grid.Column="1"
                     Padding="12,10"
                     Background="{StaticResource Brush.ButtonGradient}"
+                    HeightRequest="50"
                     Shadow="{StaticResource Sh.CyanSm}"
                     StrokeShape="RoundRectangle 10"
                     StrokeThickness="0">
@@ -428,6 +429,7 @@
                             Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
                             Fill="{StaticResource Primary}"
                             HeightRequest="20"
+                            HorizontalOptions="Center"
                             VerticalOptions="Center"
                             WidthRequest="20" />
                         <editors:SfComboBox
@@ -485,6 +487,7 @@
                             Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
                             Fill="{StaticResource Primary}"
                             HeightRequest="20"
+                            HorizontalOptions="Center"
                             VerticalOptions="Center"
                             WidthRequest="20" />
                         <editors:SfComboBox
@@ -502,11 +505,15 @@
                             VerticalOptions="Center">
                             <editors:SfComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="enums:SaleChannel">
-                                    <Label
-                                        FontFamily="NexaLight"
-                                        FontSize="13"
-                                        Text="{Binding ., Converter={StaticResource SaleChannelConverter}}"
-                                        TextColor="{StaticResource TextDark}" />
+                                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                        <Label Text="❗ " />
+                                        <Label
+                                            FontFamily="NexaLight"
+                                            FontSize="13"
+                                            Text="{Binding ., Converter={StaticResource SaleChannelConverter}}"
+                                            TextColor="{StaticResource TextDark}" />
+                                    </HorizontalStackLayout>
+
                                 </DataTemplate>
                             </editors:SfComboBox.ItemTemplate>
                         </editors:SfComboBox>
@@ -553,6 +560,7 @@
             <syncfusion:SfListView
                 x:Name="ShimmerList"
                 Grid.Row="0"
+                AutoFitMode="Height"
                 IsVisible="{Binding ShimmerLoading}"
                 ItemSpacing="0"
                 ItemsSource="{Binding ShimmerItems}"
@@ -562,52 +570,103 @@
                 </syncfusion:SfListView.ItemsLayout>
                 <syncfusion:SfListView.ItemTemplate>
                     <DataTemplate>
-                        <Border
-                            Margin="0,0,0,10"
-                            Padding="12,10"
-                            Background="{StaticResource Brush.CardBgGradient}"
-                            Shadow="{StaticResource Sh.CyanSm}"
-                            StrokeShape="RoundRectangle 12"
-                            StrokeThickness="0">
-                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
-                                <Border
-                                    Grid.Column="0"
-                                    Background="Transparent"
-                                    HeightRequest="40"
-                                    StrokeShape="RoundRectangle 20"
-                                    StrokeThickness="0"
-                                    WidthRequest="40">
-                                    <shimmer:ShimmerView HeightRequest="40" WidthRequest="40" />
-                                </Border>
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Spacing="4"
-                                    VerticalOptions="Center">
-                                    <shimmer:ShimmerView HeightRequest="14" WidthRequest="150" />
-                                    <HorizontalStackLayout Spacing="8">
-                                        <shimmer:ShimmerView HeightRequest="11" WidthRequest="80" />
-                                        <shimmer:ShimmerView HeightRequest="11" WidthRequest="60" />
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                                <Border
-                                    Grid.Column="2"
-                                    Padding="10,6"
-                                    Background="Transparent"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="0">
-                                    <shimmer:ShimmerView HeightRequest="28" WidthRequest="70" />
-                                </Border>
-                                <Border
-                                    Grid.Column="3"
-                                    Background="Transparent"
-                                    HeightRequest="36"
-                                    StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="0"
-                                    WidthRequest="36">
-                                    <shimmer:ShimmerView HeightRequest="36" WidthRequest="36" />
-                                </Border>
-                            </Grid>
-                        </Border>
+                        <Grid>
+                            <Border
+                                Padding="18,18"
+                                Background="{StaticResource Brush.CardBgGradient}"
+                                HeightRequest="110"
+                                Shadow="{StaticResource Sh.CyanSm}"
+                                StrokeShape="RoundRectangle 15"
+                                StrokeThickness="0">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="16">
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        Spacing="6"
+                                        VerticalOptions="Center">
+                                        <shimmer:SfShimmer
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView BackgroundColor="#E0E0E0" HeightRequest="16" />
+                                        </shimmer:SfShimmer>
+                                        <HorizontalStackLayout Spacing="10">
+                                            <shimmer:SfShimmer
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="12"
+                                                    WidthRequest="80" />
+                                            </shimmer:SfShimmer>
+                                            <shimmer:SfShimmer
+                                                AnimationDuration="1000"
+                                                Fill="{StaticResource Brush.CardBgGradient}"
+                                                IsActive="True"
+                                                RepeatCount="3"
+                                                WaveColor="{StaticResource Secondary}"
+                                                WaveWidth="70">
+                                                <BoxView
+                                                    BackgroundColor="#E0E0E0"
+                                                    HeightRequest="12"
+                                                    WidthRequest="60" />
+                                            </shimmer:SfShimmer>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="14,10"
+                                        Background="Transparent"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center">
+                                        <shimmer:SfShimmer
+                                            AnimationDuration="1000"
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            RepeatCount="3"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="70">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="16"
+                                                WidthRequest="70" />
+                                        </shimmer:SfShimmer>
+                                    </Border>
+                                    <Border
+                                        Grid.Column="2"
+                                        Background="Transparent"
+                                        HeightRequest="44"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        VerticalOptions="Center"
+                                        WidthRequest="44">
+                                        <shimmer:SfShimmer
+                                            Fill="{StaticResource Brush.CardBgGradient}"
+                                            IsActive="True"
+                                            WaveColor="{StaticResource Secondary}"
+                                            WaveWidth="50">
+                                            <BoxView
+                                                BackgroundColor="#E0E0E0"
+                                                HeightRequest="44"
+                                                WidthRequest="44" />
+                                        </shimmer:SfShimmer>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <BoxView
+                                Margin="20,0"
+                                HeightRequest="1"
+                                Opacity="0.2"
+                                VerticalOptions="End"
+                                Color="{StaticResource TextLight}" />
+                        </Grid>
                     </DataTemplate>
                 </syncfusion:SfListView.ItemTemplate>
             </syncfusion:SfListView>

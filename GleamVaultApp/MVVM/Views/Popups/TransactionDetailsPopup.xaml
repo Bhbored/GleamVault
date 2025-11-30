@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:conv="clr-namespace:GleamVault.Converters"
+    xmlns:enums="clr-namespace:Shared.Models.Enums;assembly=Shared"
     xmlns:models="clr-namespace:Shared.Models;assembly=Shared"
     xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -11,8 +12,8 @@
     x:DataType="models:Transaction"
     Background="{StaticResource Brush.CardBgGradient}"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    MaximumHeightRequest="800"
-    WidthRequest="550">
+    MaximumHeightRequest="900"
+    WidthRequest="600">
     <toolkit:Popup.Resources>
         <conv:PriceConverter x:Key="PriceConverter" />
         <conv:FirstCharConverter x:Key="FirstCharConverter" />
@@ -23,13 +24,14 @@
         <conv:SkuTextConverter x:Key="SkuTextConverter" />
         <conv:QuantityTextConverter x:Key="QuantityTextConverter" />
         <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+        <conv:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
+        <conv:TransactionTypeConverter x:Key="TransactionTypeConverter" />
+        <conv:TransactionTypeFirstCharConverter x:Key="TransactionTypeFirstCharConverter" />
+        <conv:TransactionTypeColorConverter x:Key="TransactionTypeColorConverter" />
     </toolkit:Popup.Resources>
 
-    <ScrollView>
-        <Grid
-            Padding="20"
-            RowDefinitions="Auto,*,Auto"
-            RowSpacing="0">
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="10">
             <!--  Header  -->
             <Border
                 Grid.Row="0"
@@ -40,14 +42,18 @@
                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
                     <Border
                         Grid.Column="0"
+                        Background="{Binding Type, Converter={StaticResource TransactionTypeColorConverter}}"
                         HeightRequest="48"
-                        StyleClass="icon-circle"
+                        StrokeShape="RoundRectangle 24"
+                        StrokeThickness="0"
                         WidthRequest="48">
-                        <shapes:Path
-                            Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                            Fill="{StaticResource Primary}"
-                            HeightRequest="28"
-                            WidthRequest="28" />
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="{Binding Type, Converter={StaticResource TransactionTypeFirstCharConverter}}"
+                            TextColor="White"
+                            VerticalOptions="Center" />
                     </Border>
                     <VerticalStackLayout
                         Grid.Column="1"
@@ -58,6 +64,11 @@
                             FontFamily="NexaLight"
                             FontSize="12"
                             Text="{Binding Description}"
+                            TextColor="{StaticResource TextLight}" />
+                        <Label
+                            FontFamily="NexaLight"
+                            FontSize="10"
+                            Text="{Binding Id, StringFormat='ID: {0}'}"
                             TextColor="{StaticResource TextLight}" />
                     </VerticalStackLayout>
                     <Button
@@ -75,29 +86,43 @@
             <!--  Content  -->
             <Grid
                 Grid.Row="1"
-                Padding="20"
+                Padding="0"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                RowSpacing="20">
+                RowSpacing="16">
                 <!--  Transaction Info  -->
                 <Border
+                    Grid.Row="0"
                     Padding="16"
                     Background="{StaticResource Secondary}"
-                    Opacity="0.1"
+                    Opacity="1"
                     StrokeShape="RoundRectangle 12"
                     StrokeThickness="0">
                     <VerticalStackLayout Spacing="12">
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label
+                            FontFamily="NexaHeavy"
+                            FontSize="14"
+                            Text="Transaction Information"
+                            TextColor="{StaticResource TextDark}" />
+                        <Grid
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="12"
+                            RowDefinitions="Auto,Auto,Auto"
+                            RowSpacing="12">
                             <shapes:Path
+                                Grid.Row="0"
                                 Grid.Column="0"
                                 Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
                                 Fill="{StaticResource Primary}"
                                 HeightRequest="20"
                                 WidthRequest="20" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <VerticalStackLayout
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Spacing="4">
                                 <Label
                                     FontFamily="NexaLight"
                                     FontSize="11"
-                                    Text="Date  Time"
+                                    Text="Date &amp; Time"
                                     TextColor="{StaticResource TextLight}" />
                                 <Label
                                     FontFamily="NexaHeavy"
@@ -105,15 +130,17 @@
                                     Text="{Binding CreatedAt, Converter={StaticResource DateConverter}}"
                                     TextColor="{StaticResource TextDark}" />
                             </VerticalStackLayout>
-                        </Grid>
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                             <shapes:Path
+                                Grid.Row="1"
                                 Grid.Column="0"
                                 Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
                                 Fill="{StaticResource Primary}"
                                 HeightRequest="20"
                                 WidthRequest="20" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <VerticalStackLayout
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Spacing="4">
                                 <Label
                                     FontFamily="NexaLight"
                                     FontSize="11"
@@ -125,12 +152,36 @@
                                     Text="{Binding Channel, Converter={StaticResource ChannelConverter}}"
                                     TextColor="{StaticResource TextDark}" />
                             </VerticalStackLayout>
+                            <Border
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Background="{Binding Type, Converter={StaticResource TransactionTypeColorConverter}}"
+                                HeightRequest="20"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="0"
+                                WidthRequest="20" />
+                            <VerticalStackLayout
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Spacing="4">
+                                <Label
+                                    FontFamily="NexaLight"
+                                    FontSize="11"
+                                    Text="Transaction Type"
+                                    TextColor="{StaticResource TextLight}" />
+                                <Label
+                                    FontFamily="NexaHeavy"
+                                    FontSize="14"
+                                    Text="{Binding Type, Converter={StaticResource TransactionTypeConverter}}"
+                                    TextColor="{StaticResource TextDark}" />
+                            </VerticalStackLayout>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
 
                 <!--  Customer Info  -->
                 <Border
+                    Grid.Row="1"
                     Padding="16"
                     Background="{StaticResource Brush.CardBgGradient}"
                     Shadow="{StaticResource Sh.CyanSm}"
@@ -166,12 +217,19 @@
                                 FontSize="18"
                                 Text="{Binding Customer.FullName}"
                                 TextColor="{StaticResource TextDark}" />
+                            <Label
+                                FontFamily="NexaLight"
+                                FontSize="12"
+                                IsVisible="{Binding Customer.PhoneNumber, Converter={StaticResource IsNotNullOrEmptyConverter}}"
+                                Text="{Binding Customer.PhoneNumber}"
+                                TextColor="{StaticResource TextLight}" />
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
 
                 <!--  Items  -->
                 <Border
+                    Grid.Row="2"
                     Padding="16"
                     Background="{StaticResource Brush.CardBgGradient}"
                     Shadow="{StaticResource Sh.CyanSm}"
@@ -181,38 +239,42 @@
                         <Label
                             FontFamily="NexaHeavy"
                             FontSize="16"
-                            Text="Items"
+                            Text="{Binding Items.Count, StringFormat='Items ({0})'}"
                             TextColor="{StaticResource TextDark}" />
                         <CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:TransactionItem">
                                     <Border
-                                        Margin="0,0,0,10"
+                                        Margin="0,0,0,12"
                                         Padding="12"
                                         Background="{StaticResource Secondary}"
-                                        Opacity="0.1"
+                                        Opacity="1"
                                         StrokeShape="RoundRectangle 10"
                                         StrokeThickness="0">
                                         <Grid
-                                            Padding="8,4"
                                             ColumnDefinitions="Auto,*,Auto"
-                                            ColumnSpacing="12">
+                                            ColumnSpacing="12"
+                                            RowDefinitions="Auto,Auto"
+                                            RowSpacing="8">
                                             <Border
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
                                                 Grid.Column="0"
                                                 Background="{StaticResource Secondary}"
-                                                HeightRequest="50"
+                                                HeightRequest="60"
                                                 StrokeShape="RoundRectangle 10"
                                                 StrokeThickness="0"
-                                                WidthRequest="50">
+                                                WidthRequest="60">
                                                 <Image Aspect="AspectFill" Source="{Binding ImageUrl}" />
                                             </Border>
                                             <VerticalStackLayout
+                                                Grid.Row="0"
                                                 Grid.Column="1"
                                                 Spacing="4"
                                                 VerticalOptions="Center">
                                                 <Label
                                                     FontFamily="NexaHeavy"
-                                                    FontSize="14"
+                                                    FontSize="15"
                                                     Text="{Binding Name}"
                                                     TextColor="{StaticResource TextDark}" />
                                                 <Label
@@ -220,25 +282,76 @@
                                                     FontSize="11"
                                                     Text="{Binding Sku, Converter={StaticResource SkuTextConverter}}"
                                                     TextColor="{StaticResource TextLight}" />
+                                                <Label
+                                                    FontFamily="NexaLight"
+                                                    FontSize="11"
+                                                    IsVisible="{Binding Category.Name, Converter={StaticResource IsNotNullOrEmptyConverter}}"
+                                                    Text="{Binding Category.Name, StringFormat='Category: {0}'}"
+                                                    TextColor="{StaticResource TextLight}" />
                                             </VerticalStackLayout>
                                             <VerticalStackLayout
+                                                Grid.Row="0"
                                                 Grid.Column="2"
                                                 HorizontalOptions="End"
                                                 Spacing="4"
                                                 VerticalOptions="Center">
                                                 <Label
                                                     FontFamily="NexaHeavy"
-                                                    FontSize="14"
+                                                    FontSize="15"
                                                     HorizontalTextAlignment="End"
                                                     Text="{Binding Quantity, Converter={StaticResource QuantityTextConverter}}"
                                                     TextColor="{StaticResource TextDark}" />
                                                 <Label
-                                                    FontFamily="NexaLight"
-                                                    FontSize="12"
+                                                    FontFamily="NexaHeavy"
+                                                    FontSize="14"
                                                     HorizontalTextAlignment="End"
                                                     Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}}"
-                                                    TextColor="{StaticResource TextLight}" />
+                                                    TextColor="{StaticResource Primary}" />
                                             </VerticalStackLayout>
+                                            <Grid
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Grid.ColumnSpan="2"
+                                                ColumnDefinitions="*,*"
+                                                ColumnSpacing="12">
+                                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                                    <Label
+                                                        FontFamily="NexaLight"
+                                                        FontSize="10"
+                                                        IsVisible="{Binding Weight, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                                        Text="{Binding Weight, StringFormat='Weight: {0}'}"
+                                                        TextColor="{StaticResource TextLight}" />
+                                                    <Label
+                                                        FontFamily="NexaLight"
+                                                        FontSize="10"
+                                                        IsVisible="{Binding Hallmark, Converter={StaticResource IsNotNullOrEmptyConverter}}"
+                                                        Text="{Binding Hallmark, StringFormat='Hallmark: {0}'}"
+                                                        TextColor="{StaticResource TextLight}" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout
+                                                    Grid.Column="1"
+                                                    HorizontalOptions="End"
+                                                    Spacing="2">
+                                                    <Label
+                                                        FontFamily="NexaLight"
+                                                        FontSize="11"
+                                                        HorizontalTextAlignment="End"
+                                                        Text="{Binding Quantity, StringFormat='Qty: {0}'}"
+                                                        TextColor="{StaticResource TextLight}" />
+                                                    <Label
+                                                        FontFamily="NexaHeavy"
+                                                        FontSize="13"
+                                                        HorizontalTextAlignment="End"
+                                                        Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}, StringFormat='Unit: {0}'}"
+                                                        TextColor="{StaticResource TextDark}" />
+                                                    <Label
+                                                        FontFamily="NexaHeavy"
+                                                        FontSize="14"
+                                                        HorizontalTextAlignment="End"
+                                                        Text="{Binding UnitPrice, Converter={StaticResource PriceConverter}, StringFormat='Total: {0}'}"
+                                                        TextColor="{StaticResource Primary}" />
+                                                </VerticalStackLayout>
+                                            </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -249,6 +362,7 @@
 
                 <!--  Summary  -->
                 <Border
+                    Grid.Row="3"
                     Padding="16"
                     Background="{StaticResource Brush.CardBgGradient}"
                     Shadow="{StaticResource Sh.CyanSm}"
@@ -273,6 +387,11 @@
                                     IsVisible="{Binding DiscountValue, Converter={StaticResource IsGreaterThanZeroConverter}}"
                                     Text="{Binding DiscountValue, Converter={StaticResource DiscountTextConverter}}"
                                     TextColor="Red" />
+                                <Label
+                                    FontFamily="NexaLight"
+                                    FontSize="12"
+                                    Text="{Binding Items.Count, StringFormat='Total Items: {0}'}"
+                                    TextColor="{StaticResource TextLight}" />
                             </VerticalStackLayout>
                             <Border
                                 Grid.Column="1"
@@ -280,11 +399,18 @@
                                 Background="{StaticResource Primary}"
                                 StrokeShape="RoundRectangle 12"
                                 StrokeThickness="0">
-                                <Label
-                                    FontFamily="NexaHeavy"
-                                    FontSize="20"
-                                    Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
-                                    TextColor="White" />
+                                <VerticalStackLayout Spacing="4">
+                                    <Label
+                                        FontFamily="NexaLight"
+                                        FontSize="12"
+                                        Text="Total Amount"
+                                        TextColor="White" />
+                                    <Label
+                                        FontFamily="NexaHeavy"
+                                        FontSize="22"
+                                        Text="{Binding TotalAmount, Converter={StaticResource PriceConverter}}"
+                                        TextColor="White" />
+                                </VerticalStackLayout>
                             </Border>
                         </Grid>
                     </VerticalStackLayout>
@@ -293,4 +419,3 @@
         </Grid>
     </ScrollView>
 </toolkit:Popup>
-

@@ -37,6 +37,7 @@ namespace GleamVault.MVVM.ViewModels
         private DateTime? _endDate;
         private TransactionType? _selectedTransactionType;
         private CalendarDateRange? _selectedDateRange;
+        private CalendarDateRange? _tempDateRange;
         private SaleChannel? _selectedChannel;
         private bool shimmerLoading = true;
         private bool shimmerNotLoading = false;
@@ -285,6 +286,17 @@ namespace GleamVault.MVVM.ViewModels
                 }
             }
         }
+
+        public CalendarDateRange? TempDateRange
+        {
+            get => _tempDateRange;
+            set
+            {
+                if (_tempDateRange == value) return;
+                _tempDateRange = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Commands
@@ -305,6 +317,21 @@ namespace GleamVault.MVVM.ViewModels
             OnPropertyChanged(nameof(DateRangeText));
         });
         public ICommand ShowDateRangePopupCommand => new Command(async () => await ShowDateRangePopupAsync());
+        public ICommand ApplyDateRangeCommand => new Command(() =>
+        {
+            if (TempDateRange != null && TempDateRange.StartDate != null && TempDateRange.EndDate != null)
+            {
+                SelectedDateRange = TempDateRange;
+            }
+            else
+            {
+                SelectedDateRange = null;
+            }
+        });
+        public ICommand ResetDateRangeCommand => new Command(() =>
+        {
+            TempDateRange = SelectedDateRange;
+        });
 
         public ICommand FirstPageCommand => new Command(() => { CurrentPage = 1; });
         public ICommand PreviousPageCommand => new Command(() => { if (CanGoToPreviousPage) CurrentPage--; });
@@ -407,44 +434,11 @@ namespace GleamVault.MVVM.ViewModels
             OnPropertyChanged(nameof(CanGoToNextPage));
         }
 
-        public async Task LoadDataAsync()
-        {
-            ShimmerLoading = true;
-            ShimmerNotLoading = false;
-
-            ShimmerItems.Clear();
-
-            for (int i = 0; i < 5; i++)
-            {
-                ShimmerItems.Add(new object());
-            }
-
-            await Task.Delay(500);
-
-            if (TestTransactions.Transactions.Count == 0)
-            {
-                var products = TestProducts.GetProducts();
-                var customers = TestProducts.GetCustomers();
-                TestTransactions.GenerateTestTransactions(products, customers);
-            }
-
-            AllTransactions = new ObservableCollection<Transaction>(TestTransactions.Transactions);
-
-            var endDate = DateTime.Now;
-            var startDate = endDate.AddDays(-90);
-            SelectedDateRange = new CalendarDateRange(startDate, endDate);
-            StartDateValue = startDate;
-            EndDateValue = endDate;
-
-            FilterTransactions();
-
-            await Task.Delay(100);
-            ShimmerLoading = false;
-            ShimmerNotLoading = true;
-        }
+       
 
         public async Task ShowDateRangePopupAsync()
         {
+            TempDateRange = SelectedDateRange;
             await Shell.Current.ShowPopupAsync(new DateRangePopup(this));
         }
 
@@ -557,7 +551,39 @@ namespace GleamVault.MVVM.ViewModels
             return content.ToString();
         }
         #endregion
+        public void clearAll()
+        {
+            ShimmerLoading = true;
+            ShimmerNotLoading = false;
+            ShimmerItems.Clear();
 
+            for (int i = 0; i < 10; i++)
+            {
+                ShimmerItems.Add(new object());
+            }
+            OnPropertyChanged(nameof(ShimmerItems));
+            var endDate = DateTime.Now;
+            var startDate = endDate.AddDays(-90);
+            SelectedDateRange = new CalendarDateRange(startDate, endDate);
+            StartDateValue = startDate;
+            EndDateValue = endDate;
+        }
+        public async Task LoadDataAsync()
+        {
+            clearAll();
+            if (TestTransactions.Transactions.Count == 0)
+            {
+                var products = TestProducts.GetProducts();
+                var customers = TestProducts.GetCustomers();
+                TestTransactions.GenerateTestTransactions(products, customers);
+            }
+            AllTransactions = new ObservableCollection<Transaction>(TestTransactions.Transactions);
+            FilterTransactions();
+
+            await Task.Delay(3000);
+            ShimmerLoading = false;
+            ShimmerNotLoading = true;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

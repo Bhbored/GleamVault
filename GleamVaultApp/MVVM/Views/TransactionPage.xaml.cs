@@ -18,12 +18,10 @@ public partial class TransactionPage : ContentPage
 
 	private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// Refresh the list view when shimmer finishes
 		if (e.PropertyName == nameof(TransactionVM.ShimmerNotLoading))
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				// Force refresh of ListView by reassigning ItemsSource
 				if (TransactionsList != null)
 				{
 					var items = TransactionsList.ItemsSource;

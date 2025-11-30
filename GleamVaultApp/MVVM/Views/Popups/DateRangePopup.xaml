@@ -10,10 +10,13 @@
     x:DataType="vm:TransactionVM"
     Background="{StaticResource Brush.CardBgGradient}"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    MaximumHeightRequest="600"
+    MaximumHeightRequest="500"
     WidthRequest="400">
-    
-    <Grid RowDefinitions="Auto,*" Padding="20" RowSpacing="15">
+
+    <Grid
+        Background="{StaticResource Brush.CardBgGradient}"
+        RowDefinitions="Auto,*,Auto"
+        RowSpacing="15">
         <!--  Header  -->
         <Grid
             Grid.Row="0"
@@ -49,14 +52,37 @@
         <!--  Calendar  -->
         <Border
             Grid.Row="1"
-            Background="{StaticResource Brush.CardBgGradient}"
             Padding="10"
+            Background="{StaticResource Brush.CardBgGradient}"
             StrokeShape="RoundRectangle 15"
             StrokeThickness="0">
-            <calendar:SfCalendar
-                SelectionMode="Range"
-                SelectedDateRange="{Binding SelectedDateRange, Mode=TwoWay}" />
+            <calendar:SfCalendar SelectedDateRange="{Binding TempDateRange, Mode=TwoWay}" SelectionMode="Range" />
         </Border>
+
+        <!--  Action Buttons  -->
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="12">
+            <Button
+                x:Name="ResetButton"
+                Grid.Column="0"
+                Background="{StaticResource Primary}"
+                Clicked="ResetButton_Clicked"
+                FontFamily="NexaHeavy"
+                FontSize="16"
+                Text="Reset"
+                TextColor="White" />
+            <Button
+                x:Name="ApplyButton"
+                Grid.Column="1"
+                Background="{StaticResource Primary}"
+                Clicked="ApplyButton_Clicked"
+                FontFamily="NexaHeavy"
+                FontSize="16"
+                Text="Apply"
+                TextColor="White" />
+        </Grid>
     </Grid>
 </toolkit:Popup>
 
