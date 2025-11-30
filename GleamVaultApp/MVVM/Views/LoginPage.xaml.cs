@@ -1,9 +1,12 @@
-namespace GleamVaultApp.MVVM.Views;
+using GleamVault.MVVM.ViewModels;
+
+namespace GleamVault.MVVM.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+	public LoginPage(LoginVM viewModel)
 	{
 		InitializeComponent();
+		BindingContext = viewModel;
 	}
 }

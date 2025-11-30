@@ -51,6 +51,12 @@
     <FlyoutItem Title="Reports" Icon="reports.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:ReportPage}" Route="ReportPage" />
     </FlyoutItem>
+    <FlyoutItem Title="LoginPage" Icon="reports.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:LoginPage}" Route="LoginPage" />
+    </FlyoutItem>
 
+    <FlyoutItem Title="SignUpPage" Icon="reports.png">
+        <ShellContent ContentTemplate="{DataTemplate Pages:SignUpPage}" Route="SignUpPage" />
+    </FlyoutItem>
 
 </Shell>
