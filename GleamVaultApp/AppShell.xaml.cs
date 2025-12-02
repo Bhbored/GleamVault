@@ -15,14 +15,6 @@ namespace GleamVaultApp
             InitializeComponent();
             _sessionService = sessionService;
             Routing.RegisterRoute("LogoutRoute", typeof(LogoutPopup));
-            Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
-
-            Loaded += OnShellLoaded;
-        }
-
-        private async void OnShellLoaded(object? sender, EventArgs e)
-        {
-            await Current.GoToAsync($"///: ////{nameof(LoadingPage)}");
         }
 
         public void SetFlyoutItemsVisibility(bool isAdmin)

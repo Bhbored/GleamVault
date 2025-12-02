@@ -1,5 +1,4 @@
 using GleamVault.Services.Interfaces;
-using GleamVaultApp;
 using Shared.Models.Enums;
 using System;
 
@@ -22,7 +21,12 @@ public partial class LoadingPage : ContentPage
     {
         await Task.Delay(500);
 
-        var sessionService = Handler?.MauiContext?.Services.GetService<ISessionService>();
+        if (Handler?.MauiContext?.Services == null)
+        {
+            await Task.Delay(200);
+        }
+
+        var sessionService = Handler?.MauiContext?.Services?.GetService<ISessionService>();
         if (sessionService == null) return;
 
         var session = await sessionService.GetSessionAsync();
@@ -36,8 +40,7 @@ public partial class LoadingPage : ContentPage
         bool isAdmin = session.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
                       session.Role.Equals(UserRole.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
-        var appShell = Shell.Current as AppShell;
-        if (appShell != null)
+        if (Shell.Current is GleamVaultApp.AppShell appShell)
         {
             appShell.SetFlyoutItemsVisibility(isAdmin);
         }
