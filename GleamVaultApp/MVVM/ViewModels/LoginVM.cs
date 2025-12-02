@@ -9,6 +9,7 @@ using GleamVault.Services.Interfaces;
 using Shared.Models;
 using Shared.Contracts;
 using System.Diagnostics;
+using GleamVault.Services;
 
 namespace GleamVault.MVVM.ViewModels
 {
@@ -28,13 +29,14 @@ namespace GleamVault.MVVM.ViewModels
         private bool _passwordErrorVisible = false;
         #endregion
 
+        public IShopDataStore ShopDataStore { get;  }
 
 
-
-        public LoginVM(IAdvanceHttpService httpService, ISessionService sessionService)
+        public LoginVM(IAdvanceHttpService httpService, ISessionService sessionService,IShopDataStore shopDataStore)
         {
             _httpService = httpService;
             _sessionService = sessionService;
+            ShopDataStore = shopDataStore;
         }
 
         #region Properties
@@ -232,23 +234,37 @@ namespace GleamVault.MVVM.ViewModels
                     Password = Password
                 };
 
-                var loginUrl = Constants.WEB_API_URL + "api/account/login";
-                var result = await _httpService.Post<LoginRequest, LoginResponse>(loginUrl, loginRequest);
 
-                if (result.IsSuccess && result.Result != null)
+                var response = await ShopDataStore.Login(loginRequest);
+
+                if (response != null && response.Message == "Success")
                 {
-                    await _sessionService.SaveSessionAsync(result.Result);
-
+                    await _sessionService.SaveSessionAsync(response);
                     await Shell.Current.GoToAsync("//HomePage");
                 }
                 else
                 {
-                    var errorMessage = result.ErrorMessage ?? "Invalid username or password";
+                    var errorMessage = response?.Message ?? "Invalid username or password";
                     UsernameError = errorMessage;
                     UsernameErrorVisible = true;
                     PasswordError = errorMessage;
                     PasswordErrorVisible = true;
                 }
+
+                //if (result.IsSuccess && result.Result != null)
+                //{
+                //    await _sessionService.SaveSessionAsync(result.Result);
+
+                //    await Shell.Current.GoToAsync("//HomePage");
+                //}
+                //else
+                //{
+                //    var errorMessage = result.ErrorMessage ?? "Invalid username or password";
+                //    UsernameError = errorMessage;
+                //    UsernameErrorVisible = true;
+                //    PasswordError = errorMessage;
+                //    PasswordErrorVisible = true;
+                //}
             }
             catch (Exception ex)
             {

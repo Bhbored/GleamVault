@@ -10,7 +10,10 @@ namespace Shared.Contracts
     {
 
         public const string WEB_API_URL = @"http://localhost:5000/";
-        public const string API_AUTHENTICATION = WEB_API_URL + "api/Account/";
+
+
+        //Account
+        public const string API_AUTHENTICATION = WEB_API_URL + "api/Account/login";
 
         //Item
         public const string API_GET_CATEGORYS = WEB_API_URL + "api/item/GetCategories";

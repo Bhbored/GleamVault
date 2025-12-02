@@ -21,6 +21,7 @@ namespace Shared.Contracts
         Task<List<Transaction>> GetTransactions();
         Task<List<TransactionItem>> GetTransactionItems(Guid TransactionID);
         Task<Transaction> SaveTransactions(Transaction transaction);
+        Task<LoginResponse> Login(LoginRequest loginRequest);
 
     }
 }

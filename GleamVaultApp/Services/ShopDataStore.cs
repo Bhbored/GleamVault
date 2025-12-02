@@ -67,6 +67,14 @@ namespace GleamVault.Services
             return result;
         }
 
+        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        {
+            var result = await client.Post<LoginRequest, LoginResponse>(Constants.API_AUTHENTICATION, loginRequest);
+            return result.Result;
+        }
+
+
+
         public async Task<Category> SaveCategory(Category category)
         {
             var result = await client.Post<Category,Category>(Constants.API_POST_CATEGORYS, category);
