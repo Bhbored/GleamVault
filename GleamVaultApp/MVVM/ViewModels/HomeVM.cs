@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -668,7 +667,7 @@ namespace GleamVault.MVVM.ViewModels
             {
                 AllCategories.Add(x);
             }
-
+           
             foreach (var x in products)
             {
                 AllProducts.Add(x);
