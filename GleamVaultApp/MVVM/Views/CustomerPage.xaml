@@ -338,9 +338,8 @@
                                     Background="{StaticResource Brush.CardBgGradient}"
                                     MinimumHeightRequest="340"
                                     Shadow="{StaticResource Sh.CyanLg}"
-                                    Stroke="{StaticResource Primary}"
-                                    StrokeShape="RoundRectangle 10"
-                                    StrokeThickness="1">
+                                    StrokeShape="RoundRectangle 15"
+                                    StrokeThickness="0">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:CustomerPage}}, Path=BindingContext.SelectCustomerCommand}" CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
@@ -469,7 +468,7 @@
                             WidthRequest="40">
                             <Image
                                 HeightRequest="24"
-                                Source="customers.png"
+                                Source="focus_group.png"
                                 WidthRequest="24" />
                         </Border>
                         <Label

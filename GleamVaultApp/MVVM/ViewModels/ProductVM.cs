@@ -520,6 +520,13 @@ namespace GleamVault.MVVM.ViewModels
             GetHallmarks();
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            await Task.Delay(500);
+            foreach (var product in AllProducts)
+            {
+                if (AllCategories is not null)
+                    product.Category = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
+            }
+            await Task.Delay(500);
             FilteredProducts = new ObservableCollection<Product>(AllProducts);
             await Task.Delay(3000);
             IsDataLoading = false;

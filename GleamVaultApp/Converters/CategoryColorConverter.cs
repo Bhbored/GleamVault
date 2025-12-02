@@ -20,12 +20,13 @@ namespace GleamVault.Converters
                     "necklaces" => Color.FromArgb("#4ECDC4"),   // Teal
                     "earrings" => Color.FromArgb("#45B7D1"),    // Sky blue
                     "bracelets" => Color.FromArgb("#96CEB4"),   // Mint green
-                    "watches" => Color.FromArgb("#0389ff"),     // Light yellow
+                    "watches" => Color.FromArgb("#0389ff"),     // Blue (adjusted from Light yellow)
                     "brooches" => Color.FromArgb("#DDA0DD"),    // Plum
                     "cufflinks" => Color.FromArgb("#87CEEB"),   // Light sky blue
                     "anklets" => Color.FromArgb("#98FB98"),     // Pale green
                     "charms" => Color.FromArgb("#FFD700"),      // Gold
                     "bridal" => Color.FromArgb("#FFB6C1"),      // Light pink
+                    "elect" => Color.FromArgb("#9370DB"),       // Medium purple (new for Elect category)
                     _ => Colors.Gray
                 };
             }

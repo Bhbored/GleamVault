@@ -38,7 +38,17 @@ public partial class CustomerPage : ContentPage
     {
         base.OnAppearing();
         if (BindingContext is CustomerVM vm)
-            await vm.LoadDataAsync();
+        {
+            if (vm.AllCustomers.Count > 0)
+            {
+                return;
+            }
+            else
+            {
+                await vm.LoadDataAsync();
+
+            }
+        }
     }
 
     private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)

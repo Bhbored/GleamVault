@@ -265,11 +265,13 @@
                                             ColumnSpacing="10">
                                             <Border
                                                 Grid.Column="0"
-                                                Background="{Binding ., Converter={StaticResource CategoryColorConverter}}"
-                                                HeightRequest="12"
+                                                Background="Transparent"
+                                                HeightRequest="20"
                                                 StrokeShape="RoundRectangle 999"
                                                 StrokeThickness="0"
-                                                WidthRequest="12" />
+                                                WidthRequest="20">
+                                                <Image Aspect="AspectFit" Source="{Binding Icon}" />
+                                            </Border>
                                             <Label
                                                 Grid.Column="1"
                                                 FontFamily="NexaLight"
@@ -277,7 +279,7 @@
                                                 LineBreakMode="TailTruncation"
                                                 MaxLines="1"
                                                 Text="{Binding Name}"
-                                                TextColor="{StaticResource TextDark}" />
+                                                TextColor="{Binding ., Converter={StaticResource CategoryColorConverter}}" />
                                         </Grid>
                                     </DataTemplate>
                                 </editors:SfComboBox.ItemTemplate>
@@ -520,8 +522,8 @@
                                     Background="{StaticResource Brush.CardBgGradient}"
                                     Shadow="{StaticResource Sh.CyanSm}"
                                     Stroke="{Binding Category, Converter={StaticResource CategoryColorConverter}}"
-                                    StrokeShape="RoundRectangle 10"
-                                    StrokeThickness="2">
+                                    StrokeShape="RoundRectangle 15"
+                                    StrokeThickness="0">
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type Pages:InventoryPage}}, Path=BindingContext.SelectProductCommand}" CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>

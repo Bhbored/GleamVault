@@ -499,6 +499,12 @@ namespace GleamVault.MVVM.ViewModels
             GetHallmarks();
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
             TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            await Task.Delay(500);
+            foreach (var product in AllProducts)
+            {
+                product.Category = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
+            }
+            await Task.Delay(100);
             await LoadData();
             await Task.Delay(3000);
             ShimmerLoading = false;

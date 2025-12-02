@@ -381,9 +381,8 @@ namespace GleamVault.MVVM.ViewModels
         {
             if (SelectedCustomers.Count > 0)
             {
-                return; // Don't load more when filtering
+                return; 
             }
-
             var source = AllCustomers.Skip(_currentIndex).Take(10);
             foreach (var item in source)
             {

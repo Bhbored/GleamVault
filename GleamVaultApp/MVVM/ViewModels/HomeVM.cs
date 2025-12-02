@@ -649,9 +649,18 @@ namespace GleamVault.MVVM.ViewModels
             OnPropertyChanged(nameof(ShimmerItems));
 
         }
+        
         public async Task LoadData()
         {
             TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
+            TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
+            TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
+            await Task.Delay(500);
+            foreach (var product in AllProducts)
+            {
+                if(AllCategories is not null)
+                product.Category = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
+            }
             await Task.Delay(500);
             LoadMore();
         }
@@ -672,8 +681,7 @@ namespace GleamVault.MVVM.ViewModels
             RefreshCart();
             GetHallmarks();
             await LoadData();
-            TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
-            TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
+           
             await Task.Delay(3000);
             ShimmerLoading = false;
             ShimmerNotLoading = true;
