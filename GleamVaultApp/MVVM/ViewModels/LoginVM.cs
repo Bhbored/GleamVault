@@ -236,6 +236,7 @@ namespace GleamVault.MVVM.ViewModels
 
 
                 var response = await ShopDataStore.Login(loginRequest);
+                Debug.WriteLine($"response:{response.Message}");
 
                 if (response != null && response.Message == "Success")
                 {

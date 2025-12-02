@@ -14,21 +14,32 @@ namespace GleamVault.Services
     public class HttpService: IAdvanceHttpService
     {
         private readonly HttpClient _httpClient;
-      
+        private readonly ISessionService _sessionService;
 
-        public HttpService()
+
+        public HttpService(ISessionService sessionService)
         {
             _httpClient = new HttpClient();
+            _sessionService = sessionService;
            
             //_httpClient.DefaultRequestHeaders.Accept.Add(
             //   new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+
+        private void AddApiKeyHeader()
+        {
+            _httpClient.DefaultRequestHeaders.Remove("apikey");  
+            var key = _sessionService.GetApiKey();
+            if (!string.IsNullOrWhiteSpace(key))
+                _httpClient.DefaultRequestHeaders.Add("apikey", key);
+        }
         public async Task<bool> Delete(string baseUrl, Guid id)
         {
             try
             {
                 //AddAuthHeader();
+                AddApiKeyHeader();
                 var url = $"{baseUrl}/{id}";
                 var response = await _httpClient.DeleteAsync(url);
                 return response.IsSuccessStatusCode;
@@ -45,6 +56,7 @@ namespace GleamVault.Services
             try
             {
                 //AddAuthHeader();
+                AddApiKeyHeader();
                 var url = $"{baseUrl}/{id}";
                 var response = await _httpClient.DeleteAsync(url);
 
@@ -99,6 +111,7 @@ namespace GleamVault.Services
             try
             {
                 //AddAuthHeader();
+                AddApiKeyHeader();
 
                 var response = await _httpClient.GetAsync(url);
 
@@ -133,7 +146,7 @@ namespace GleamVault.Services
             try
             {
                 //AddAuthHeader();
-
+                AddApiKeyHeader();
                 var json = JsonSerializer.Serialize(Data);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 

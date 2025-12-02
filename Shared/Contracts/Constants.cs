@@ -9,7 +9,7 @@ namespace Shared.Contracts
     public static class Constants
     {
 
-        public const string WEB_API_URL = @"https://e675415ed8b6.ngrok-free.app";
+        public const string WEB_API_URL = @"https://5e7ada8f55c1.ngrok-free.app/";
 
 
         //Account
