@@ -1,4 +1,4 @@
-﻿using GleamVault.Services.Interfaces;
+using GleamVault.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +34,8 @@ namespace GleamVault.Services
             }
             catch (Exception e)
             {
-                await Shell.Current.DisplayAlert("Error", e.Message, "OK");
-
+                // Log error but don't show alert for fallback scenarios
+                System.Diagnostics.Debug.WriteLine($"GetPriceFromExchangeRateAPIAsync error: {e.Message}");
             }
 
             try
@@ -48,7 +48,8 @@ namespace GleamVault.Services
             }
             catch (Exception e)
             {
-                await Shell.Current.DisplayAlert("Error", e.Message, "OK");
+                // Log error but don't show alert for fallback scenarios
+                System.Diagnostics.Debug.WriteLine($"GetPriceFromGoldPriceAPIAsync error: {e.Message}");
             }
 
             if (_previousPrice > 0)
@@ -76,8 +77,15 @@ namespace GleamVault.Services
             try
             {
                 var url = "https://api.exchangerate-api.com/v4/latest/XAU";
-                var response = await _httpClient.GetStringAsync(url);
-                var jsonDoc = JsonDocument.Parse(response);
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var jsonDoc = JsonDocument.Parse(responseContent);
                 var root = jsonDoc.RootElement;
 
                 decimal price = 0m;
@@ -94,8 +102,17 @@ namespace GleamVault.Services
                     return CreatePriceData(price);
                 }
             }
-            catch
+            catch (HttpRequestException)
             {
+                // Network or HTTP error - silently return null to try next API
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - silently return null to try next API
+            }
+            catch (Exception)
+            {
+                // Other errors - silently return null to try next API
             }
             return null;
         }
@@ -104,9 +121,19 @@ namespace GleamVault.Services
         {
             try
             {
+                // Note: goldapi.io requires an API key in the header
+                // If you have an API key, add it: _httpClient.DefaultRequestHeaders.Add("x-access-token", "YOUR_API_KEY");
                 var url = "https://www.goldapi.io/api/XAU/USD";
-                var response = await _httpClient.GetStringAsync(url);
-                var jsonDoc = JsonDocument.Parse(response);
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // This API likely requires authentication, so we'll skip it
+                    return null;
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var jsonDoc = JsonDocument.Parse(responseContent);
                 var root = jsonDoc.RootElement;
 
                 if (root.TryGetProperty("price", out var priceElement))
@@ -118,8 +145,17 @@ namespace GleamVault.Services
                     }
                 }
             }
-            catch
+            catch (HttpRequestException)
             {
+                // Network or HTTP error (likely 401/403 due to missing API key) - silently return null
+            }
+            catch (TaskCanceledException)
+            {
+                // Timeout - silently return null
+            }
+            catch (Exception)
+            {
+                // Other errors - silently return null
             }
             return null;
         }
