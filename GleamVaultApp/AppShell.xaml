@@ -32,7 +32,20 @@
     </Shell.FlyoutHeader>
 
 
-    <ShellContent ContentTemplate="{DataTemplate Pages:LoadingPage}" Route="LoadingPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate Pages:LoadingPage}"
+        FlyoutItemIsVisible="False"
+        Route="LoadingPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate Pages:LoginPage}"
+        FlyoutItemIsVisible="False"
+        Route="LoginPage" />
+    <ShellContent
+        ContentTemplate="{DataTemplate Pages:SignUpPage}"
+        FlyoutItemIsVisible="False"
+        Route="SignUpPage" />
+
+
     <!--  Flyout Items  -->
     <FlyoutItem Title="POS" Icon="home.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:HomePage}" Route="HomePage" />
@@ -58,13 +71,7 @@
     <FlyoutItem Title="Reports" Icon="reports.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:ReportPage}" Route="ReportPage" />
     </FlyoutItem>
-    <FlyoutItem Title="LoginPage" Icon="reports.png">
-        <ShellContent ContentTemplate="{DataTemplate Pages:LoginPage}" Route="LoginPage" />
-    </FlyoutItem>
 
-    <FlyoutItem Title="SignUpPage" Icon="reports.png">
-        <ShellContent ContentTemplate="{DataTemplate Pages:SignUpPage}" Route="SignUpPage" />
-    </FlyoutItem>
 
 
     <Shell.FlyoutFooter>

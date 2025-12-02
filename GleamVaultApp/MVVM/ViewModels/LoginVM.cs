@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using GleamVault.Services.Interfaces;
 using Shared.Models;
 using Shared.Contracts;
+using Shared.Models.Enums;
 using System.Diagnostics;
 using GleamVault.Services;
+using GleamVault.MVVM.Views;
+using GleamVaultApp;
 
 namespace GleamVault.MVVM.ViewModels
 {
@@ -29,10 +32,10 @@ namespace GleamVault.MVVM.ViewModels
         private bool _passwordErrorVisible = false;
         #endregion
 
-        public IShopDataStore ShopDataStore { get;  }
+        public IShopDataStore ShopDataStore { get; }
 
 
-        public LoginVM(IAdvanceHttpService httpService, ISessionService sessionService,IShopDataStore shopDataStore)
+        public LoginVM(IAdvanceHttpService httpService, ISessionService sessionService, IShopDataStore shopDataStore)
         {
             _httpService = httpService;
             _sessionService = sessionService;
@@ -238,9 +241,18 @@ namespace GleamVault.MVVM.ViewModels
                 var response = await ShopDataStore.Login(loginRequest);
                 Debug.WriteLine($"response:{response.Message}");
 
-                if (response != null && response.Message == "Success")
+                if (response != null && !string.IsNullOrEmpty(response.ApiKey))
                 {
                     await _sessionService.SaveSessionAsync(response);
+
+                    bool isAdmin = response.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                                  response.Role.Equals(UserRole.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                    if (Shell.Current is AppShell appShell)
+                    {
+                        appShell.SetFlyoutItemsVisibility(isAdmin);
+                    }
+
                     await Shell.Current.GoToAsync("//HomePage");
                 }
                 else

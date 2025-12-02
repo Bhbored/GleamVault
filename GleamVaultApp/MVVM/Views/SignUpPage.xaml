@@ -8,11 +8,13 @@
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
     x:DataType="vm:SignUpVM"
     Background="{StaticResource Brush.BackgroundGradient}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutItemIsVisible="False"
     Shell.NavBarIsVisible="False">
 
     <ScrollView>
         <Grid HorizontalOptions="Center"
-              VerticalOptions="Start">
+                VerticalOptions="Start">
             <VerticalStackLayout
                 Margin="0,24,0,0"
                 Padding="20"
@@ -20,7 +22,7 @@
                 WidthRequest="480">
 
                 <HorizontalStackLayout HorizontalOptions="Center"
-                                       Spacing="5">
+                        Spacing="5">
                     <Image
                         HeightRequest="40"
                         IsAnimationPlaying="True"
@@ -79,7 +81,7 @@
                                 VerticalOptions="Center">
                                 <Entry.Behaviors>
                                     <toolkit:EventToCommandBehavior Command="{Binding SignUpCommand}"
-                                                                    EventName="Completed"/>
+                                            EventName="Completed"/>
                                 </Entry.Behaviors>
                             </Entry>
                         </sf:SfTextInputLayout>
@@ -120,7 +122,7 @@
                                 VerticalOptions="Center">
                                 <Entry.Behaviors>
                                     <toolkit:EventToCommandBehavior Command="{Binding SignUpCommand}"
-                                                                    EventName="Completed"/>
+                                            EventName="Completed"/>
                                 </Entry.Behaviors>
                             </Entry>
                         </sf:SfTextInputLayout>
@@ -172,7 +174,7 @@
                                 VerticalOptions="Center">
                                 <Entry.Behaviors>
                                     <toolkit:EventToCommandBehavior Command="{Binding SignUpCommand}"
-                                                                    EventName="Completed"/>
+                                            EventName="Completed"/>
                                 </Entry.Behaviors>
                             </Entry>
                         </sf:SfTextInputLayout>
@@ -224,7 +226,7 @@
                                 VerticalOptions="Center">
                                 <Entry.Behaviors>
                                     <toolkit:EventToCommandBehavior Command="{Binding SignUpCommand}"
-                                                                    EventName="Completed"/>
+                                            EventName="Completed"/>
                                 </Entry.Behaviors>
                             </Entry>
                         </sf:SfTextInputLayout>
@@ -259,7 +261,7 @@
                                 HeightRequest="1"
                                 WidthRequest="70"/>
                             <Label StyleClass="caption"
-                                   Text="or continue with"/>
+                                    Text="or continue with"/>
                             <BoxView
                                 BackgroundColor="{StaticResource TextLight}"
                                 HeightRequest="1"
@@ -267,7 +269,7 @@
                         </HorizontalStackLayout>
 
                         <HorizontalStackLayout HorizontalOptions="Center"
-                                               Spacing="18">
+                                Spacing="18">
                             <Border
                                 BackgroundColor="{StaticResource CardBg}"
                                 HeightRequest="46"
@@ -276,7 +278,7 @@
                                 StrokeThickness="1"
                                 WidthRequest="46">
                                 <Image Aspect="AspectFit"
-                                       Source="google.png"/>
+                                        Source="google.png"/>
                             </Border>
                             <Border
                                 BackgroundColor="{StaticResource CardBg}"
@@ -298,7 +300,7 @@
                                 StrokeThickness="1"
                                 WidthRequest="46">
                                 <Image Aspect="AspectFit"
-                                       Source="microsoft.png"/>
+                                        Source="microsoft.png"/>
                             </Border>
                         </HorizontalStackLayout>
 
@@ -310,7 +312,7 @@
                     HorizontalOptions="Center"
                     Spacing="6">
                     <Label StyleClass="caption"
-                           Text="Already have an account?"/>
+                            Text="Already have an account?"/>
                     <Label
                         FontFamily="NexaHeavy"
                         StyleClass="body"
