@@ -1,4 +1,5 @@
 ﻿using GleamVault.Services.Interfaces;
+using GleamVaultApp.Converters;
 using Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,11 @@ namespace GleamVault.Services
 
         public HttpService(ISessionService sessionService)
         {
-            _httpClient = new HttpClient();
+            //_httpClient = new HttpClient();
+            _httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30) 
+            };
             _sessionService = sessionService;
            
             //_httpClient.DefaultRequestHeaders.Accept.Add(
@@ -27,28 +32,44 @@ namespace GleamVault.Services
         }
 
 
-        private void AddApiKeyHeader()
+        private HttpRequestMessage CreateRequestWithApiKey(HttpMethod method, string url)
         {
-            _httpClient.DefaultRequestHeaders.Remove("X-API-Key");   // new name
-            var key = _sessionService.GetApiKey();
-            Debug.WriteLine($"[HTTP] X-API-Key header: {(string.IsNullOrEmpty(key) ? "NO-KEY" : key)}");
+            var request = new HttpRequestMessage(method, url);
 
-            if (!string.IsNullOrWhiteSpace(key))
-                _httpClient.DefaultRequestHeaders.Add("X-API-Key", key);  // new name
+            try
+            {
+              
+                var key = _sessionService.GetApiKey();
+                
+
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                  
+                    request.Headers.Add("X-API-Key", key);
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[HTTP] ERROR in CreateRequestWithApiKey: {ex.GetType().Name}");
+                Debug.WriteLine($"[HTTP] ERROR Message: {ex.Message}");
+                Debug.WriteLine($"[HTTP] ERROR Stack: {ex.StackTrace}");
+            }
+
+            return request;
         }
         public async Task<bool> Delete(string baseUrl, Guid id)
         {
             try
             {
-                //AddAuthHeader();
-                AddApiKeyHeader();
                 var url = $"{baseUrl}/{id}";
-                var response = await _httpClient.DeleteAsync(url);
+                var request = CreateRequestWithApiKey(HttpMethod.Delete, url);
+                var response = await _httpClient.SendAsync(request);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"DELETE Error: {ex.Message}");
+               
                 return false;
             }
         }
@@ -57,10 +78,9 @@ namespace GleamVault.Services
         {
             try
             {
-                //AddAuthHeader();
-                AddApiKeyHeader();
                 var url = $"{baseUrl}/{id}";
-                var response = await _httpClient.DeleteAsync(url);
+                var request = CreateRequestWithApiKey(HttpMethod.Delete, url);
+                var response = await _httpClient.SendAsync(request);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -97,7 +117,7 @@ namespace GleamVault.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"DELETE Error: {ex.Message}");
+                
                 return new HttpResult<TResponse>
                 {
                     Result = default(TResponse),
@@ -108,50 +128,73 @@ namespace GleamVault.Services
         }
 
 
+
         public async Task<T> Get<T>(string url)
         {
+           
+
             try
             {
-                AddApiKeyHeader();
-                Debug.WriteLine($"[HTTP] GET {url}");
+              
+                var request = CreateRequestWithApiKey(HttpMethod.Get, url);
 
-                var response = await _httpClient.GetAsync(url);
-                var content = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
 
-                // 2.  what the server received (mirrored by ngrok, IIS logs, etc.)
-                Debug.WriteLine($"[HTTP] {response.StatusCode} – {content.Length} chars");
+                
 
-                if (response.IsSuccessStatusCode)
-                    return JsonSerializer.Deserialize<T>(content,
-                              new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                  
+                    return default;
+                }
 
-                Debug.WriteLine($"[HTTP] failed – {response.StatusCode}");
+                var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+              
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters =
+            {
+                new SafeEnumConverter() 
+            }
+                };
+
+              
+                var result = JsonSerializer.Deserialize<T>(jsonString, options);
+
+                return result;
+            }
+            catch (JsonException ex)
+            {
+             
+                return default;
+            }
+            catch (TaskCanceledException ex)
+            {
+               
                 return default;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[HTTP] exception – {ex.Message}");
+               
                 return default;
             }
         }
-
 
         public async Task<HttpResult<TResponse>> Post<TRequest, TResponse>(string url, TRequest Data)
         {
             try
             {
-                //AddAuthHeader();
-                AddApiKeyHeader();
                 var json = JsonSerializer.Serialize(Data);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var request = CreateRequestWithApiKey(HttpMethod.Post, url);
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-
-                var response = await _httpClient.PostAsync(url, content);
-
-
+                var response = await _httpClient.SendAsync(request);
 
                 var responseJson = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine($"   Response JSON: {responseJson}");
+              
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -160,15 +203,12 @@ namespace GleamVault.Services
                         PropertyNameCaseInsensitive = true
                     });
 
-
-
                     return new HttpResult<TResponse>
                     {
                         Result = result,
                         IsSuccess = true
                     };
                 }
-
 
                 return new HttpResult<TResponse>
                 {
@@ -178,8 +218,6 @@ namespace GleamVault.Services
             }
             catch (Exception ex)
             {
-
-
                 return new HttpResult<TResponse>
                 {
                     Result = default(TResponse),
@@ -188,7 +226,6 @@ namespace GleamVault.Services
                 };
             }
         }
-
         //private void AddAuthHeader()
         //{
 
@@ -201,10 +238,10 @@ namespace GleamVault.Services
         //    }
         //}
 
-       
 
 
 
-    
-}
+
+
+    }
 }

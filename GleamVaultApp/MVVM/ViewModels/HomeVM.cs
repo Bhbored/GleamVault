@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -23,7 +24,8 @@ namespace GleamVault.MVVM.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     public class HomeVM : INotifyPropertyChanged
-    {public IShopDataStore _shopDataStore { get; }
+    {
+        public IShopDataStore _shopDataStore { get; }
         public HomeVM(IShopDataStore shopDataStore)
         {
             _shopDataStore = shopDataStore;
@@ -659,26 +661,21 @@ namespace GleamVault.MVVM.ViewModels
         public async Task LoadData()
         {
 
-            var categories = await _shopDataStore.GetCategories() ?? [];
-            var customers = await _shopDataStore.GetCustomers() ?? [];
-            var products = new List<Product>();
+            var categories = TestProducts.GetCategories();
+            var products = TestProducts.GetProducts();
+            var customers = TestProducts.GetCustomers();
             foreach (var x in categories)
             {
                 AllCategories.Add(x);
             }
 
-            foreach (var c in customers)
-            {
-                Customers.Add(c);
-            }
-            await Task.Delay(100);
-            foreach (var x in categories)
-            {
-                products = await _shopDataStore.GetItems(x.Id) ?? [];
-            }
             foreach (var x in products)
             {
                 AllProducts.Add(x);
+            }
+            foreach (var c in customers)
+            {
+                Customers.Add(c);
             }
             foreach (var product in AllProducts)
             {

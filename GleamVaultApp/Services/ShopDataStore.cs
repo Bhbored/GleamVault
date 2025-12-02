@@ -48,9 +48,9 @@ namespace GleamVault.Services
             return result;
         }
 
-        public async Task<List<Product>> GetItems(Guid CategoryID)
+        public async Task<List<Product>> GetItems()
         {
-            var url = $"{Constants.API_GET_ITEMS}?categoryId={CategoryID}";
+            var url = $"{Constants.API_GET_ITEMS}";
             var result = await client.Get<List<Product>>(url);
             return result;
         }

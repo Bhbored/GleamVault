@@ -46,10 +46,10 @@ namespace GleamVaultApi.Controllers
 
         [HttpGet("GetItems")]
         [ApiKeyAuthorize]
-        public async Task<ActionResult<IEnumerable<ItemInfo>>> GetItems(Guid CategoryID)
+        public async Task<ActionResult<IEnumerable<ItemInfo>>> GetItems()
         {
 
-            var result = await ItemRepository.GetByCategoryAsViewModel(CategoryID);
+            var result = await ItemRepository.GetByCategoryAsViewModel();
             return Ok(result);
 
         }
