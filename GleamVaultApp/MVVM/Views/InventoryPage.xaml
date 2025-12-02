@@ -417,12 +417,11 @@
                         ItemsSource="{Binding ShimmerItems}"
                         SelectionMode="None">
                         <syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:LinearLayout />
+                            <syncfusion:GridLayout x:Name="ShimmerGridLayout" SpanCount="2" />
                         </syncfusion:SfListView.ItemsLayout>
                         <syncfusion:SfListView.ItemTemplate>
                             <DataTemplate>
                                 <Border
-                                    Margin="0,0,0,10"
                                     Padding="15"
                                     Background="{StaticResource Brush.CardBgGradient}"
                                     Shadow="{StaticResource Sh.CyanSm}"
@@ -512,12 +511,11 @@
                         SelectionBackground="Transparent"
                         SelectionMode="None">
                         <syncfusion:SfListView.ItemsLayout>
-                            <syncfusion:LinearLayout />
+                            <syncfusion:GridLayout x:Name="ProductGridLayout" SpanCount="2" />
                         </syncfusion:SfListView.ItemsLayout>
                         <syncfusion:SfListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Product">
                                 <Border
-                                    Margin="0,0,0,10"
                                     Padding="15"
                                     Background="{StaticResource Brush.CardBgGradient}"
                                     Shadow="{StaticResource Sh.CyanSm}"

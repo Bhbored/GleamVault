@@ -39,8 +39,23 @@ public partial class InventoryPage : ContentPage
         if (BindingContext is InventoryVM vm)
             await vm.LoadDataAsync();
     }
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+        if (ProductGridLayout == null) return;
+        var span = width switch
+        {
+            < 900 => 2,
+            < 1300 => 3,
+            _ => 2
+        };
+        if (ProductGridLayout.SpanCount != span)
+            ProductGridLayout.SpanCount = span;
 
-   
+        if (ShimmerGridLayout != null && ShimmerGridLayout.SpanCount != span)
+            ShimmerGridLayout.SpanCount = span;
+    }
+
     private void autocomplete_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
     {
         if (BindingContext is InventoryVM vm)

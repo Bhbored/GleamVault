@@ -560,7 +560,7 @@
             <syncfusion:SfListView
                 x:Name="ShimmerList"
                 Grid.Row="0"
-                AutoFitMode="Height"
+                AutoFitMode="DynamicHeight"
                 IsVisible="{Binding ShimmerLoading}"
                 ItemSpacing="0"
                 ItemsSource="{Binding ShimmerItems}"
@@ -675,9 +675,9 @@
             <syncfusion:SfListView
                 x:Name="TransactionsList"
                 Grid.Row="0"
-                AutoFitMode="Height"
+                AutoFitMode="DynamicHeight"
                 IsVisible="{Binding ShimmerNotLoading}"
-                ItemSpacing="0"
+                ItemSpacing="5"
                 ItemsSource="{Binding PaginatedTransactions}"
                 SelectionBackground="Transparent"
                 SelectionMode="None">
@@ -690,7 +690,7 @@
                             <Border
                                 Padding="18,18"
                                 Background="{StaticResource Brush.CardBgGradient}"
-                                HeightRequest="110"
+                                HeightRequest="80"
                                 Shadow="{StaticResource Sh.CyanSm}"
                                 StrokeShape="RoundRectangle 15"
                                 StrokeThickness="0">

@@ -32,8 +32,10 @@ namespace GleamVault.Services
                     return priceData;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                await Shell.Current.DisplayAlert("Error", e.Message, "OK");
+
             }
 
             try
@@ -44,20 +46,9 @@ namespace GleamVault.Services
                     return priceData;
                 }
             }
-            catch
+            catch (Exception e)
             {
-            }
-
-            try
-            {
-                var priceData = await GetPriceFromMetalPriceAPIAsync();
-                if (priceData != null && priceData.Price > 1000m && priceData.Price < 10000m)
-                {
-                    return priceData;
-                }
-            }
-            catch
-            {
+                await Shell.Current.DisplayAlert("Error", e.Message, "OK");
             }
 
             if (_previousPrice > 0)
@@ -78,26 +69,7 @@ namespace GleamVault.Services
             };
         }
 
-        private async Task<GoldPriceData> GetPriceFromMetalPriceAPIAsync()
-        {
-            try
-            {
-                var url = "https://api.metals.live/v1/spot/gold";
-                var response = await _httpClient.GetStringAsync(url);
-                var jsonDoc = JsonDocument.Parse(response);
-                var root = jsonDoc.RootElement;
 
-                if (root.TryGetProperty("price", out var priceElement))
-                {
-                    var price = priceElement.GetDecimal();
-                    return CreatePriceData(price);
-                }
-            }
-            catch
-            {
-            }
-            return null;
-        }
 
         private async Task<GoldPriceData> GetPriceFromExchangeRateAPIAsync()
         {
