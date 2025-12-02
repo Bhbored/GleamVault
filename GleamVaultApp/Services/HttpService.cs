@@ -29,10 +29,12 @@ namespace GleamVault.Services
 
         private void AddApiKeyHeader()
         {
-            _httpClient.DefaultRequestHeaders.Remove("apikey");  
+            _httpClient.DefaultRequestHeaders.Remove("X-API-Key");   // new name
             var key = _sessionService.GetApiKey();
+            Debug.WriteLine($"[HTTP] X-API-Key header: {(string.IsNullOrEmpty(key) ? "NO-KEY" : key)}");
+
             if (!string.IsNullOrWhiteSpace(key))
-                _httpClient.DefaultRequestHeaders.Add("apikey", key);
+                _httpClient.DefaultRequestHeaders.Add("X-API-Key", key);  // new name
         }
         public async Task<bool> Delete(string baseUrl, Guid id)
         {
@@ -110,33 +112,26 @@ namespace GleamVault.Services
         {
             try
             {
-                //AddAuthHeader();
                 AddApiKeyHeader();
+                Debug.WriteLine($"[HTTP] GET {url}");
 
                 var response = await _httpClient.GetAsync(url);
+                var content = await response.Content.ReadAsStringAsync();
 
-
-
-                var responseContent = await response.Content.ReadAsStringAsync();
+                // 2.  what the server received (mirrored by ngrok, IIS logs, etc.)
+                Debug.WriteLine($"[HTTP] {response.StatusCode} – {content.Length} chars");
 
                 if (response.IsSuccessStatusCode)
-                {
-                    return JsonSerializer.Deserialize<T>(responseContent, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-                }
-                else
-                {
-                    Debug.WriteLine($"GET request failed with status: {response.StatusCode} - {response.ReasonPhrase}");
-                    return default(T);
-                }
+                    return JsonSerializer.Deserialize<T>(content,
+                              new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                Debug.WriteLine($"[HTTP] failed – {response.StatusCode}");
+                return default;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"GET Error: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-                return default(T);
+                Debug.WriteLine($"[HTTP] exception – {ex.Message}");
+                return default;
             }
         }
 

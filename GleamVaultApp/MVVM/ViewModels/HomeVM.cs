@@ -23,8 +23,7 @@ namespace GleamVault.MVVM.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     public class HomeVM : INotifyPropertyChanged
-    {
-        private readonly IShopDataStore _shopDataStore;
+    {public IShopDataStore _shopDataStore { get; }
         public HomeVM(IShopDataStore shopDataStore)
         {
             _shopDataStore = shopDataStore;
