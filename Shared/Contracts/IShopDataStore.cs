@@ -12,7 +12,7 @@ namespace Shared.Contracts
         Task<List<Category>> GetCategories();
         Task<Category> SaveCategory(Category category);
         Task<bool> DeleteCategory(Guid Id);
-        Task<List<Product>> GetItems(Guid CategoryID);
+        Task<List<Product>> GetItems();
         Task<Product> SaveProducts(Product product);
         Task<bool> DeleteProduct(Guid ProductID);
         Task<List<Customer>> GetCustomers();
