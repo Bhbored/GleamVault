@@ -8,6 +8,8 @@
     xmlns:vm="clr-namespace:GleamVault.MVVM.ViewModels"
     x:DataType="vm:LoginVM"
     Background="{StaticResource Brush.BackgroundGradient}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutItemIsVisible="False"
     Shell.NavBarIsVisible="False">
 
     <Grid HorizontalOptions="Center"
