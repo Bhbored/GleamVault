@@ -1,16 +1,34 @@
 using PropertyChanged;
+using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using GleamVault.Services.Interfaces;
+using Shared.Models;
+using Shared.Contracts;
 
 namespace GleamVault.MVVM.ViewModels
 {
+    public class RegisterRequest
+    {
+        public string Username { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
     [AddINotifyPropertyChangedInterface]
     public class SignUpVM : INotifyPropertyChanged
     {
+
+        #region fields
+
+        private readonly IAdvanceHttpService _httpService;
+        private readonly ISessionService _sessionService;
         private string _name = string.Empty;
         private string _email = string.Empty;
         private string _password = string.Empty;
@@ -26,6 +44,17 @@ namespace GleamVault.MVVM.ViewModels
         private bool _emailErrorVisible = false;
         private bool _passwordErrorVisible = false;
         private bool _confirmPasswordErrorVisible = false;
+        #endregion
+
+
+        public SignUpVM(IAdvanceHttpService httpService, ISessionService sessionService)
+        {
+            _httpService = httpService;
+            _sessionService = sessionService;
+        }
+
+
+        #region  Properties
 
         public string Name
         {
@@ -201,6 +230,9 @@ namespace GleamVault.MVVM.ViewModels
                 OnPropertyChanged();
             }
         }
+        #endregion
+
+        #region commands
 
         private ICommand? _signUpCommand;
         public ICommand SignUpCommand => _signUpCommand ??= new Command(async () => await SignUpAsync(), () => !IsBusy);
@@ -208,7 +240,9 @@ namespace GleamVault.MVVM.ViewModels
         public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordHidden = !IsPasswordHidden);
         public ICommand ToggleConfirmPasswordVisibilityCommand => new Command(() => IsConfirmPasswordHidden = !IsConfirmPasswordHidden);
         public ICommand GoToLoginCommand => new Command(async () => await GoToLoginAsync());
+        #endregion
 
+        #region methods
         private void ClearNameError()
         {
             if (NameErrorVisible)
@@ -329,6 +363,9 @@ namespace GleamVault.MVVM.ViewModels
             ConfirmPasswordErrorVisible = false;
             return true;
         }
+        #endregion
+
+        #region Tasks
 
         private async Task SignUpAsync()
         {
@@ -349,9 +386,34 @@ namespace GleamVault.MVVM.ViewModels
 
             try
             {
-                await Task.Delay(1500);
+                var registerRequest = new RegisterRequest
+                {
+                    Username = Email.Split('@')[0], 
+                    FullName = Name,
+                    Email = Email,
+                    Password = Password
+                };
 
-                await Shell.Current.GoToAsync("//LoginPage");
+                var registerUrl = Constants.WEB_API_URL + "api/account/register";
+                var result = await _httpService.Post<RegisterRequest, LoginResponse>(registerUrl, registerRequest);
+
+                if (result.IsSuccess && result.Result != null)
+                {
+                    await _sessionService.SaveSessionAsync(result.Result);
+                    await Shell.Current.GoToAsync("//HomePage");
+                }
+                else
+                {
+                    var errorMessage = result.ErrorMessage ?? "Registration failed. Please try again.";
+                    EmailError = errorMessage;
+                    EmailErrorVisible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                EmailError = "An error occurred. Please try again.";
+                EmailErrorVisible = true;
+                Debug.WriteLine($"SignUp error: {ex.Message}");
             }
             finally
             {
@@ -364,6 +426,8 @@ namespace GleamVault.MVVM.ViewModels
         {
             await Shell.Current.GoToAsync("//LoginPage");
         }
+        #endregion
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

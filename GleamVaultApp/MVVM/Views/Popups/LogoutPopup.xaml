@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="GleamVault.MVVM.Views.Popups.LogoutPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Background="{StaticResource Brush.CardBgGradient}"
+    CanBeDismissedByTappingOutsideOfPopup="True"
+    MaximumHeightRequest="400"
+    WidthRequest="450">
+    <toolkit:Popup.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="NexaLight" />
+            <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+        </Style>
+    </toolkit:Popup.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="0">
+        <!--  Header  -->
+        <Border
+            Grid.Row="0"
+            Padding="24,20"
+            Background="{StaticResource Brush.HeaderGradient}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <Border
+                    Grid.Column="0"
+                    HeightRequest="48"
+                    StyleClass="icon-circle"
+                    WidthRequest="48">
+                    <Label
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="⚠️"
+                        VerticalOptions="Center" />
+                </Border>
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="4"
+                    VerticalOptions="Center">
+                    <Label StyleClass="h3" Text="Logout" />
+                    <Label
+                        FontSize="12"
+                        Text="Confirm logout action"
+                        TextColor="{StaticResource TextLight}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <!--  Content  -->
+        <Grid Grid.Row="1" Padding="24,30">
+            <VerticalStackLayout
+                x:Name="ContentStack"
+                HorizontalOptions="Center"
+                Spacing="16"
+                VerticalOptions="Center">
+                <Label
+                    FontFamily="NexaLight"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="Are you sure you want to logout?"
+                    TextColor="{StaticResource TextDark}" />
+                <Label
+                    FontFamily="NexaLight"
+                    FontSize="14"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="You will need to login again to access your account."
+                    TextColor="{StaticResource TextLight}" />
+            </VerticalStackLayout>
+
+            <!--  Activity Indicator  -->
+            <ActivityIndicator
+                x:Name="LogoutActivityIndicator"
+                HeightRequest="50"
+                IsRunning="False"
+                IsVisible="False"
+                VerticalOptions="Center"
+                WidthRequest="50"
+                Color="{StaticResource Primary}" />
+        </Grid>
+
+        <!--  Footer Buttons  -->
+        <Border
+            Grid.Row="2"
+            Padding="24,20"
+            Background="White"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="0">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button
+                    x:Name="CancelButton"
+                    Grid.Column="0"
+                    Background="{StaticResource Brush.CardBgGradient}"
+                    Clicked="CancelButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    Text="Cancel"
+                    TextColor="{StaticResource TextDark}" />
+                <Button
+                    x:Name="LogoutButton"
+                    Grid.Column="1"
+                    Background="{StaticResource Brush.ButtonGradient}"
+                    Clicked="LogoutButton_Clicked"
+                    CornerRadius="14"
+                    FontFamily="NexaHeavy"
+                    FontSize="17"
+                    HeightRequest="52"
+                    IsEnabled="True"
+                    Shadow="{StaticResource Sh.CyanMd}"
+                    Text="Logout"
+                    TextColor="White" />
+            </Grid>
+        </Border>
+    </Grid>
+</toolkit:Popup>

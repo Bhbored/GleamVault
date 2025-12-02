@@ -1,4 +1,4 @@
-﻿using GleamVault.MVVM.ViewModels;
+using GleamVault.MVVM.ViewModels;
 using GleamVault.MVVM.Views;
 using GleamVault.Services.Interfaces;
 
@@ -17,6 +17,7 @@ namespace GleamVault.Services
         public static IServiceCollection RegisterAuthServices(this IServiceCollection services)
         {
             services.AddSingleton<IAdvanceHttpService, HttpService>();
+            services.AddSingleton<ISessionService, SessionService>();
             return services;
         }
 

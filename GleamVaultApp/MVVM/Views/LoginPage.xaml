@@ -10,31 +10,33 @@
     Background="{StaticResource Brush.BackgroundGradient}"
     Shell.NavBarIsVisible="False">
 
-    <Grid HorizontalOptions="Center" VerticalOptions="Start">
+    <Grid HorizontalOptions="Center"
+            VerticalOptions="Start">
         <VerticalStackLayout
             Margin="0,24,0,0"
             Padding="20"
             Spacing="18"
             WidthRequest="480">
 
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+            <HorizontalStackLayout HorizontalOptions="Center"
+                    Spacing="5">
                 <Image
                     HeightRequest="40"
                     IsAnimationPlaying="True"
                     Source="diamond.png"
-                    WidthRequest="40" />
+                    WidthRequest="40"/>
 
                 <Label
                     HorizontalOptions="Center"
                     StyleClass="h2"
-                    Text="GleamVault" />
+                    Text="GleamVault"/>
             </HorizontalStackLayout>
 
             <BoxView
                 BackgroundColor="{StaticResource Primary}"
                 HeightRequest="2"
                 HorizontalOptions="Center"
-                WidthRequest="160" />
+                WidthRequest="160"/>
 
             <Border
                 Margin="0,16,0,0"
@@ -50,13 +52,13 @@
                     <Label
                         Margin="4,0,0,0"
                         StyleClass="caption"
-                        Text="Email"
-                        TextColor="{StaticResource TextDark}" />
+                        Text="Username"
+                        TextColor="{StaticResource TextDark}"/>
 
                     <sf:SfTextInputLayout
                         Margin="0,0,0,2"
                         ContainerType="Outlined"
-                        Hint="name@example.com"
+                        Hint="Enter username"
                         Stroke="{StaticResource Primary}">
                         <sf:SfTextInputLayout.LeadingView>
                             <Image
@@ -64,34 +66,35 @@
                                 InputTransparent="True"
                                 Source="email.png"
                                 VerticalOptions="Center"
-                                WidthRequest="26" />
+                                WidthRequest="26"/>
                         </sf:SfTextInputLayout.LeadingView>
 
                         <Entry
                             FontSize="18"
                             HeightRequest="55"
-                            Keyboard="Email"
+                            Keyboard="Default"
                             PlaceholderColor="{StaticResource TextLight}"
-                            Text="{Binding Email}"
+                            Text="{Binding Username}"
                             TextColor="{StaticResource TextDark}"
                             VerticalOptions="Center">
                             <Entry.Behaviors>
-                                <toolkit:EventToCommandBehavior Command="{Binding LoginCommand}" EventName="Completed" />
+                                <toolkit:EventToCommandBehavior Command="{Binding LoginCommand}"
+                                        EventName="Completed"/>
                             </Entry.Behaviors>
                         </Entry>
                     </sf:SfTextInputLayout>
 
                     <Label
-                        IsVisible="{Binding EmailErrorVisible}"
+                        IsVisible="{Binding UsernameErrorVisible}"
                         StyleClass="caption"
-                        Text="{Binding EmailError}"
-                        TextColor="#E11D48" />
+                        Text="{Binding UsernameError}"
+                        TextColor="#E11D48"/>
 
                     <Label
                         Margin="4,0,0,0"
                         StyleClass="caption"
                         Text="Password"
-                        TextColor="{StaticResource TextDark}" />
+                        TextColor="{StaticResource TextDark}"/>
 
                     <sf:SfTextInputLayout
                         Margin="0,0,0,2"
@@ -104,7 +107,7 @@
                                 InputTransparent="True"
                                 Source="padlock.png"
                                 VerticalOptions="Center"
-                                WidthRequest="26" />
+                                WidthRequest="26"/>
                         </sf:SfTextInputLayout.LeadingView>
 
                         <sf:SfTextInputLayout.TrailingView>
@@ -115,7 +118,7 @@
                                 HeightRequest="36"
                                 Source="{Binding PasswordEyeIcon}"
                                 VerticalOptions="Center"
-                                WidthRequest="36" />
+                                WidthRequest="36"/>
                         </sf:SfTextInputLayout.TrailingView>
 
                         <Entry
@@ -127,7 +130,8 @@
                             TextColor="{StaticResource TextDark}"
                             VerticalOptions="Center">
                             <Entry.Behaviors>
-                                <toolkit:EventToCommandBehavior Command="{Binding LoginCommand}" EventName="Completed" />
+                                <toolkit:EventToCommandBehavior Command="{Binding LoginCommand}"
+                                        EventName="Completed"/>
                             </Entry.Behaviors>
                         </Entry>
                     </sf:SfTextInputLayout>
@@ -136,7 +140,7 @@
                         IsVisible="{Binding PasswordErrorVisible}"
                         StyleClass="caption"
                         Text="{Binding PasswordError}"
-                        TextColor="#E11D48" />
+                        TextColor="#E11D48"/>
 
                     <Button
                         Margin="0,8,0,0"
@@ -146,12 +150,12 @@
                         FontFamily="NexaHeavy"
                         FontSize="17"
                         Text="Login"
-                        TextColor="White" />
+                        TextColor="White"/>
 
                     <ActivityIndicator
                         Margin="0,2,0,0"
                         IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}" />
+                        IsVisible="{Binding IsBusy}"/>
 
                     <HorizontalStackLayout
                         Margin="4,12,4,6"
@@ -160,15 +164,17 @@
                         <BoxView
                             BackgroundColor="{StaticResource TextLight}"
                             HeightRequest="1"
-                            WidthRequest="70" />
-                        <Label StyleClass="caption" Text="or continue with" />
+                            WidthRequest="70"/>
+                        <Label StyleClass="caption"
+                                Text="or continue with"/>
                         <BoxView
                             BackgroundColor="{StaticResource TextLight}"
                             HeightRequest="1"
-                            WidthRequest="70" />
+                            WidthRequest="70"/>
                     </HorizontalStackLayout>
 
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="18">
+                    <HorizontalStackLayout HorizontalOptions="Center"
+                            Spacing="18">
                         <Border
                             BackgroundColor="{StaticResource CardBg}"
                             HeightRequest="46"
@@ -176,7 +182,8 @@
                             StrokeShape="Ellipse"
                             StrokeThickness="1"
                             WidthRequest="46">
-                            <Image Aspect="AspectFit" Source="google.png" />
+                            <Image Aspect="AspectFit"
+                                    Source="google.png"/>
                         </Border>
                         <Border
                             BackgroundColor="{StaticResource CardBg}"
@@ -188,7 +195,7 @@
                             <Image
                                 Aspect="AspectFit"
                                 Source="apple.png"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"/>
                         </Border>
                         <Border
                             BackgroundColor="{StaticResource CardBg}"
@@ -197,7 +204,8 @@
                             StrokeShape="Ellipse"
                             StrokeThickness="1"
                             WidthRequest="46">
-                            <Image Aspect="AspectFit" Source="microsoft.png" />
+                            <Image Aspect="AspectFit"
+                                    Source="microsoft.png"/>
                         </Border>
                     </HorizontalStackLayout>
 
@@ -208,14 +216,15 @@
                 Margin="0,8,0,0"
                 HorizontalOptions="Center"
                 Spacing="6">
-                <Label StyleClass="caption" Text="Don't have an account?" />
+                <Label StyleClass="caption"
+                        Text="Don't have an account?"/>
                 <Label
                     FontFamily="NexaHeavy"
                     StyleClass="body"
                     Text="Sign Up"
                     TextColor="{StaticResource Primary}">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToSignUpCommand}" />
+                        <TapGestureRecognizer Command="{Binding GoToSignUpCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>

@@ -4,7 +4,9 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:Pages="clr-namespace:GleamVault.MVVM.Views"
+    xmlns:PopUps="clr-namespace:GleamVault.MVVM.Views.Popups"
     FlyoutBehavior="Flyout"
+    FlyoutHeaderBehavior="Fixed"
     Shell.NavBarIsVisible="False">
     <!--  Flyout Header (Optional)  -->
     <Shell.FlyoutHeader>
@@ -29,6 +31,8 @@
         </Grid>
     </Shell.FlyoutHeader>
 
+
+    <ShellContent ContentTemplate="{DataTemplate Pages:LoadingPage}" Route="LoadingPage" />
     <!--  Flyout Items  -->
     <FlyoutItem Title="POS" Icon="home.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:HomePage}" Route="HomePage" />
@@ -39,7 +43,10 @@
     <FlyoutItem Title="Sales History" Icon="transaction.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:TransactionPage}" Route="TransactionPage" />
     </FlyoutItem>
-    <FlyoutItem Title="Inventory" Icon="inventory.png">
+    <FlyoutItem
+        x:Name="InventoryFlyoutItem"
+        Title="Inventory"
+        Icon="inventory.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:InventoryPage}" Route="InventoryPage" />
     </FlyoutItem>
     <FlyoutItem Title="Discount" Icon="discount.png">
@@ -58,5 +65,20 @@
     <FlyoutItem Title="SignUpPage" Icon="reports.png">
         <ShellContent ContentTemplate="{DataTemplate Pages:SignUpPage}" Route="SignUpPage" />
     </FlyoutItem>
+
+
+    <Shell.FlyoutFooter>
+        <Grid Padding="10" BackgroundColor="{StaticResource Primary}">
+            <Button
+                BackgroundColor="Transparent"
+                Clicked="OnLogoutClicked"
+                HeightRequest="50"
+                HorizontalOptions="Start"
+                ImageSource="shutdown.png"
+                Text="Logout"
+                TextColor="White" />
+        </Grid>
+    </Shell.FlyoutFooter>
+
 
 </Shell>

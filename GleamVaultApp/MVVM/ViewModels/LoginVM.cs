@@ -1,33 +1,52 @@
 using PropertyChanged;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using GleamVault.Services.Interfaces;
+using Shared.Models;
+using Shared.Contracts;
+using System.Diagnostics;
 
 namespace GleamVault.MVVM.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     public class LoginVM : INotifyPropertyChanged
     {
-        private string _email = string.Empty;
+        #region fiels
+        private readonly IAdvanceHttpService _httpService;
+        private readonly ISessionService _sessionService;
+        private string _username = string.Empty;
         private string _password = string.Empty;
         private bool _isPasswordHidden = true;
         private bool _isBusy = false;
-        private string _emailError = string.Empty;
+        private string _usernameError = string.Empty;
         private string _passwordError = string.Empty;
-        private bool _emailErrorVisible = false;
+        private bool _usernameErrorVisible = false;
         private bool _passwordErrorVisible = false;
+        #endregion
 
-        public string Email
+
+
+
+        public LoginVM(IAdvanceHttpService httpService, ISessionService sessionService)
         {
-            get => _email;
+            _httpService = httpService;
+            _sessionService = sessionService;
+        }
+
+        #region Properties
+        public string Username
+        {
+            get => _username;
             set
             {
-                if (_email == value) return;
-                _email = value;
+                if (_username == value) return;
+                _username = value;
                 OnPropertyChanged();
-                ClearEmailError();
+                ClearUsernameError();
             }
         }
 
@@ -69,13 +88,13 @@ namespace GleamVault.MVVM.ViewModels
             }
         }
 
-        public string EmailError
+        public string UsernameError
         {
-            get => _emailError;
+            get => _usernameError;
             set
             {
-                if (_emailError == value) return;
-                _emailError = value;
+                if (_usernameError == value) return;
+                _usernameError = value;
                 OnPropertyChanged();
             }
         }
@@ -91,13 +110,13 @@ namespace GleamVault.MVVM.ViewModels
             }
         }
 
-        public bool EmailErrorVisible
+        public bool UsernameErrorVisible
         {
-            get => _emailErrorVisible;
+            get => _usernameErrorVisible;
             set
             {
-                if (_emailErrorVisible == value) return;
-                _emailErrorVisible = value;
+                if (_usernameErrorVisible == value) return;
+                _usernameErrorVisible = value;
                 OnPropertyChanged();
             }
         }
@@ -113,19 +132,26 @@ namespace GleamVault.MVVM.ViewModels
             }
         }
 
+        #endregion
+
+        #region commands
+
         private ICommand? _loginCommand;
         public ICommand LoginCommand => _loginCommand ??= new Command(async () => await LoginAsync(), () => !IsBusy);
 
         public ICommand TogglePasswordVisibilityCommand => new Command(() => IsPasswordHidden = !IsPasswordHidden);
 
         public ICommand GoToSignUpCommand => new Command(async () => await GoToSignUpAsync());
+        #endregion
 
-        private void ClearEmailError()
+        #region methods
+
+        private void ClearUsernameError()
         {
-            if (EmailErrorVisible)
+            if (UsernameErrorVisible)
             {
-                EmailError = string.Empty;
-                EmailErrorVisible = false;
+                UsernameError = string.Empty;
+                UsernameErrorVisible = false;
             }
         }
 
@@ -138,25 +164,24 @@ namespace GleamVault.MVVM.ViewModels
             }
         }
 
-        private bool ValidateEmail()
+        private bool ValidateUsername()
         {
-            if (string.IsNullOrWhiteSpace(Email))
+            if (string.IsNullOrWhiteSpace(Username))
             {
-                EmailError = "Email is required";
-                EmailErrorVisible = true;
+                UsernameError = "Username is required";
+                UsernameErrorVisible = true;
                 return false;
             }
 
-            var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            if (!Regex.IsMatch(Email, emailPattern))
+            if (Username.Length < 3)
             {
-                EmailError = "Please enter a valid email address";
-                EmailErrorVisible = true;
+                UsernameError = "Username must be at least 3 characters";
+                UsernameErrorVisible = true;
                 return false;
             }
 
-            EmailError = string.Empty;
-            EmailErrorVisible = false;
+            UsernameError = string.Empty;
+            UsernameErrorVisible = false;
             return true;
         }
 
@@ -180,15 +205,18 @@ namespace GleamVault.MVVM.ViewModels
             PasswordErrorVisible = false;
             return true;
         }
+        #endregion
+
+        #region Tasks
 
         private async Task LoginAsync()
         {
             if (IsBusy) return;
 
-            var emailValid = ValidateEmail();
+            var usernameValid = ValidateUsername();
             var passwordValid = ValidatePassword();
 
-            if (!emailValid || !passwordValid)
+            if (!usernameValid || !passwordValid)
             {
                 return;
             }
@@ -198,19 +226,35 @@ namespace GleamVault.MVVM.ViewModels
 
             try
             {
-                await Task.Delay(1500);
-
-                if (Email == "admin@gleamvault.com" && Password == "admin123")
+                var loginRequest = new LoginRequest
                 {
+                    Username = Username,
+                    Password = Password
+                };
+
+                var loginUrl = Constants.WEB_API_URL + "api/account/login";
+                var result = await _httpService.Post<LoginRequest, LoginResponse>(loginUrl, loginRequest);
+
+                if (result.IsSuccess && result.Result != null)
+                {
+                    await _sessionService.SaveSessionAsync(result.Result);
+
                     await Shell.Current.GoToAsync("//HomePage");
                 }
                 else
                 {
-                    EmailError = "Invalid email or password";
-                    EmailErrorVisible = true;
-                    PasswordError = "Invalid email or password";
+                    var errorMessage = result.ErrorMessage ?? "Invalid username or password";
+                    UsernameError = errorMessage;
+                    UsernameErrorVisible = true;
+                    PasswordError = errorMessage;
                     PasswordErrorVisible = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                UsernameError = "An error occurred. Please try again.";
+                UsernameErrorVisible = true;
+                Debug.WriteLine($"Login error: {ex.Message}");
             }
             finally
             {
@@ -223,6 +267,8 @@ namespace GleamVault.MVVM.ViewModels
         {
             await Shell.Current.GoToAsync("//SignUpPage");
         }
+        #endregion
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

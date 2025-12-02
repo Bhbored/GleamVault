@@ -1,6 +1,7 @@
 using GleamVault.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -8,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace GleamVault.Services
 {
-    //anwayrooo
     public class GoldPriceService : IGoldPriceService
     {
         private readonly HttpClient _httpClient;
@@ -34,7 +34,6 @@ namespace GleamVault.Services
             }
             catch (Exception e)
             {
-                // Log error but don't show alert for fallback scenarios
                 System.Diagnostics.Debug.WriteLine($"GetPriceFromExchangeRateAPIAsync error: {e.Message}");
             }
 
@@ -48,7 +47,6 @@ namespace GleamVault.Services
             }
             catch (Exception e)
             {
-                // Log error but don't show alert for fallback scenarios
                 System.Diagnostics.Debug.WriteLine($"GetPriceFromGoldPriceAPIAsync error: {e.Message}");
             }
 
@@ -104,15 +102,12 @@ namespace GleamVault.Services
             }
             catch (HttpRequestException)
             {
-                // Network or HTTP error - silently return null to try next API
             }
             catch (TaskCanceledException)
             {
-                // Timeout - silently return null to try next API
             }
             catch (Exception)
             {
-                // Other errors - silently return null to try next API
             }
             return null;
         }
@@ -121,14 +116,12 @@ namespace GleamVault.Services
         {
             try
             {
-                // Note: goldapi.io requires an API key in the header
-                // If you have an API key, add it: _httpClient.DefaultRequestHeaders.Add("x-access-token", "YOUR_API_KEY");
+
                 var url = "https://www.goldapi.io/api/XAU/USD";
                 var response = await _httpClient.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    // This API likely requires authentication, so we'll skip it
                     return null;
                 }
 
@@ -145,17 +138,18 @@ namespace GleamVault.Services
                     }
                 }
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException e)
             {
-                // Network or HTTP error (likely 401/403 due to missing API key) - silently return null
+                Debug.WriteLine(e);
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException e)
             {
-                // Timeout - silently return null
+                Debug.WriteLine(e);
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // Other errors - silently return null
+                Debug.WriteLine(e);
             }
             return null;
         }

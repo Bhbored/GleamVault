@@ -1,4 +1,6 @@
-﻿using Syncfusion.Licensing;
+using GleamVault.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Syncfusion.Licensing;
 
 namespace GleamVaultApp
 {
@@ -14,7 +16,8 @@ namespace GleamVaultApp
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            var sessionService = _serviceProvider.GetRequiredService<ISessionService>();
+            return new Window(new AppShell(sessionService));
         }
     }
 }

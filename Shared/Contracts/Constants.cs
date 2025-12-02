@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ namespace Shared.Contracts
 {
     public static class Constants
     {
-       
+
         public const string WEB_API_URL = @"http://localhost:5000/";
         public const string API_AUTHENTICATION = WEB_API_URL + "api/Account/";
 
