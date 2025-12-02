@@ -33,7 +33,7 @@ public partial class LoadingPage : ContentPage
 
         if (session == null)
         {
-            await Shell.Current.GoToAsync("//LoginPage");
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
             return;
         }
 
