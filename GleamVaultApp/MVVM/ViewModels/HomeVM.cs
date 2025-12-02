@@ -659,9 +659,9 @@ namespace GleamVault.MVVM.ViewModels
 
         public async Task LoadData()
         {
-
-            var categories = await _shopDataStore.GetCategories() ?? [];
-            var customers = await _shopDataStore.GetCustomers() ?? [];
+            
+            var categories =  new List<Category>();
+            var customers = new List<Customer>();
             var products = new List<Product>();
             foreach (var x in categories)
             {
@@ -673,10 +673,10 @@ namespace GleamVault.MVVM.ViewModels
                 Customers.Add(c);
             }
             await Task.Delay(100);
-            foreach (var x in categories)
-            {
-                products = await _shopDataStore.GetItems(x.Id) ?? [];
-            }
+            //foreach (var x in categories)
+            //{
+            //    products = await _shopDataStore.GetItems(x.Id) ?? [];
+            //}
             foreach (var x in products)
             {
                 AllProducts.Add(x);
