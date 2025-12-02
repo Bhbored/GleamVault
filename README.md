@@ -68,19 +68,26 @@
 | [.NET MAUI](https://docs.microsoft.com/en-us/dotnet/maui/) | 🖥️ Cross-platform application framework (Desktop) |
 | [C#](https://docs.microsoft.com/en-us/dotnet/csharp/) | 💻 Primary programming language |
 | [XAML](https://docs.microsoft.com/en-us/dotnet/desktop/xaml/) | 🎨 User interface markup language |
+| [CommunityToolkit.Maui](https://github.com/CommunityToolkit/Maui) | 🧰 UI controls and helpers for .NET MAUI |
+| [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet) | 🏗️ MVVM pattern implementation |
+| [Syncfusion.Maui.*](https://www.syncfusion.com/maui-controls) | 📊 UI components (Buttons, Calendar, Charts, Inputs, ListView, TabView, Toolkit) |
+| [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged) | ⚙️ Automatic property change notification |
+| [Bogus](https://github.com/bchavez/Bogus) | 📝 Fake data generator |
 
-### Backend
+### Backend (ASP.NET Core API)
 | Technology | Description |
 |------------|-------------|
 | [ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/) | ⚙️ Web API framework |
 | [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) | 🗃️ ORM for database operations |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server/) | 🗄️ Relational database management |
+| [Entity Framework Core SqlServer](https://docs.microsoft.com/en-us/ef/core/providers/sql-server/) | 🗄️ SQL Server provider for EF Core |
+| [Microsoft.AspNetCore.OpenApi](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/) | 📑 OpenAPI/Swagger documentation |
 
 ### Additional Tools
 | Tool | Purpose |
 |------|---------|
 | [Visual Studio](https://visualstudio.microsoft.com/) | 🛠️ Development environment |
 | [NuGet](https://www.nuget.org/) | 📦 Package management |
+| [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0) | 🚀 Runtime and SDK |
 
 ## 🏗️ Architecture
 ┌─────────────────┐ ┌──────────────────┐ ┌─────────────────┐
@@ -135,7 +142,9 @@ ConnectionStrings__DefaultConnection - Database connection string
 ### 📞 Contact
 Bourhan Hassoun - [Your Email] | [LinkedIn Profile]
 
-Project Link: ```
+Project Link:
+```
 https://github.com/Bhbored/GleamVault
 ```
+
 
