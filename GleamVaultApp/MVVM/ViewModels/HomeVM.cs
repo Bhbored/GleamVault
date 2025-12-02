@@ -3,8 +3,10 @@ using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GleamVault.MVVM.Views.Popups;
+using GleamVault.Services;
 using GleamVault.TestData;
 using PropertyChanged;
+using Shared.Contracts;
 using Shared.Models;
 using Shared.Models.Enums;
 using Syncfusion.Maui.DataSource.Extensions;
@@ -22,6 +24,11 @@ namespace GleamVault.MVVM.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class HomeVM : INotifyPropertyChanged
     {
+        private readonly IShopDataStore _shopDataStore;
+        public HomeVM(IShopDataStore shopDataStore)
+        {
+            _shopDataStore = shopDataStore;
+        }
 
         #region Fields
         private int _currentIndex = 0;
@@ -229,7 +236,7 @@ namespace GleamVault.MVVM.ViewModels
         public ICommand DecreaseQuantityCommand => new Command<Product>(async p => await DecreaseQuantityAsync(p));
         public ICommand ClearCartCommand => new Command(async () => await ClearCartAsync());
         public ICommand CompleteSaleCommand => new Command(async () => await CompleteSaleAsync());
-        public ICommand LoadMoreCommand => new Command(() =>  LoadMore());
+        public ICommand LoadMoreCommand => new Command(() => LoadMore());
 
         #endregion
 
@@ -649,17 +656,35 @@ namespace GleamVault.MVVM.ViewModels
             OnPropertyChanged(nameof(ShimmerItems));
 
         }
-        
+
         public async Task LoadData()
         {
-            TestProducts.GetProducts().ForEach(p => AllProducts.Add(p));
-            TestProducts.GetCategories().ForEach(c => AllCategories.Add(c));
-            TestProducts.GetCustomers().ForEach(cu => Customers.Add(cu));
-            await Task.Delay(500);
+
+            var categories = await _shopDataStore.GetCategories() ?? [];
+            var customers = await _shopDataStore.GetCustomers() ?? [];
+            var products = new List<Product>();
+            foreach (var x in categories)
+            {
+                AllCategories.Add(x);
+            }
+
+            foreach (var c in customers)
+            {
+                Customers.Add(c);
+            }
+            await Task.Delay(100);
+            foreach (var x in categories)
+            {
+                products = await _shopDataStore.GetItems(x.Id) ?? [];
+            }
+            foreach (var x in products)
+            {
+                AllProducts.Add(x);
+            }
             foreach (var product in AllProducts)
             {
-                if(AllCategories is not null)
-                product.Category = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
+                if (AllCategories is not null)
+                    product.Category = AllCategories.FirstOrDefault(c => c.Id == product.CategoryId);
             }
             await Task.Delay(500);
             LoadMore();
@@ -681,8 +706,6 @@ namespace GleamVault.MVVM.ViewModels
             RefreshCart();
             GetHallmarks();
             await LoadData();
-           
-            await Task.Delay(3000);
             ShimmerLoading = false;
             ShimmerNotLoading = true;
 

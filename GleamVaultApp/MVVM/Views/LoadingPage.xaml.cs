@@ -45,6 +45,6 @@ public partial class LoadingPage : ContentPage
             appShell.SetFlyoutItemsVisibility(isAdmin);
         }
 
-        await Shell.Current.GoToAsync("//HomePage");
+        await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
     }
 }
