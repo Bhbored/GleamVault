@@ -66,8 +66,8 @@ namespace GleamVaultApi.Extension
            
             var excludedPaths = new[]
             {
-                "/api/auth/login",
-                "/api/auth/register",
+                "/api/account/login",
+                "/api/account/register",
                 "/health",
                 "/swagger"
             };

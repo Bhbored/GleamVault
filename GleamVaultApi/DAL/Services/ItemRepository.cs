@@ -126,5 +126,19 @@ namespace GleamVaultApi.DAL.Services
                 }
             });
         }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var deletedEntity = await Delete(id);
+                return deletedEntity != null;
+            }
+            catch (Exception)
+            {
+              
+                return false;
+            }
+        }
     }
 }

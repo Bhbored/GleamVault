@@ -104,4 +104,62 @@ namespace GleamVaultApi.Controllers
                 });
             }
         }
+
+        [HttpDelete("DeleteCategory/{id}")]
+        [ApiKeyAuthorize]
+        public async Task<ActionResult> DeleteCategory(Guid id)
+        {
+            try
+            {
+                var user = HttpContext.Items["User"] as User;
+                if (user == null)
+                {
+                    return Unauthorized(new { error = "User not found" });
+                }
+
+                var result = await CategoryRepository.DeleteAsync(id);
+
+                if (result)
+                {
+                    return Ok(new { message = "Category deleted successfully" });
+                }
+                else
+                {
+                    return NotFound(new { error = "Category not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while deleting category", details = ex.Message });
+            }
+        }
+
+        [HttpDelete("DeleteProduct/{id}")]
+        [ApiKeyAuthorize]
+        public async Task<ActionResult> DeleteProduct(Guid id)
+        {
+            try
+            {
+                var user = HttpContext.Items["User"] as User;
+                if (user == null)
+                {
+                    return Unauthorized(new { error = "User not found" });
+                }
+
+                var result = await ItemRepository.DeleteAsync(id);
+
+                if (result)
+                {
+                    return Ok(new { message = "Product deleted successfully" });
+                }
+                else
+                {
+                    return NotFound(new { error = "Product not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while deleting product", details = ex.Message });
+            }
+        }
     }  }
