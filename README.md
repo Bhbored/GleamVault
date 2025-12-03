@@ -138,7 +138,7 @@ ASPNETCORE_ENVIRONMENT - Development, Staging, or Production
 ConnectionStrings__DefaultConnection - Database connection string
 
 ### 📞 Contact
-Bourhan Hassoun - [Your Email] | [LinkedIn Profile]
+Bourhan Hassoun - [bhbored2022@gmail.com] | [[LinkedIn Profile](https://www.linkedin.com/in/bourhan-hassoun-327670303/)]
 
 Project Link:
 ```
