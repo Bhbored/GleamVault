@@ -38,7 +38,8 @@ namespace GleamVaultApi.DAL.Services
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                Description = entity.Description
+                Description = entity.Description,
+                Icon= entity.Icon,
             };
         }
 

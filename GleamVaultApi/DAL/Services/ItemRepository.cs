@@ -19,7 +19,7 @@ namespace GleamVaultApi.DAL.Services
         {
             throw new NotImplementedException();
         }
-        public Task<List<ItemInfo>> GetByCategoryAsViewModel(Guid itemCategoryId)
+        public Task<List<ItemInfo>> GetByCategoryAsViewModel()
         {
             return Task.Run(() =>
             {
@@ -27,8 +27,7 @@ namespace GleamVaultApi.DAL.Services
                 {
                    
                     var result = db.Product
-                                  .Where(p => p.CategoryId == itemCategoryId && p.CurrentStock > 0)
-                                  .Include(p => p.Category) 
+                                  .Where(p => p.CurrentStock > 0)                                 
                                   .ToList();
                     return result.Select(s => MapViewModel(s)).ToList();
                 }
@@ -66,10 +65,12 @@ namespace GleamVaultApi.DAL.Services
                 Name=entity.Name,
                 Description=entity.Description,
                 HallMark=entity.Hallmark.ToString(),
-                weight=entity.Weight ?? 0f,
+                Weight = entity.Weight ?? 0f,
                 UnitPrice=entity.UnitPrice,
-                weightUnit=entity.WeightUnit.ToString(),
-                CurrentStock=entity.CurrentStock
+                WeightUnit = entity.WeightUnit.ToString(),
+                CurrentStock=entity.CurrentStock,
+                CategoryID=entity.CategoryId,
+                ImageUrl=entity.ImageUrl
 
             };
         }

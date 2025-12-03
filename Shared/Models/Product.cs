@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Shared.Models
@@ -20,6 +21,7 @@ namespace Shared.Models
         public Category Category { get; set; } = null!;
         public float UnitCost { get; set; }
         public string ImageUrl { get; set; } = "default_product.gif";
+      
         public HallmarkType? Hallmark { get; set; } = HallmarkType.LuxuryBrands; //no3 el product
         public WeightUnit? WeightUnit { get; set; }//grams, carats, ounces, pennyweight, kilograms
         public float? Weight { get; set; }// eza kanet sa3at kermal haik nullable
