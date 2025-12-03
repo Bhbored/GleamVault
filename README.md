@@ -30,8 +30,6 @@
 - [📸 Screenshots](#-screenshots)
 - [🚀 Getting Started](#-getting-started)
 - [⚙️ Configuration](#️-configuration)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
 
 
 ## 📸 Screenshots
